@@ -1,0 +1,15 @@
+- class_name: 友情链接
+  class_desc: 寒雨的朋友们
+  link_list:
+    - name: 泡泡
+      link: https://blog.skygard.cn/
+      avatar: https://avatars.githubusercontent.com/u/59405399?v=4
+      descr: Keep Learning...
+    - name: StellarisW
+      link: https://blog.stellaris.wang/
+      avatar: https://avatars.githubusercontent.com/u/46246823?v=4
+      descr: Keep Learning...
+    - name: 闲蛋
+      link: https://kirraobj.ink/
+      avatar: https://avatars.githubusercontent.com/u/36192515?v=4
+      descr: pl enthusiast | fp fanboy | 追随背影。
