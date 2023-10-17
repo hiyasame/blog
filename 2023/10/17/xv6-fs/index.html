@@ -1,0 +1,211 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>6.s081-fs | ArcticRain</title><meta name="author" content="寒雨"><meta name="copyright" content="寒雨"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="下文中没有具体说明的场景均描述 xv6 文件系统的实现  好吧 我们就来详细捋一捋 fs 组成&#x2F;&#x2F; todo 事务 Transaction 事务在用数据库的时候就已经经常用到了，但是没想到文件系统也有事务。从文件系统的事务实现中我们也可以管中窥豹数据库的事务是怎么实现的，数据库的 crash recovery 是如何保证的。  xv6事务的作用是保证一组磁盘写操作的原子性 （">
+<meta property="og:type" content="article">
+<meta property="og:title" content="6.s081-fs">
+<meta property="og:url" content="http://blog.coldrain.ink/2023/10/17/xv6-fs/index.html">
+<meta property="og:site_name" content="ArcticRain">
+<meta property="og:description" content="下文中没有具体说明的场景均描述 xv6 文件系统的实现  好吧 我们就来详细捋一捋 fs 组成&#x2F;&#x2F; todo 事务 Transaction 事务在用数据库的时候就已经经常用到了，但是没想到文件系统也有事务。从文件系统的事务实现中我们也可以管中窥豹数据库的事务是怎么实现的，数据库的 crash recovery 是如何保证的。  xv6事务的作用是保证一组磁盘写操作的原子性 （">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.coldrain.ink/img/avatar.jpg">
+<meta property="article:published_time" content="2023-10-17T21:09:23.000Z">
+<meta property="article:modified_time" content="2023-10-17T13:13:20.261Z">
+<meta property="article:author" content="寒雨">
+<meta property="article:tag" content="公开课">
+<meta property="article:tag" content="MIT6.s081">
+<meta property="article:tag" content="File System">
+<meta property="article:tag" content="xv6">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.coldrain.ink/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://blog.coldrain.ink/2023/10/17/xv6-fs/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '6.s081-fs',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-10-17 13:13:20'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="ArcticRain" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/banner/0.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="ArcticRain"><span class="site-name">ArcticRain</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">6.s081-fs</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-10-17T21:09:23.000Z" title="发表于 2023-10-17 21:09:23">2023-10-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-10-17T13:13:20.261Z" title="更新于 2023-10-17 13:13:20">2023-10-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="6.s081-fs"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>下文中没有具体说明的场景均描述 xv6 文件系统的实现</p>
+</blockquote>
+<p>好吧 我们就来详细捋一捋 fs</p>
+<h2 id="组成"><a href="#组成" class="headerlink" title="组成"></a>组成</h2><p>&#x2F;&#x2F; todo</p>
+<h2 id="事务-Transaction"><a href="#事务-Transaction" class="headerlink" title="事务 Transaction"></a>事务 Transaction</h2><blockquote>
+<p>事务在用数据库的时候就已经经常用到了，但是没想到文件系统也有事务。从文件系统的事务实现中我们也可以管中窥豹数据库的事务是怎么实现的，数据库的 crash recovery 是如何保证的。</p>
+</blockquote>
+<h3 id="xv6"><a href="#xv6" class="headerlink" title="xv6"></a>xv6</h3><p>事务的作用是保证一组磁盘写操作的原子性 （即要么全部完成，要么全部失败)，从而支持 crash recovery。事务是我们对一组整体具有原子性的磁盘写操作的抽象，而我们是如何实现事务这个特性的呢？</p>
+<p>当然是凭借日志系统。在xv6中，我们在执行一组磁盘写操作时，会先将这组写操作发到 block cache。block cache 就是磁盘 block 在内存中的 copy。</p>
+<p>在write系统调用的最后（也就是事务结束时），这些更新都被从 block cache 拷贝到了 log 中，之后会更新 header block 的计数来表明当前的 transaction 已经结束了。</p>
+<p>更新 header block 的计数这个操作是一个原子操作（得益于硬件支持），被称为 commit point。如果系统在 commit point 之前崩溃，则相当于事务在执行时中断，我们便放弃之前已有的全部更改。但如果系统在 commit point 之后崩溃，则相当于事务已经执行完毕（但是还没有回收）。虽然此时 log 中的变更还没有写入到磁盘对应的位置，但是即使在此时崩溃重启时也可以根据 log 中的记录恢复之前的更改。</p>
+<p>commit point 之后当然是将 log 中的变更写回磁盘，然后清除 header block 中的计数（计数清除被视作释放了一个事务），至此一个事务的流程完成。</p>
+<h3 id="ext3"><a href="#ext3" class="headerlink" title="ext3"></a>ext3</h3><p>ext3 是在真实世界中使用的一种文件系统实现，直到现在也仍然经常在 linux 上使用。我们可以轻易的在 linux 上以 ext3 文件系统的格式挂载一块硬盘：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/fstab <span class="comment"># 在文件末尾加上 /dev/&lt;设备&gt; &lt;要挂载的路径&gt; ext3 defaults 1 1</span></span><br></pre></td></tr></table></figure>
+
+<p>ext3 的实现思路是基于 <a target="_blank" rel="noopener" href="https://pdos.csail.mit.edu/6.828/2020/readings/journal-design.pdf">Journaling the Linux ext2fs Filesystem</a> 中描述的一种高性能高可靠文件系统实现。其实现方式跟 xv6 的文件系统实现有很多类似的地方，不过因为其用于现实世界，所以比 xv6 考虑了更多细节，且总体上性能要更好（好得多）：</p>
+<ul>
+<li>ext3 提供了异步系统调用 ，即系统修改完 block cache 就直接返回（是的，ext3 上的 write 系统调用返回时数据其实还没有被写到磁盘上，在这个中途 crash 事务是有可能回滚的）</li>
+<li>ext3 支持批处理 (batching) ，即 ext3 可以合并一段时间内的所有事务，最后将其作为一个大事务进行提交，这样做整体只会向磁盘中写入一次数据。<ul>
+<li>首先批处理减少了事务带来的开销，从机械硬盘中查找log的位置实际上开销不小，而批处理合并了多个事务，减少了事务执行的次数。</li>
+<li>如果之前的多个事务中都修改了同一个block，批处理后写入磁盘时就只需要写入一次 (这种情况被称作 write absorbing)，相当于减少了磁盘 io。</li>
+<li>批处理利好 disk scheduling<ul>
+<li>磁盘的读写也是具有局部性的，一次性的向磁盘的连续位置写入1000个block，要比分1000次每次写一个不同位置的磁盘block快得多。写log就是向磁盘的连续位置写block。通过向磁盘提交大批量的写操作，可以更加的高效。</li>
+<li>如果能将大量的写请求同时发送到驱动，即使它们位于磁盘的不同位置，我们也使得磁盘可以调度这些写请求，并以特定的顺序执行这些写请求，这也很有效。在一个机械硬盘上，如果一次发送大量需要更新block的写请求，驱动可以对这些写请求根据轨道号排序。甚至在一个固态硬盘中，通过一次发送给硬盘大量的更新操作也可以稍微提升性能。所以，只有发送给驱动大量的写操作，才有可能获得disk scheduling。这是batching带来的另一个好处。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>良好的并发性能 concurrency<ul>
+<li>ext3 允许并行写操作，在一个总的事务提交之前，其他 write 系统调用不必等待到当前事务执行完毕，而是直接让 write 操作合并到当前事务当中。</li>
+<li>可以有不同的 transaction 同时存在，尽管只有一个 open transaction 可以接收系统调用。<ul>
+<li>一个 open transaction</li>
+<li>若干个正在commit到log的transaction，我们并不需要等待这些transaction结束。当之前的transaction还没有commit并还在写log的过程中，新的系统调用仍然可以在当前的open transaction中进行。</li>
+<li>若干个正在从cache中向文件系统block写数据的transaction</li>
+<li>若干个正在被释放的transaction，这个并不占用太多的工作</li>
+<li>也就是说 提交事务 ，写入磁盘，释放事务 这三个操作都是异步的。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://blog.coldrain.ink">寒雨</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://blog.coldrain.ink/2023/10/17/xv6-fs/">http://blog.coldrain.ink/2023/10/17/xv6-fs/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://blog.coldrain.ink" target="_blank">ArcticRain</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%85%AC%E5%BC%80%E8%AF%BE/">公开课</a><a class="post-meta__tags" href="/tags/MIT6-s081/">MIT6.s081</a><a class="post-meta__tags" href="/tags/File-System/">File System</a><a class="post-meta__tags" href="/tags/xv6/">xv6</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/10/07/2023-7-9/" title="2023.7-9"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">2023.7-9</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">寒雨</div><div class="author-info__description">生命的意义要由自己来赋予</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ColdRain-Moro"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ColdRain-Moro" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://twitter.com/ArcticRain2" target="_blank" title="Twitter"><i class="fab fa-twitter" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:rain@redrock.team" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a><a class="social-icon" href="/atom.xml" target="_blank" title="RSS"><i class="fas fa-rss" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Learning CS...</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%84%E6%88%90"><span class="toc-number">1.</span> <span class="toc-text">组成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1-Transaction"><span class="toc-number">2.</span> <span class="toc-text">事务 Transaction</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#xv6"><span class="toc-number">2.1.</span> <span class="toc-text">xv6</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ext3"><span class="toc-number">2.2.</span> <span class="toc-text">ext3</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/10/17/xv6-fs/" title="6.s081-fs">6.s081-fs</a><time datetime="2023-10-17T21:09:23.000Z" title="发表于 2023-10-17 21:09:23">2023-10-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/10/07/2023-7-9/" title="2023.7-9">2023.7-9</a><time datetime="2023-10-07T22:19:19.000Z" title="发表于 2023-10-07 22:19:19">2023-10-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/04/handler-analyze/" title="Handler Android 消息机制">Handler Android 消息机制</a><time datetime="2023-07-04T20:49:55.000Z" title="发表于 2023-07-04 20:49:55">2023-07-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/06/27/%E6%96%B0%E7%9A%84%E5%BC%80%E5%A7%8B/" title="新的开始">新的开始</a><time datetime="2023-06-27T16:01:19.000Z" title="发表于 2023-06-27 16:01:19">2023-06-27</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 寒雨</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
