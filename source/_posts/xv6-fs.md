@@ -1,5 +1,5 @@
 ---
-title: 6.s081-fs
+title: xv6-fs
 date: 2023-10-17 21:09:23
 tags: [公开课,MIT6.s081,File System,xv6]
 categories: 笔记
