@@ -1,3 +1,12 @@
+---
+title: 解决 bear 在 MacOS 中生成空 compile_commands.json
+urlname: URYldeyG7okwIlxnz6lcVpvHnqE
+date: 2023-10-21T17:50:29.000Z
+updated: '2024-01-18 17:47:10'
+tags:
+  - xv6
+  - 编译
+---
 在做到 xv6 的最后一个 lab 时，我终于忍受不了满屏的爆红，着手开始配置代码高亮。参考  https://zhuanlan.zhihu.com/p/501901665 配置 Intellisense，然后我遇到了一个问题：
 
 
@@ -17,9 +26,7 @@
 所以其实在 mac 上，bear 预先准备了一系列常用编译器的wrapper。
 
 
-
-![1](https://image_bed//https://persecution-1301196908.cos.ap-chongqing.myqcloud.com/image_bed1.png.plain)
-
+![image](images/Aehabd73Oo6zokxkpaPcMfiWn1g.png)
 
 
 因为 xv6 使用的编译器是 `riscv-unknown-elf-gcc` , 没有预置它的 wrapper。所以我们需要手动创建它：

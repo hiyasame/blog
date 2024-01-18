@@ -1,3 +1,15 @@
+---
+title: xv6-fs
+urlname: RLSwdlgCRo68xTxoNn6caCU1nRh
+date: 2023-10-17T21:09:23.000Z
+updated: '2024-01-18 17:32:05'
+tags:
+  - 公开课
+  - MIT6.s081
+  - File System
+  - xv6
+categories: 笔记
+---
 > 下文中没有具体说明的场景均描述 xv6 文件系统的实现
 
 

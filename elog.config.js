@@ -39,6 +39,11 @@ module.exports = {
       outputDir: './source/_posts',
       filename: 'title',
       format: 'markdown',
+      frontMatter: {
+        enable: true,
+        include: [],
+        exclude: [],
+      }
     },
     halo: {
       endpoint: process.env.HALO_ENDPOINT,
@@ -62,10 +67,10 @@ module.exports = {
   },
   image: {
     enable: true,
-    platform: 'cos',
+    platform: 'local',
     local: {
       outputDir: './source/images',
-      prefixKey: '/images',
+      prefixKey: 'images',
       pathFollowDoc: false,
     },
     oss: {
