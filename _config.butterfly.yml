@@ -36,7 +36,7 @@ code_word_wrap: false
 # formal:
 #   icon: link || the description || color
 social:
-  fab fa-github: https://github.com/ColdRain-Moro || Github || '#24292e'
+  fab fa-github: https://github.com/H1yame || Github || '#24292e'
   fab fa-twitter: https://twitter.com/ArcticRain2 || Twitter || '#24292e'
   fas fa-envelope: mailto:rain@redrock.team || Email || '#24292e'
   fas fa-rss: /atom.xml || RSS || '#24292e'
@@ -236,7 +236,7 @@ aside:
       enable: true
       icon: fab fa-github
       text: Follow Me
-      link: https://github.com/ColdRain-Moro
+      link: https://github.com/H1yame
   card_announcement:
     enable: true
     content: Learning CS...
