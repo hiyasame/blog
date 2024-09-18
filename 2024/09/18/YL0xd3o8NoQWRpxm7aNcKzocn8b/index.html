@@ -184,23 +184,23 @@
 <figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">define</span> factorial (<span class="name">Y</span> almost-factorial))</span><br></pre></td></tr></table></figure>
 <h2 id="Fixed-Point"><a href="#Fixed-Point" class="headerlink" title="Fixed Point"></a>Fixed Point</h2><p>首先我们观察一下下面的优先次数递归的递归函数</p>
 <figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">define</span> identity (<span class="name">lambda</span> (<span class="name">x</span>) x))</span><br><span class="line">(<span class="name">define</span> factorial0 (<span class="name">almost-factorial</span> identity))</span><br></pre></td></tr></table></figure>
-<p>$$<br>factorial0(0) &#x3D; 0<br>$$</p>
-<p>$$<br>factorial0(1) &#x3D; 0<br>$$</p>
+<p>$$factorial0(0) &#x3D; 0$$</p>
+<p>$$factorial0(1) &#x3D; 0$$</p>
 <p>显然参数传入 1 时答案是不对的，我们再套一层：</p>
 <figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">define</span> factorial1 (<span class="name">almost-factorial</span> factorial0))</span><br><span class="line">=&gt;</span><br><span class="line">(<span class="name">define</span> factorial1 </span><br><span class="line">    (<span class="name">almost-factorial</span> </span><br><span class="line">        (<span class="name">almost-factorial</span> identity)))</span><br></pre></td></tr></table></figure>
-<p>$$<br>factorial(0) &#x3D; 0<br>$$</p>
-<p>$$<br>factorial(1) &#x3D; 1<br>$$</p>
-<p>$$<br>factorial(2) &#x3D; 0<br>$$</p>
+<p>$$factorial(0) &#x3D; 0$$</p>
+<p>$$factorial(1) &#x3D; 1$$</p>
+<p>$$factorial(2) &#x3D; 0$$</p>
 <p>这时虽然 1 的答案对了，但是对于 1 以上的答案仍然不对。keep going:</p>
 <figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">define</span> factorial2 (<span class="name">almost-factorial</span> factorial1))</span><br><span class="line">(<span class="name">define</span> factorial3 (<span class="name">almost-factorial</span> factorial2))</span><br><span class="line">(<span class="name">define</span> factorial4 (<span class="name">almost-factorial</span> factorial3))</span><br><span class="line">(<span class="name">define</span> factorial5 (<span class="name">almost-factorial</span> factorial4))</span><br><span class="line">etc.</span><br></pre></td></tr></table></figure>
 <p>可以观察到 <code>almost-factorial</code> 吃掉一个不那么完美的 factorial 函数，吐出了一个更好的 factorial 函数。</p>
 <p>只要我们可以拥有一个无限嵌套下去的 <code>factorial♾️</code> 函数，它就等价于常规的递归函数 factorial，that’s what we want. 有一种说法是 factorial 就是 almost-factorial 的 fixed point (不动点)。</p>
 <p><strong>什么是 fixed point</strong></p>
-<p>$$<br>y &#x3D; f(x)<br>$$</p>
-<p>$$<br>y &#x3D; f(f(x))<br>$$</p>
-<p>$$<br>y &#x3D; f(f(f(f(f(x)))))<br>$$</p>
+<p>$$y &#x3D; f(x)$$</p>
+<p>$$y &#x3D; f(f(x))$$</p>
+<p>$$y &#x3D; f(f(f(f(f(x)))))$$</p>
 <p>…</p>
-<p>最后函数一定会收敛到一个不动点，此时 $$<br>y &#x3D; f(y)<br>$$</p>
+<p>最后函数一定会收敛到一个不动点，此时 $$y &#x3D; f(y)$$</p>
 <p>fixed point 也可以是函数本身</p>
 <h2 id="What-is-Y"><a href="#What-is-Y" class="headerlink" title="What is Y?"></a>What is Y?</h2><blockquote>
 <p>Y is also known as fixed point combinator</p>
@@ -235,7 +235,7 @@
 <p>接下来我们需要加上惰性求值使得其可以在 applicative-order 生效</p>
 <figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">define</span> Y </span><br><span class="line">  (<span class="name">lambda</span> (<span class="name">f</span>)</span><br><span class="line">    ((<span class="name">lambda</span> (<span class="name">x</span>) (<span class="name">x</span> x))</span><br><span class="line">     (<span class="name">lambda</span> (<span class="name">x</span>) (<span class="name">f</span> (<span class="name">lambda</span> (<span class="name">y</span>) ((<span class="name">x</span> x) y)))))))</span><br></pre></td></tr></table></figure>
 <p>于是我们就得到了一个 Y combinator，自此在 lambda calculus 中也可以递归了。再结合 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Church_encoding">Church encoding</a> 便可以做很多事情了，以至于可以用 lambda calculus 模拟 turing machine 以此来证明二者的计算能力等价，图灵完备！</p>
-<p>$$<br>Y &#x3D; \lambda f.\left((\lambda x.f (x\ x))\ (\lambda x.f (x\ x))\right)<br>$$</p>
+<p>$$Y &#x3D; \lambda f.\left((\lambda x.f (x\ x))\ (\lambda x.f (x\ x))\right)$$</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Wp4y1m7Ny/?vd_source=b9b273d25c653eeef7109b91cd195e71">[计算本质] Y Combinator_哔哩哔哩_bilibili</a></p>
 <p><a target="_blank" rel="noopener" href="https://mvanier.livejournal.com/2897.html">The Y Combinator (Slight Return)</a></p>
 <p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Fixed-point_combinator">不动点组合子 - wikipedia</a></p>
