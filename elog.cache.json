@@ -211,6 +211,21 @@
       "realName": "实现一个 crepl",
       "relativePath": "/实现一个 crepl.md",
       "docPath": "./source/_posts"
+    },
+    {
+      "id": "YL0xd3o8NoQWRpxm7aNcKzocn8b",
+      "doc_id": "YL0xd3o8NoQWRpxm7aNcKzocn8b",
+      "updated": 1726637723000,
+      "properties": {
+        "title": "Y Combinator",
+        "urlname": "YL0xd3o8NoQWRpxm7aNcKzocn8b",
+        "date": "2024-09-18 13:34:32",
+        "updated": "2024-09-18 13:35:23"
+      },
+      "catalog": [],
+      "realName": "Y Combinator",
+      "relativePath": "/Y Combinator.md",
+      "docPath": "./source/_posts"
     }
   ],
   "catalog": [
@@ -344,6 +359,18 @@
       "catalog": [],
       "has_child": false,
       "node_token": "QO4vwGOihiL7G6kgvjHckDEonPh",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "YL0xd3o8NoQWRpxm7aNcKzocn8b",
+      "id": "YL0xd3o8NoQWRpxm7aNcKzocn8b",
+      "title": "Y Combinator",
+      "createdAt": 1726637672000,
+      "updated": 1726637723000,
+      "updatedAt": 1726637723000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "CmabwDfEjib2umkwiCXcrNX7nkX",
       "parent_node_token": ""
     }
   ]
