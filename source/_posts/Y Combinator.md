@@ -50,14 +50,10 @@ factorial 是自由变量，那么如何解决这个问题？只要再套一层 
 (define identity (lambda (x) x))
 (define factorial0 (almost-factorial identity))
 ```
-$$
-factorial0(0) = 0
-$$
+$$factorial0(0) = 0$$
 
 
-$$
-factorial0(1) = 0
-$$
+$$factorial0(1) = 0$$
 
 
 显然参数传入 1 时答案是不对的，我们再套一层：
@@ -68,19 +64,13 @@ $$
     (almost-factorial 
         (almost-factorial identity)))
 ```
-$$
-factorial(0) = 0
-$$
+$$factorial(0) = 0$$
 
 
-$$
-factorial(1) = 1
-$$
+$$factorial(1) = 1$$
 
 
-$$
-factorial(2) = 0
-$$
+$$factorial(2) = 0$$
 
 
 这时虽然 1 的答案对了，但是对于 1 以上的答案仍然不对。keep going:
@@ -97,26 +87,18 @@ etc.
 
 **什么是 fixed point**
 
-$$
-y = f(x)
-$$
+$$y = f(x)$$
 
 
-$$
-y = f(f(x))
-$$
+$$y = f(f(x))$$
 
 
-$$
-y = f(f(f(f(f(x)))))
-$$
+$$y = f(f(f(f(f(x)))))$$
 
 
 ...
 
-最后函数一定会收敛到一个不动点，此时 $$
-y = f(y)
-$$
+最后函数一定会收敛到一个不动点，此时 $$y = f(y)$$
 
 
 fixed point 也可以是函数本身
@@ -280,9 +262,7 @@ Y 吃掉了一个函数，并且吐出了这个函数的 fixed point（也是一
 ```
 于是我们就得到了一个 Y combinator，自此在 lambda calculus 中也可以递归了。再结合 [Church encoding](https://en.wikipedia.org/wiki/Church_encoding) 便可以做很多事情了，以至于可以用 lambda calculus 模拟 turing machine 以此来证明二者的计算能力等价，图灵完备！
 
-$$
-Y = \lambda f.\left((\lambda x.f (x\ x))\ (\lambda x.f (x\ x))\right)
-$$
+$$Y = \lambda f.\left((\lambda x.f (x\ x))\ (\lambda x.f (x\ x))\right)$$
 
 ## 参考
 [[计算本质] Y Combinator_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1Wp4y1m7Ny/?vd_source=b9b273d25c653eeef7109b91cd195e71)
