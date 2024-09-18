@@ -6,7 +6,7 @@
   <link href="http://blog.coldrain.ink/atom.xml" rel="self"/>
   
   <link href="http://blog.coldrain.ink/"/>
-  <updated>2024-09-18T13:35:23.000Z</updated>
+  <updated>2024-05-14T17:16:51.000Z</updated>
   <id>http://blog.coldrain.ink/</id>
   
   <author>
@@ -15,19 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>Y Combinator</title>
-    <link href="http://blog.coldrain.ink/2024/09/18/YL0xd3o8NoQWRpxm7aNcKzocn8b/"/>
-    <id>http://blog.coldrain.ink/2024/09/18/YL0xd3o8NoQWRpxm7aNcKzocn8b/</id>
-    <published>2024-09-18T13:34:32.000Z</published>
-    <updated>2024-09-18T13:35:23.000Z</updated>
-    
-    
-    
-    
-    
-  </entry>
   
   <entry>
     <title>实现一个 crepl</title>
