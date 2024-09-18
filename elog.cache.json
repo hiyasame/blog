@@ -215,12 +215,17 @@
     {
       "id": "YL0xd3o8NoQWRpxm7aNcKzocn8b",
       "doc_id": "YL0xd3o8NoQWRpxm7aNcKzocn8b",
-      "updated": 1726637723000,
+      "updated": 1726637961000,
       "properties": {
         "title": "Y Combinator",
         "urlname": "YL0xd3o8NoQWRpxm7aNcKzocn8b",
         "date": "2024-09-18 13:34:32",
-        "updated": "2024-09-18 13:35:23"
+        "updated": "2024-09-18 13:39:21",
+        "tags": [
+          "fp",
+          "lisp",
+          "lambda calculus"
+        ]
       },
       "catalog": [],
       "realName": "Y Combinator",
@@ -366,8 +371,8 @@
       "id": "YL0xd3o8NoQWRpxm7aNcKzocn8b",
       "title": "Y Combinator",
       "createdAt": 1726637672000,
-      "updated": 1726637723000,
-      "updatedAt": 1726637723000,
+      "updated": 1726637961000,
+      "updatedAt": 1726637961000,
       "catalog": [],
       "has_child": false,
       "node_token": "CmabwDfEjib2umkwiCXcrNX7nkX",
