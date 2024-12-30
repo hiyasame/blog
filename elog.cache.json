@@ -231,6 +231,25 @@
       "realName": "Y Combinator",
       "relativePath": "/Y Combinator.md",
       "docPath": "./source/_posts"
+    },
+    {
+      "id": "IF30dVgHWovrwgx6d6TcNM2DnSg",
+      "doc_id": "IF30dVgHWovrwgx6d6TcNM2DnSg",
+      "updated": 1735575449000,
+      "properties": {
+        "title": "区块链中的共识算法概述",
+        "urlname": "IF30dVgHWovrwgx6d6TcNM2DnSg",
+        "date": "2024-12-31 00:15:57",
+        "updated": "2024-12-31 00:17:29",
+        "tags": [
+          "区块链",
+          "分布式系统"
+        ]
+      },
+      "catalog": [],
+      "realName": "区块链中的共识算法概述",
+      "relativePath": "/区块链中的共识算法概述.md",
+      "docPath": "./source/_posts"
     }
   ],
   "catalog": [
@@ -376,6 +395,18 @@
       "catalog": [],
       "has_child": false,
       "node_token": "CmabwDfEjib2umkwiCXcrNX7nkX",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "IF30dVgHWovrwgx6d6TcNM2DnSg",
+      "id": "IF30dVgHWovrwgx6d6TcNM2DnSg",
+      "title": "区块链中的共识算法概述",
+      "createdAt": 1735575357000,
+      "updated": 1735575449000,
+      "updatedAt": 1735575449000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "NUwNwVHKRieOJbke5dzczJI6nuh",
       "parent_node_token": ""
     }
   ]
