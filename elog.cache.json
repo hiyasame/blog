@@ -250,6 +250,26 @@
       "realName": "区块链中的共识算法概述",
       "relativePath": "/区块链中的共识算法概述.md",
       "docPath": "./source/_posts"
+    },
+    {
+      "id": "U7UAdAJVwoTFsOxPL5jcI2rJn4y",
+      "doc_id": "U7UAdAJVwoTFsOxPL5jcI2rJn4y",
+      "updated": 1736264504000,
+      "properties": {
+        "title": "2024年度总结",
+        "urlname": "U7UAdAJVwoTFsOxPL5jcI2rJn4y",
+        "date": "2025-01-07 23:38:56",
+        "updated": "2025-01-07 23:41:44",
+        "tags": [
+          "年度总结",
+          "总结",
+          "随笔"
+        ]
+      },
+      "catalog": [],
+      "realName": "2024年度总结",
+      "relativePath": "/2024年度总结.md",
+      "docPath": "./source/_posts"
     }
   ],
   "catalog": [
@@ -407,6 +427,18 @@
       "catalog": [],
       "has_child": false,
       "node_token": "NUwNwVHKRieOJbke5dzczJI6nuh",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "U7UAdAJVwoTFsOxPL5jcI2rJn4y",
+      "id": "U7UAdAJVwoTFsOxPL5jcI2rJn4y",
+      "title": "2024年度总结",
+      "createdAt": 1736264336000,
+      "updated": 1736264504000,
+      "updatedAt": 1736264504000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "Xb52wEKg0ikZCFkjgmXccbpxnAe",
       "parent_node_token": ""
     }
   ]
