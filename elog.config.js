@@ -27,6 +27,7 @@ module.exports = {
       folderToken: process.env.FEISHU_FOLDER_TOKEN,
       appId: process.env.FEISHU_APP_ID,
       appSecret: process.env.FEISHU_APP_SECRET,
+      limit: 1
     },
     flowus: {
       tablePageId: process.env.FLOWUS_TABLE_PAGE_ID,
@@ -67,6 +68,7 @@ module.exports = {
   },
   image: {
     enable: true,
+    limit: 1,
     platform: 'local',
     local: {
       outputDir: './source/images',

@@ -16,9 +16,9 @@ tags:
 可以看到布局的操作被委托给了 adapter 和 layoutManager ，没设置的情况下会直接跳过布局。并且初次布局和后续数据更新重新布局所做的操作不同，初次布局执行 step1 和 step2，后续布局只执行 step2。
 
 并且 recycler view 内部有一个布局流程的状态机
-![image](images/ZC60bcNfXoOpRqxf1RZcRwJbn0c.json; charset=utf-8)
+![image](images/ZC60bcNfXoOpRqxf1RZcRwJbn0c.png)
 初始化状态
-![image](images/LrfcbcemQoboo1xw1hFcBwYvnIb.json; charset=utf-8)
+![image](images/LrfcbcemQoboo1xw1hFcBwYvnIb.png)
 这里调用了 LayoutManager 的 onLayoutChildren 方法，我们选择 `LinearLayoutManager#onLayoutChildren` 进行分析
 ## LinearLayoutManager#onLayoutChildren
 1. 找到之前的 anchor 位置 （如果有）
@@ -27,18 +27,18 @@ tags:
 	- 可见部分是否还有剩余空间 && adapter 是否还有 item，如果是就一直 layoutChunk 直到不满足条件为止
 		- extra 值也会算到 remainingSpace 里面，而 extra 其实就是 recyclerview 的 padding，也就是说 padding 所在区域也会用作渲染 item，但 margin 就不会。
 	
-![image](images/HSf6borOVoPlDPxmtRKcPPvpnfb.json; charset=utf-8)
+![image](images/HSf6borOVoPlDPxmtRKcPPvpnfb.png)
 ![image](images/YE6Ab2jBro6nQjxFWjlc0KvTnZg.png)
 ![image](images/K233bvXxfooxM8xBW0DceH01npW.png)
 ## LinearLayoutManager#layoutChunk
 layoutChunk 中使用 layoutState.next 获取了一个 view，实际上就是走 recyclerview 的四级缓存获取了一个 viewholder 上面的 view，而其中包含了 adapter 的 create bind 等各种逻辑（这段逻辑我们就后面分析了）。并且将这个 view 加入到 recyclerview 的 child 中，然后测量 child（item decoration 在这个时候也会跟 child 一起被测量）。
-![image](images/Hn9ab8Q9yofVc5xrPnDcxgE6nWg.json; charset=utf-8)
+![image](images/Hn9ab8Q9yofVc5xrPnDcxgE6nWg.png)
 ![image](images/WrgRblCL8opubKxcMbXcsfVonXb.png)
 下面是 recyclerview child 的 measure spec，哪个方向可以滚动则 canScroll 为 true。
-![image](images/Gqa8bzuM3okC6cxgQVvcdaLrnIl.json; charset=utf-8)
+![image](images/Gqa8bzuM3okC6cxgQVvcdaLrnIl.png)
 measure 完新加入的 child 后开始计算 child 的 bounding box，并根据这个 bouding box 相对于 recyclerview 的 top bottom left right 来 layout child。
-![image](images/QSzbbPlbeoutilxxeVcc5JZunUe.json; charset=utf-8)
-![image](images/CI7HbKJA1o0pEXxpCiRcvVmrnad.json; charset=utf-8)
+![image](images/QSzbbPlbeoutilxxeVcc5JZunUe.png)
+![image](images/CI7HbKJA1o0pEXxpCiRcvVmrnad.png)
 至此单个 item 便 layout 完毕了。
 ## 四级缓存 Recycler#getViewForPosition
 - 从 changedScrap 中找，notifyItemChanged 会将 viewholder 放入 changedScrap

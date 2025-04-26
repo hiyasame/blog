@@ -12,21 +12,21 @@ tags:
 首先先梳理下 android 对 hidden api 的拦截原理，我们从 getDeclaredMethod 开始分析
 ![image](images/WH71bsFkYoiIn3xAwW8cyOWznZd.png)
 ![image](images/N5GmbUbUUoQKiHxaf6qcmD6FnOf.png)
-![image](images/Vw53bkxrEofrEjxQcLtct2Adnye.json; charset=utf-8)
+![image](images/Vw53bkxrEofrEjxQcLtct2Adnye.png)
 最后会走到 native 方法 getDeclaredMethodInternal，然后发现有一段 ShouldDenyAccessToMember 的逻辑，返回false 就会让 getDeclaredMethodInternal 返回 null，想必这就是 hidden api 隐藏逻辑了。
 ![image](images/PGMqb9yReoX7uTxndrvc6tYwnGh.png)
 可以发现有一个豁免列表 `runtime->GetHiddenApiExemptions`，只要签名前缀匹配上任何一条豁免，就直接不拦截。
-![image](images/A8TPbigR0oatwxxnB5WcPcoDndh.json; charset=utf-8)
+![image](images/A8TPbigR0oatwxxnB5WcPcoDndh.png)
 ![image](images/SlMibBwYKoplUTxeKChchehKnQb.png)
 所以我们只要想办法修改 runtime 的这个字段就可以了。
 ## unsealByDex
 我们发现 setHiddenApiExemptions 这个方法其实暴露到了 java 层 `VRRuntime::setHiddenApiExemptions` 
-![image](images/Oq6sbgvMBod11JxrJyxcZnLAnSY.json; charset=utf-8)
+![image](images/Oq6sbgvMBod11JxrJyxcZnLAnSY.png)
 但它也是一个 hidden api，要调用它的话也需要先想办法绕过 hidden api 的限制。这就变成了一个鸡生蛋蛋生鸡的问题，那我们就只能想一个别的办法来绕过这个限制，我们看下 ShouldDenyAccessToMember 中的其他条件。
-![image](images/FGb9b6TAXoMTRbxnkITcJ6EDnZd.json; charset=utf-8)
+![image](images/FGb9b6TAXoMTRbxnkITcJ6EDnZd.png)
 发现还有另外一个条件，我们看看 CanAlwaysAccess 方法内部：
 ![image](images/KuTmbIGGDoSVIKxDkCXcffuOnqe.png)
-![image](images/G0V6b0FE8oDxHoxNWj9cbtLDnPh.json; charset=utf-8)
+![image](images/G0V6b0FE8oDxHoxNWj9cbtLDnPh.png)
 其实就是比较 caller 和 callee 的谁的 domain 比较高，caller 的 domain 高于 callee 的情况下就可以直接放行。
 
 那么我们只要想办法让 caller 处在最高的 domain `kCorePlatform` ，也就是让 caller 所在 class 被最上层的 BootstrapClassLoader 加载即可。
