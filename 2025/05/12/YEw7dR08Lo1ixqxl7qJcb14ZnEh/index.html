@@ -276,7 +276,7 @@
 <p>再使用梯度下降往最低处逼近即可。</p>
 <h5 id="多元分类"><a href="#多元分类" class="headerlink" title="多元分类"></a>多元分类</h5><p>上面我们只讲解了只有两种类别的分类情况，那么如果实际情况中需要区分多种类别呢？实际上我们只需要把多个只识别单一类型为正向类，其余识别为负向类的二元分类器组合在一起就可以实现多元分类。<br><img src="/images/XyNEbBlB3o9mgNxHYuXcnyN4nxd.png" alt="image"></p>
 <p><img src="/images/IdLsbegdBocY4vxUJqNc8xbWnpf.png" alt="image"></p>
-<h5 id="准确率-x2F-召回率"><a href="#准确率-x2F-召回率" class="headerlink" title="准确率&#x2F;召回率"></a>准确率&#x2F;召回率</h5><p>评估分类模型的性能比回归模型要复杂一些。这里我们需要引入两个耳熟能详的指标：**准确率 <strong>(Accuracy Rate) 和</strong>召回率 **(Recall Rate)。$TP$<br> 为真阳性（True Positive）数，$FP$<br> 为假阳性（False Positive）数，$FN$<br> 为假阴性（False Negative）数。<br>$$<br>Accuracy &#x3D; \frac{TP}{TP + FP}<br>$$</p>
+<h5 id="准确率-x2F-召回率"><a href="#准确率-x2F-召回率" class="headerlink" title="准确率&#x2F;召回率"></a>准确率&#x2F;召回率</h5><p>评估分类模型的性能比回归模型要复杂一些。这里我们需要引入两个耳熟能详的指标：**准确率 <strong>(Accuracy Rate) 和</strong>召回率 **(Recall Rate)。$TP$ 为真阳性（True Positive）数，$FP$ 为假阳性（False Positive）数，$FN$ 为假阴性（False Negative）数。<br>$$<br>Accuracy &#x3D; \frac{TP}{TP + FP}<br>$$</p>
 <p>$$<br>Recall &#x3D; \frac{TP}{TP + FN}<br>$$</p>
 <p>准确率主要关注在预测为真的实例中的正确率，而召回率关注在整个测试集中有多少实际为真的实例被模型预测召回。</p>
 <p>不幸的是，我们不能两者兼顾：提高准确率会降低召回率（召回的数量越少越准确，一个极端的例子是在一大批样本中只召回一个样本，这样准确率可以达到 100%，但召回率接近 0%）。所以在不同的应用场景下我们会关注不同的指标：比如恶性肿瘤识别的案例中，我们希望有尽可能多的恶性肿瘤患者被召回，即便误诊多一些也没有关系，这种情况下召回率就比较重要；而在垃圾邮件识别的案例中，我们认为相比于少召回几封垃圾邮件，重要邮件被误识别为垃圾邮件是更不可接受的，这种情况下准确率就比较重要。在风控业务中当然是更加关心召回率，即便只有少数漏网之鱼漏召都有可能引发严重的后果。</p>
