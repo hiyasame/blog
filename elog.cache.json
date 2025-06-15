@@ -328,6 +328,26 @@
       "realName": "机器学习分享",
       "relativePath": "/机器学习分享.md",
       "docPath": "./source/_posts"
+    },
+    {
+      "id": "J9KbdhgRYoEdfsxraY4c2ln5n1e",
+      "doc_id": "J9KbdhgRYoEdfsxraY4c2ln5n1e",
+      "updated": 1749975450000,
+      "properties": {
+        "title": "GFS",
+        "urlname": "J9KbdhgRYoEdfsxraY4c2ln5n1e",
+        "date": "2025-06-15 16:16:39",
+        "updated": "2025-06-15 16:17:30",
+        "mathjax": true,
+        "tags": [
+          "分布式系统",
+          "论文阅读"
+        ]
+      },
+      "catalog": [],
+      "realName": "GFS",
+      "relativePath": "/GFS.md",
+      "docPath": "./source/_posts"
     }
   ],
   "catalog": [
@@ -533,6 +553,18 @@
       "catalog": [],
       "has_child": false,
       "node_token": "UKJIwGn9IikkCRkd0aBck9O2njd",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "J9KbdhgRYoEdfsxraY4c2ln5n1e",
+      "id": "J9KbdhgRYoEdfsxraY4c2ln5n1e",
+      "title": "GFS",
+      "createdAt": 1749975399000,
+      "updated": 1749975450000,
+      "updatedAt": 1749975450000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "JyLCw314XiieXBklckrcDIk0npe",
       "parent_node_token": ""
     }
   ]
