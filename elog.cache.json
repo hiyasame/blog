@@ -368,6 +368,26 @@
       "realName": "ZooKeeper",
       "relativePath": "/ZooKeeper.md",
       "docPath": "./source/_posts"
+    },
+    {
+      "id": "Y8eRda3eJocn3TxUGMIcCz4unXb",
+      "doc_id": "Y8eRda3eJocn3TxUGMIcCz4unXb",
+      "updated": 1753542699000,
+      "properties": {
+        "title": "Chain Replication & CRAQ",
+        "urlname": "Y8eRda3eJocn3TxUGMIcCz4unXb",
+        "date": "2025-07-26 23:10:31",
+        "updated": "2025-07-26 23:11:39",
+        "mathjax": true,
+        "tags": [
+          "分布式系统",
+          "论文阅读"
+        ]
+      },
+      "catalog": [],
+      "realName": "Chain Replication & CRAQ",
+      "relativePath": "/Chain Replication & CRAQ.md",
+      "docPath": "./source/_posts"
     }
   ],
   "catalog": [
@@ -597,6 +617,18 @@
       "catalog": [],
       "has_child": false,
       "node_token": "AmIXw6GEUiBKpykkTm1cNyaknnU",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "Y8eRda3eJocn3TxUGMIcCz4unXb",
+      "id": "Y8eRda3eJocn3TxUGMIcCz4unXb",
+      "title": "Chain Replication & CRAQ",
+      "createdAt": 1753542631000,
+      "updated": 1753542699000,
+      "updatedAt": 1753542699000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "POPvwY5c6i6aunkoptbc4jZFnBb",
       "parent_node_token": ""
     }
   ]
