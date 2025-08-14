@@ -388,6 +388,24 @@
       "realName": "Chain Replication & CRAQ",
       "relativePath": "/Chain Replication & CRAQ.md",
       "docPath": "./source/_posts"
+    },
+    {
+      "id": "CZETdguGboXEcrxKOxzcvQNFnBg",
+      "doc_id": "CZETdguGboXEcrxKOxzcvQNFnBg",
+      "updated": 1755075128000,
+      "properties": {
+        "title": "Android逆向初探 & KCTF AliCrackme_2 题解",
+        "urlname": "CZETdguGboXEcrxKOxzcvQNFnBg",
+        "date": "2025-08-13 16:51:18",
+        "updated": "2025-08-13 16:52:08",
+        "tags": [
+          "逆向"
+        ]
+      },
+      "catalog": [],
+      "realName": "Android逆向初探 & KCTF AliCrackme_2 题解",
+      "relativePath": "/Android逆向初探 & KCTF AliCrackme_2 题解.md",
+      "docPath": "./source/_posts"
     }
   ],
   "catalog": [
@@ -629,6 +647,18 @@
       "catalog": [],
       "has_child": false,
       "node_token": "POPvwY5c6i6aunkoptbc4jZFnBb",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "CZETdguGboXEcrxKOxzcvQNFnBg",
+      "id": "CZETdguGboXEcrxKOxzcvQNFnBg",
+      "title": "Android逆向初探 & KCTF AliCrackme_2 题解",
+      "createdAt": 1755075078000,
+      "updated": 1755075128000,
+      "updatedAt": 1755075128000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "Bxyhw3AVmiWZQck3h5UcQ85Tnxc",
       "parent_node_token": ""
     }
   ]
