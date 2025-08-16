@@ -1,0 +1,18 @@
+- group: 寒雨的朋友们 # 分组标题
+  description:  # 分组描述
+  items:
+    - title: 泡泡 # 名称
+      avatar: https://avatars.githubusercontent.com/u/59405399?v=4 # 头像
+      url: https://blog.skygard.work/ # 链接
+      screenshot: # 截图
+      keywords: # 关键词
+      description: # 描述
+    - title: StellarisW # 名称
+      avatar: https://avatars.githubusercontent.com/u/46246823?v=4 # 头像
+      url: https://blog.stellaris.wang/ # 链接
+      screenshot: # 截图
+      keywords: # 关键词
+      description: # 描述
+    - title: 闲蛋
+      url: https://kirraobj.github.io/
+      avatar: https://avatars.githubusercontent.com/u/36192515?v=4

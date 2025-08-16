@@ -1,5 +1,5 @@
 ---
-title: categories
-date: 2023-06-27 23:40:17
-type: "categories"
+layout: category
+index: true
+title: 所有分类
 ---
