@@ -406,6 +406,25 @@
       "realName": "Android逆向初探 & KCTF AliCrackme_2 题解",
       "relativePath": "/Android逆向初探 & KCTF AliCrackme_2 题解.md",
       "docPath": "./source/_posts"
+    },
+    {
+      "id": "AzRSdNDzcooDvpxY46RcDjSHnyd",
+      "doc_id": "AzRSdNDzcooDvpxY46RcDjSHnyd",
+      "updated": 1755711566000,
+      "properties": {
+        "title": "Amazon Aurora",
+        "urlname": "AzRSdNDzcooDvpxY46RcDjSHnyd",
+        "date": "2025-08-21 01:37:41",
+        "updated": "2025-08-21 01:39:26",
+        "tags": [
+          "论文阅读",
+          "分布式系统"
+        ]
+      },
+      "catalog": [],
+      "realName": "Amazon Aurora",
+      "relativePath": "/Amazon Aurora.md",
+      "docPath": "./source/_posts"
     }
   ],
   "catalog": [
@@ -659,6 +678,18 @@
       "catalog": [],
       "has_child": false,
       "node_token": "Bxyhw3AVmiWZQck3h5UcQ85Tnxc",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "AzRSdNDzcooDvpxY46RcDjSHnyd",
+      "id": "AzRSdNDzcooDvpxY46RcDjSHnyd",
+      "title": "Amazon Aurora",
+      "createdAt": 1755711461000,
+      "updated": 1755711566000,
+      "updatedAt": 1755711566000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "RR4xw1dokiy4crkHzncc3OWmn0g",
       "parent_node_token": ""
     }
   ]
