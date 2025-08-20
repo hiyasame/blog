@@ -2038,7 +2038,7 @@ img.lazyload:not(.placeholder).loaded {
   font-weight: bold;
 }
 .md h2+h3:before {
-  margin-top: -120px;
+  margin-top: -72px;
 }
 .md ul,
 .md ol {
