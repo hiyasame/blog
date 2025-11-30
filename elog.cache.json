@@ -443,6 +443,25 @@
       "realName": "霓虹之旅",
       "relativePath": "/霓虹之旅.md",
       "docPath": "./source/_posts"
+    },
+    {
+      "id": "Y8zQdAX1Poif9Xxib1JcmQBEn0f",
+      "doc_id": "Y8zQdAX1Poif9Xxib1JcmQBEn0f",
+      "updated": 1764509441000,
+      "properties": {
+        "title": "Linux epoll 实现原理 ",
+        "urlname": "Y8zQdAX1Poif9Xxib1JcmQBEn0f",
+        "date": "2025-11-30 21:28:21",
+        "updated": "2025-11-30 21:30:41",
+        "tags": [
+          "RTFSC",
+          "linux"
+        ]
+      },
+      "catalog": [],
+      "realName": "Linux epoll 实现原理 ",
+      "relativePath": "/Linux epoll 实现原理 .md",
+      "docPath": "./source/_posts"
     }
   ],
   "catalog": [
@@ -720,6 +739,18 @@
       "catalog": [],
       "has_child": false,
       "node_token": "AAeOw4233i9fU7kfQrOckWAEnyc",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "Y8zQdAX1Poif9Xxib1JcmQBEn0f",
+      "id": "Y8zQdAX1Poif9Xxib1JcmQBEn0f",
+      "title": "Linux epoll 实现原理 ",
+      "createdAt": 1764509301000,
+      "updated": 1764509441000,
+      "updatedAt": 1764509441000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "YuQCwHiSqishLwk1bSPcZY37nDc",
       "parent_node_token": ""
     }
   ]
