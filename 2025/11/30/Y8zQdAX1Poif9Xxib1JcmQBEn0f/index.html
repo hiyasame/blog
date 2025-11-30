@@ -5,8 +5,8 @@
   <meta name="Volantis" content="6.0.0-alpha.1">
   <meta charset="utf-8">
   <!-- SEO相关 -->
-  <meta name="robots" content="noindex,follow">
-  <link rel="canonical" href="http://blog.coldrain.ink/tags/操作系统/"/>
+  
+  <link rel="canonical" href="http://blog.coldrain.ink/2025/11/30/y8zqdax1poif9xxib1jcmqben0f/"/>
   <!-- 渲染优化 -->
     <meta http-equiv='x-dns-prefetch-control' content='on' />
       <link rel='dns-prefetch' href='https://unpkg.com'>
@@ -34,18 +34,22 @@
   <!-- feed -->
       <link rel="alternate" href="/atom.xml" title="Hiyasame" type="application/atom+xml">
   <!-- 页面元数据 -->
-  <title>标签：操作系统 - Hiyasame</title>
-  <meta name="keywords" content="null">
+  <title>Linux epoll 实现原理  - Hiyasame</title>
+  <meta name="keywords" content="linux,RTFSC,null">
   <meta desc name="description" content="道阻且长，行则将至 - 寒雨 - Hiyasame">
   
-<meta property="og:type" content="website">
-<meta property="og:title" content="Hiyasame">
-<meta property="og:url" content="http://blog.coldrain.ink/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux epoll 实现原理 ">
+<meta property="og:url" content="http://blog.coldrain.ink/2025/11/30/Y8zQdAX1Poif9Xxib1JcmQBEn0f/index.html">
 <meta property="og:site_name" content="Hiyasame">
-<meta property="og:description" content="道阻且长，行则将至">
+<meta property="og:description" content="本文参考的内核源码版本为 5.15  在 linux 内核项目中，epoll 机制的实现只用了一个文件 fs&#x2F;eventpull.c 不过这一个文件就有 2000+ 行代码 先从我们熟知的 epoll 系统调用开始分析，看看它们到底都做了些什么： epoll_create123456789101112131415161718192021222324252627282930313233343536">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
+<meta property="article:published_time" content="2025-11-30T21:28:21.000Z">
+<meta property="article:modified_time" content="2025-11-30T21:30:41.000Z">
 <meta property="article:author" content="寒雨">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="RTFSC">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
   <style>
@@ -1987,7 +1991,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 
 <script>
   window.pdata={}
-  pdata.ispage=false;
+  pdata.ispage=true;
   pdata.commentPath="";
   pdata.commentPlaceholder="";
   pdata.commentConfig={};
@@ -2324,25 +2328,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       <div id="safearea">
         <div class="body-wrapper">
           
-
 <div id="l_main" class=''>
-  
-    
-      
-  <section class="post-list">
-    
-      
-        
-          
-        
-      
-    
-    
-      
-        
-          <div class='post-wrapper'>
-            <div class="post post-v3 white-box reveal shadow floatable blur"  itemscope itemtype="https://schema.org.cn/Article" >
-  <link itemprop="mainEntityOfPage" href="http://blog.coldrain.ink/2023/10/20/Ro5td2HZloi6YzxPcKrc9aHbn9d/">
+  <article itemscope itemtype="https://schema.org.cn/Article" class="article post white-box reveal md shadow floatable blur article-type-post" id="post" itemscope itemprop="blogPost">
+  <link itemprop="mainEntityOfPage" href="http://blog.coldrain.ink/2025/11/30/Y8zQdAX1Poif9Xxib1JcmQBEn0f/">
   <span hidden itemprop="publisher" itemscope itemtype="https://schema.org.cn/Organization">
     <meta itemprop="name" content="Hiyasame">
   </span>
@@ -2351,73 +2339,284 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     <meta itemprop="description" content="道阻且长，行则将至">
   </span>
   
-  
+
+
   
     <span hidden>
       <meta itemprop="image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
     </span>
   
-  
+  <div class="article-meta" id="top">
     
-    <h2 class="article-title"  itemprop="name headline">
-      <a href="/2023/10/20/Ro5td2HZloi6YzxPcKrc9aHbn9d/"  itemprop="url">
-        virtual-memory-for-user-applications
-      </a>
-    </h2>
-  
-  <div class='md article-desc' itemprop="articleBody">
     
-      
+    
+      <h1 class="title" itemprop="name headline">
+        Linux epoll 实现原理 
+      </h1>
+      <div class='new-meta-box'>
         
-MIT 6.s081 lecture 17 个人总结笔记
+          
+            
+<div class='new-meta-item author' itemprop="author" itemscope itemtype="https://schema.org.cn/Person">
+  <a itemprop="url" class='author' href="/" rel="nofollow">
+    <img itemprop="image" src="/img/avatar.jpg" class="lazyload" data-srcset="/img/avatar.jpg" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+    <p itemprop="name">寒雨</p>
+  </a>
+</div>
 
-参考:
+          
+        
+          
+            
 
-https://mit-public-courses-cn-translatio.gitbook.io/mit6-s081/lec17-virtual-memory-for-applications-frans
 
-https://pdos.csail.mit.edu/6.828/2020/readings/appel-l...
-      
+          
+        
+          
+            <div class="new-meta-item date" itemprop="dateCreated datePublished" datetime="2025-11-30T21:28:21+00:00">
+  <a class='notlink'>
+    <i class="fa-solid fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：2025年11月30日</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+
+
+
+          
+        
+        <!-- Custom Files topMeta begin-->
+        
+        <!-- Custom Files topMeta end-->
+      </div>
     
   </div>
+
+
+  <div id="layoutHelper-page-plugins"></div>
+  <div id="post-body" itemprop="articleBody">
+    <blockquote>
+<p>本文参考的内核源码版本为 5.15</p>
+</blockquote>
+<p>在 linux 内核项目中，epoll 机制的实现只用了一个文件 <code>fs/eventpull.c</code> <del><em>不过这一个文件就有 2000+ 行代码</em></del></p>
+<p>先从我们熟知的 epoll 系统调用开始分析，看看它们到底都做了些什么：</p>
+<h2 id="epoll-create"><a href="#epoll-create" class="headerlink" title="epoll_create"></a>epoll_create</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Open an eventpoll file descriptor.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">do_epoll_create</span><span class="params">(<span class="type">int</span> flags)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> error, fd;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">eventpoll</span> *<span class="title">ep</span> =</span> <span class="literal">NULL</span>;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">file</span> *<span class="title">file</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Check the EPOLL_* constant for consistency.  */</span></span><br><span class="line">    BUILD_BUG_ON(EPOLL_CLOEXEC != O_CLOEXEC);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (flags &amp; ~EPOLL_CLOEXEC)</span><br><span class="line">        <span class="keyword">return</span> -EINVAL;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Create the internal data structure (&quot;struct eventpoll&quot;).</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    error = ep_alloc(&amp;ep);</span><br><span class="line">    <span class="keyword">if</span> (error &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> error;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Creates all the items needed to setup an eventpoll file. That is,</span></span><br><span class="line"><span class="comment">     * a file structure and a free file descriptor.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    fd = get_unused_fd_flags(O_RDWR | (flags &amp; O_CLOEXEC));</span><br><span class="line">    <span class="keyword">if</span> (fd &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        error = fd;</span><br><span class="line">        <span class="keyword">goto</span> out_free_ep;</span><br><span class="line">    &#125;</span><br><span class="line">    file = anon_inode_getfile(<span class="string">&quot;[eventpoll]&quot;</span>, &amp;eventpoll_fops, ep,</span><br><span class="line">                 O_RDWR | (flags &amp; O_CLOEXEC));</span><br><span class="line">    <span class="keyword">if</span> (IS_ERR(file)) &#123;</span><br><span class="line">        error = PTR_ERR(file);</span><br><span class="line">        <span class="keyword">goto</span> out_free_fd;</span><br><span class="line">    &#125;</span><br><span class="line">    ep-&gt;file = file;</span><br><span class="line">    fd_install(fd, file);</span><br><span class="line">    <span class="keyword">return</span> fd;</span><br><span class="line"></span><br><span class="line">out_free_fd:</span><br><span class="line">    put_unused_fd(fd);</span><br><span class="line">out_free_ep:</span><br><span class="line">    ep_free(ep);</span><br><span class="line">    <span class="keyword">return</span> error;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码不复杂：</p>
+<ol>
+<li><p>调用 ep_alloc 创建了一个 epoll 实例</p>
+</li>
+<li><p>根据 flags alloc 一个 fd</p>
+</li>
+<li><p>创建一个新的 struct file，这个 file 是绑定在一个匿名 inode 上的。（所有需要一个文件但不需要文件有实际内容的 api 都这么创建，比如 <code>/dev/pts</code> , pipe 这种文件）</p>
+</li>
+<li><p>将这个 struct file 绑定给这个 fd</p>
+</li>
+</ol>
+<p>一言以蔽之，就是创建了一个绑定了 epoll 数据结构的 struct file，返回了其 fd。</p>
+<h2 id="epoll-ctl"><a href="#epoll-ctl" class="headerlink" title="epoll_ctl"></a>epoll_ctl</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">do_epoll_ctl</span><span class="params">(<span class="type">int</span> epfd, <span class="type">int</span> op, <span class="type">int</span> fd, <span class="keyword">struct</span> epoll_event *epds,</span></span><br><span class="line"><span class="params">         <span class="type">bool</span> nonblock)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> error;</span><br><span class="line">    <span class="type">int</span> full_check = <span class="number">0</span>;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">fd</span> <span class="title">f</span>, <span class="title">tf</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">eventpoll</span> *<span class="title">ep</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">epitem</span> *<span class="title">epi</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">eventpoll</span> *<span class="title">tep</span> =</span> <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    error = -EBADF;</span><br><span class="line">    f = fdget(epfd);</span><br><span class="line">    <span class="keyword">if</span> (!f.file)</span><br><span class="line">        <span class="keyword">goto</span> error_return;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Get the &quot;struct file *&quot; for the target file */</span></span><br><span class="line">    tf = fdget(fd);</span><br><span class="line">    <span class="keyword">if</span> (!tf.file)</span><br><span class="line">        <span class="keyword">goto</span> error_fput;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* The target file descriptor must support poll */</span></span><br><span class="line">    error = -EPERM;</span><br><span class="line">    <span class="keyword">if</span> (!file_can_poll(tf.file))</span><br><span class="line">        <span class="keyword">goto</span> error_tgt_fput;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Check if EPOLLWAKEUP is allowed */</span></span><br><span class="line">    <span class="keyword">if</span> (ep_op_has_event(op))</span><br><span class="line">        ep_take_care_of_epollwakeup(epds);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * We have to check that the file structure underneath the file descriptor</span></span><br><span class="line"><span class="comment">     * the user passed to us _is_ an eventpoll file. And also we do not permit</span></span><br><span class="line"><span class="comment">     * adding an epoll file descriptor inside itself.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    error = -EINVAL;</span><br><span class="line">    <span class="keyword">if</span> (f.file == tf.file || !is_file_epoll(f.file))</span><br><span class="line">        <span class="keyword">goto</span> error_tgt_fput;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * epoll adds to the wakeup queue at EPOLL_CTL_ADD time only,</span></span><br><span class="line"><span class="comment">     * so EPOLLEXCLUSIVE is not allowed for a EPOLL_CTL_MOD operation.</span></span><br><span class="line"><span class="comment">     * Also, we do not currently supported nested exclusive wakeups.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (ep_op_has_event(op) &amp;&amp; (epds-&gt;events &amp; EPOLLEXCLUSIVE)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (op == EPOLL_CTL_MOD)</span><br><span class="line">            <span class="keyword">goto</span> error_tgt_fput;</span><br><span class="line">        <span class="keyword">if</span> (op == EPOLL_CTL_ADD &amp;&amp; (is_file_epoll(tf.file) ||</span><br><span class="line">                (epds-&gt;events &amp; ~EPOLLEXCLUSIVE_OK_BITS)))</span><br><span class="line">            <span class="keyword">goto</span> error_tgt_fput;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * At this point it is safe to assume that the &quot;private_data&quot; contains</span></span><br><span class="line"><span class="comment">     * our own data structure.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    ep = f.file-&gt;private_data;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * When we insert an epoll file descriptor inside another epoll file</span></span><br><span class="line"><span class="comment">     * descriptor, there is the chance of creating closed loops, which are</span></span><br><span class="line"><span class="comment">     * better be handled here, than in more critical paths. While we are</span></span><br><span class="line"><span class="comment">     * checking for loops we also determine the list of files reachable</span></span><br><span class="line"><span class="comment">     * and hang them on the tfile_check_list, so we can check that we</span></span><br><span class="line"><span class="comment">     * haven&#x27;t created too many possible wakeup paths.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * We do not need to take the global &#x27;epumutex&#x27; on EPOLL_CTL_ADD when</span></span><br><span class="line"><span class="comment">     * the epoll file descriptor is attaching directly to a wakeup source,</span></span><br><span class="line"><span class="comment">     * unless the epoll file descriptor is nested. The purpose of taking the</span></span><br><span class="line"><span class="comment">     * &#x27;epmutex&#x27; on add is to prevent complex toplogies such as loops and</span></span><br><span class="line"><span class="comment">     * deep wakeup paths from forming in parallel through multiple</span></span><br><span class="line"><span class="comment">     * EPOLL_CTL_ADD operations.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    error = epoll_mutex_lock(&amp;ep-&gt;mtx, <span class="number">0</span>, nonblock);</span><br><span class="line">    <span class="keyword">if</span> (error)</span><br><span class="line">        <span class="keyword">goto</span> error_tgt_fput;</span><br><span class="line">    <span class="keyword">if</span> (op == EPOLL_CTL_ADD) &#123;</span><br><span class="line">        <span class="keyword">if</span> (READ_ONCE(f.file-&gt;f_ep) || ep-&gt;gen == loop_check_gen ||</span><br><span class="line">            is_file_epoll(tf.file)) &#123;</span><br><span class="line">            mutex_unlock(&amp;ep-&gt;mtx);</span><br><span class="line">            error = epoll_mutex_lock(&amp;epmutex, <span class="number">0</span>, nonblock);</span><br><span class="line">            <span class="keyword">if</span> (error)</span><br><span class="line">                <span class="keyword">goto</span> error_tgt_fput;</span><br><span class="line">            loop_check_gen++;</span><br><span class="line">            full_check = <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (is_file_epoll(tf.file)) &#123;</span><br><span class="line">                tep = tf.file-&gt;private_data;</span><br><span class="line">                error = -ELOOP;</span><br><span class="line">                <span class="keyword">if</span> (ep_loop_check(ep, tep) != <span class="number">0</span>)</span><br><span class="line">                    <span class="keyword">goto</span> error_tgt_fput;</span><br><span class="line">            &#125;</span><br><span class="line">            error = epoll_mutex_lock(&amp;ep-&gt;mtx, <span class="number">0</span>, nonblock);</span><br><span class="line">            <span class="keyword">if</span> (error)</span><br><span class="line">                <span class="keyword">goto</span> error_tgt_fput;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Try to lookup the file inside our RB tree. Since we grabbed &quot;mtx&quot;</span></span><br><span class="line"><span class="comment">     * above, we can be sure to be able to use the item looked up by</span></span><br><span class="line"><span class="comment">     * ep_find() till we release the mutex.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    epi = ep_find(ep, tf.file, fd);</span><br><span class="line"></span><br><span class="line">    error = -EINVAL;</span><br><span class="line">    <span class="keyword">switch</span> (op) &#123;</span><br><span class="line">    <span class="keyword">case</span> EPOLL_CTL_ADD:</span><br><span class="line">        <span class="keyword">if</span> (!epi) &#123;</span><br><span class="line">            epds-&gt;events |= EPOLLERR | EPOLLHUP;</span><br><span class="line">            error = ep_insert(ep, epds, tf.file, fd, full_check);</span><br><span class="line">        &#125; <span class="keyword">else</span></span><br><span class="line">            error = -EEXIST;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> EPOLL_CTL_DEL:</span><br><span class="line">        <span class="keyword">if</span> (epi)</span><br><span class="line">            error = ep_remove(ep, epi);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            error = -ENOENT;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> EPOLL_CTL_MOD:</span><br><span class="line">        <span class="keyword">if</span> (epi) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!(epi-&gt;event.events &amp; EPOLLEXCLUSIVE)) &#123;</span><br><span class="line">                epds-&gt;events |= EPOLLERR | EPOLLHUP;</span><br><span class="line">                error = ep_modify(ep, epi, epds);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span></span><br><span class="line">            error = -ENOENT;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    mutex_unlock(&amp;ep-&gt;mtx);</span><br><span class="line"></span><br><span class="line">error_tgt_fput:</span><br><span class="line">    <span class="keyword">if</span> (full_check) &#123;</span><br><span class="line">        clear_tfile_check_list();</span><br><span class="line">        loop_check_gen++;</span><br><span class="line">        mutex_unlock(&amp;epmutex);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fdput(tf);</span><br><span class="line">error_fput:</span><br><span class="line">    fdput(f);</span><br><span class="line">error_return:</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> error;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们知道 epoll_ctl 是用于注册&#x2F;修改&#x2F;注销多路等待的 fd，这个代码就比 epoll_create 复杂多了：</p>
+<ol>
+<li><p>解析 epfd 和参数中的 fd，拿到 epfd 对应的 eventpoll 结构体，拿到 fd 对应的 struct file。</p>
+</li>
+<li><p>根据 operation (EPOLL_CTL_ADD &#x2F; EPOLL_CTL_MOD &#x2F; EPOLL_CTL_DEL) 做一些参数预检。如果 flags 中有 EPOLLEXCLUSIVE，epoll fd 不能被添加到另一个 epoll 队列，不支持嵌套。</p>
+</li>
+<li><p>获取 epoll 结构体中的锁（自旋）</p>
+</li>
+<li><p>在 EPOLL_CTL_ADD 时做一下循环检查，因为如果没有 EPOLLEXCLUSIVE flag，嵌套 epoll fd 到 epoll 中就是被允许的，这种情况下需要做循环检查避免 A -&gt; B -&gt; A 这种情况把内核卡死。</p>
+</li>
+<li><p>从 epoll 结构体内部的红黑树结构找到 fd 对应的 node</p>
+<ol>
+<li>对于 ADD，如果能找到，直接返回 EEXIST，反之则将 fd 插入红黑树。<code>ep_insert</code> 中除了将节点加入红黑树，还调用了 vfs 的 poll 接口 （file-&gt;f_op-&gt;poll），用于将 callback 注册到文件对应的设备上（驱动侧回调）。并且 poll 接口还会立刻返回当前设备的状态（有没有数据可读），如果处于 ready 状态，则会立刻 wakeup。<ol>
+<li>对于 DEL，能找到就直接将其从红黑树中删除，否则返回 ENOENT。并且会注销 vfs 的 wait queue。</li>
+<li>对于 MOD，能找到才修改，没找到就不修改</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>释放锁</p>
+</li>
+</ol>
+<h2 id="epoll-wait"><a href="#epoll-wait" class="headerlink" title="epoll_wait"></a>epoll_wait</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Implement the event wait interface for the eventpoll file. It is the kernel</span></span><br><span class="line"><span class="comment"> * part of the user space epoll_wait(2).</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">static <span class="type">int</span> do_epoll_wait(<span class="type">int</span> epfd, <span class="keyword">struct</span> epoll_event __user *events,</span><br><span class="line">             <span class="type">int</span> maxevents, <span class="keyword">struct</span> timespec64 *to)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> <span class="type">error</span>;</span><br><span class="line">    <span class="keyword">struct</span> fd f;</span><br><span class="line">    <span class="keyword">struct</span> eventpoll *ep;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* The maximum number of event must be greater than zero */</span></span><br><span class="line">    <span class="keyword">if</span> (maxevents &lt;= <span class="number">0</span> || maxevents &gt; EP_MAX_EVENTS)</span><br><span class="line">        <span class="keyword">return</span> -EINVAL;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Verify that the area passed by the user is writeable */</span></span><br><span class="line">    <span class="keyword">if</span> (!access_ok(events, maxevents * sizeof(<span class="keyword">struct</span> epoll_event)))</span><br><span class="line">        <span class="keyword">return</span> -EFAULT;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Get the &quot;struct file *&quot; for the eventpoll file */</span></span><br><span class="line">    f = fdget(epfd);</span><br><span class="line">    <span class="keyword">if</span> (!f.file)</span><br><span class="line">        <span class="keyword">return</span> -EBADF;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * We have to check that the file structure underneath the fd</span></span><br><span class="line"><span class="comment">     * the user passed to us _is_ an eventpoll file.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="type">error</span> = -EINVAL;</span><br><span class="line">    <span class="keyword">if</span> (!is_file_epoll(f.file))</span><br><span class="line">        <span class="keyword">goto</span> error_fput;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * At this point it is safe to assume that the &quot;private_data&quot; contains</span></span><br><span class="line"><span class="comment">     * our own data structure.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    ep = f.file-&gt;private_data;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Time to fish for events ... */</span></span><br><span class="line">    <span class="type">error</span> = ep_poll(ep, events, maxevents, to);</span><br><span class="line"></span><br><span class="line">error_fput:</span><br><span class="line">    fdput(f);</span><br><span class="line">    <span class="keyword">return</span> <span class="type">error</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>epoll_wait 经常用来在一条线程上同时 wait 很多个 fd，有点 Promise.race 那个意思：</p>
+<ol>
+<li><p>首先对参数做一些预检</p>
+</li>
+<li><p>主要的逻辑都在 ep_poll 中：</p>
+</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * ep_poll - Retrieves ready events, and delivers them to the caller-supplied</span></span><br><span class="line"><span class="comment"> *           event buffer.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @ep: Pointer to the eventpoll context.</span></span><br><span class="line"><span class="comment"> * @events: Pointer to the userspace buffer where the ready events should be</span></span><br><span class="line"><span class="comment"> *          stored.</span></span><br><span class="line"><span class="comment"> * @maxevents: Size (in terms of number of events) of the caller event buffer.</span></span><br><span class="line"><span class="comment"> * @timeout: Maximum timeout for the ready events fetch operation, in</span></span><br><span class="line"><span class="comment"> *           timespec. If the timeout is zero, the function will not block,</span></span><br><span class="line"><span class="comment"> *           while if the @timeout ptr is NULL, the function will block</span></span><br><span class="line"><span class="comment"> *           until at least one event has been retrieved (or an error</span></span><br><span class="line"><span class="comment"> *           occurred).</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Return: the number of ready events which have been fetched, or an</span></span><br><span class="line"><span class="comment"> *          error code, in case of error.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="type">static</span> <span class="type">int</span> <span class="title">ep_poll</span><span class="params">(<span class="keyword">struct</span> eventpoll *ep, <span class="keyword">struct</span> epoll_event __user *events,</span></span></span><br><span class="line"><span class="params"><span class="function">           <span class="type">int</span> maxevents, <span class="keyword">struct</span> timespec64 *timeout)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> res, eavail, timed_out = <span class="number">0</span>;</span><br><span class="line">    u64 slack = <span class="number">0</span>;</span><br><span class="line">    <span class="type">wait_queue_entry_t</span> wait;</span><br><span class="line">    <span class="type">ktime_t</span> expires, *to = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">lockdep_assert_irqs_enabled</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (timeout &amp;&amp; (timeout-&gt;tv_sec | timeout-&gt;tv_nsec)) &#123;</span><br><span class="line">        slack = <span class="built_in">select_estimate_accuracy</span>(timeout);</span><br><span class="line">        to = &amp;expires;</span><br><span class="line">        *to = <span class="built_in">timespec64_to_ktime</span>(*timeout);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (timeout) &#123;</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * Avoid the unnecessary trip to the wait queue loop, if the</span></span><br><span class="line"><span class="comment">         * caller specified a non blocking operation.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        timed_out = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * This call is racy: We may or may not see events that are being added</span></span><br><span class="line"><span class="comment">     * to the ready list under the lock (e.g., in IRQ callbacks). For cases</span></span><br><span class="line"><span class="comment">     * with a non-zero timeout, this thread will check the ready list under</span></span><br><span class="line"><span class="comment">     * lock and will add to the wait queue.  For cases with a zero</span></span><br><span class="line"><span class="comment">     * timeout, the user by definition should not care and will have to</span></span><br><span class="line"><span class="comment">     * recheck again.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    eavail = <span class="built_in">ep_events_available</span>(ep);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (eavail) &#123;</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * Try to transfer events to user space. In case we get</span></span><br><span class="line"><span class="comment">             * 0 events and there&#x27;s still timeout left over, we go</span></span><br><span class="line"><span class="comment">             * trying again in search of more luck.</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            res = <span class="built_in">ep_send_events</span>(ep, events, maxevents);</span><br><span class="line">            <span class="keyword">if</span> (res)</span><br><span class="line">                <span class="keyword">return</span> res;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (timed_out)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        eavail = <span class="built_in">ep_busy_loop</span>(ep, timed_out);</span><br><span class="line">        <span class="keyword">if</span> (eavail)</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">signal_pending</span>(current))</span><br><span class="line">            <span class="keyword">return</span> -EINTR;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * Internally init_wait() uses autoremove_wake_function(),</span></span><br><span class="line"><span class="comment">         * thus wait entry is removed from the wait queue on each</span></span><br><span class="line"><span class="comment">         * wakeup. Why it is important? In case of several waiters</span></span><br><span class="line"><span class="comment">         * each new wakeup will hit the next waiter, giving it the</span></span><br><span class="line"><span class="comment">         * chance to harvest new event. Otherwise wakeup can be</span></span><br><span class="line"><span class="comment">         * lost. This is also good performance-wise, because on</span></span><br><span class="line"><span class="comment">         * normal wakeup path no need to call __remove_wait_queue()</span></span><br><span class="line"><span class="comment">         * explicitly, thus ep-&gt;lock is not taken, which halts the</span></span><br><span class="line"><span class="comment">         * event delivery.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="built_in">init_wait</span>(&amp;wait);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">write_lock_irq</span>(&amp;ep-&gt;lock);</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * Barrierless variant, waitqueue_active() is called under</span></span><br><span class="line"><span class="comment">         * the same lock on wakeup ep_poll_callback() side, so it</span></span><br><span class="line"><span class="comment">         * is safe to avoid an explicit barrier.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        __set_current_state(TASK_INTERRUPTIBLE);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * Do the final check under the lock. ep_scan_ready_list()</span></span><br><span class="line"><span class="comment">         * plays with two lists (-&gt;rdllist and -&gt;ovflist) and there</span></span><br><span class="line"><span class="comment">         * is always a race when both lists are empty for short</span></span><br><span class="line"><span class="comment">         * period of time although events are pending, so lock is</span></span><br><span class="line"><span class="comment">         * important.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        eavail = <span class="built_in">ep_events_available</span>(ep);</span><br><span class="line">        <span class="keyword">if</span> (!eavail)</span><br><span class="line">            __add_wait_queue_exclusive(&amp;ep-&gt;wq, &amp;wait);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">write_unlock_irq</span>(&amp;ep-&gt;lock);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!eavail)</span><br><span class="line">            timed_out = !<span class="built_in">schedule_hrtimeout_range</span>(to, slack,</span><br><span class="line">                                  HRTIMER_MODE_ABS);</span><br><span class="line">        __set_current_state(TASK_RUNNING);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * We were woken up, thus go and try to harvest some events.</span></span><br><span class="line"><span class="comment">         * If timed out and still on the wait queue, recheck eavail</span></span><br><span class="line"><span class="comment">         * carefully under lock, below.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        eavail = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">list_empty_careful</span>(&amp;wait.entry)) &#123;</span><br><span class="line">            <span class="built_in">write_lock_irq</span>(&amp;ep-&gt;lock);</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * If the thread timed out and is not on the wait queue,</span></span><br><span class="line"><span class="comment">             * it means that the thread was woken up after its</span></span><br><span class="line"><span class="comment">             * timeout expired before it could reacquire the lock.</span></span><br><span class="line"><span class="comment">             * Thus, when wait.entry is empty, it needs to harvest</span></span><br><span class="line"><span class="comment">             * events.</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="keyword">if</span> (timed_out)</span><br><span class="line">                eavail = <span class="built_in">list_empty</span>(&amp;wait.entry);</span><br><span class="line">            __remove_wait_queue(&amp;ep-&gt;wq, &amp;wait);</span><br><span class="line">            <span class="built_in">write_unlock_irq</span>(&amp;ep-&gt;lock);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>首先检查是否有事件到达，如果有事件到达则将事件发送到用户态，然后返回</p>
+</li>
+<li><p>如果 timeout 时间已经到了则后续直接返回</p>
+</li>
+<li><p>如果内核打开了忙轮询（busy loop），则一直轮询直到事件到达</p>
+</li>
+<li><p>将线程状态设置为 INTERRUPTIBLE（可中断休眠），准备休眠</p>
+</li>
+<li><p>Double check 此时是否有事件到达，如果没有则将 wait 放入 epoll 的 wait queue</p>
+</li>
+<li><p>如果之前没有事件到达则通过 schedule_hrtimeout_range 进入超时等待，在中间也可能被 epoll 事件到达主动 wake up</p>
+</li>
+<li><p>如果有事件到达或超时则正常返回</p>
+</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>所以其实 epoll 跟 android 消息机制其实实现上也是挺像的，<del><em>虽然消息机制也是靠 epoll 来等待的</em></del> </p>
+<p>不过 epoll 提供了一种在内核层面暂停进程超时等待的机制，也可以通过写 fd 手动 wake up，挺方便的，并且重中之重在于其可以在一条线程上多路复用多个 fd，而且实际上也不占用 cpu 资源，全靠硬件驱动侧来通知，妙哉！</p>
+<p>这样看内核源码其实也不复杂，甚至可以说相比于业务代码的屎山非常的精炼好读。</p>
+<blockquote>
+<p>也许很多伟大的事物其实并不像我们想象中的那么复杂和困难，无知者之所以无知只是因为缺乏勇气去打破那层轻薄的障壁。</p>
+</blockquote>
+
+  </div>
   
-    <div class='meta-v3' line_style='solid'>
-      <div>
-        
-        <time itemprop="dateCreated datePublished" datetime="2023-10-20T11:21:16+00:00">2023-10-20</time>
-        
-          <span class="dot"></span>
-          <a class="category-link" href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a>
-          
-            <span hidden itemprop="about" itemscope itemtype="https://schema.org.cn/Thing">
-              <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url"><span itemprop="name">笔记</span></a>
-            </span>
-          
-        
-      </div>
+  
+    
+    <div class='footer'>
+       <!-- 参考资料、相关资料等 -->
       
-        <div>
-          <a class='readmore' href='/2023/10/20/Ro5td2HZloi6YzxPcKrc9aHbn9d/' itemprop="url">
-            阅读全文
-          </a>
-        </div>
+       <!-- 相关文章 -->
+      
+      <!-- 版权声明组件 -->
+      
+      <!-- 打赏组件 -->
       
     </div>
   
+  
+    
 
+
+  <div class='article-meta' id="bottom">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateModified" datetime="2025-11-30T21:30:41+00:00">
+  <a class='notlink'>
+    <i class="fa-solid fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：2025年11月30日</p>
+  </a>
 </div>
 
-          </div>
         
       
-    
-  </section>
+        
+          
   
-    
+  
+  
+  <div class="new-meta-item meta-tags"><a class="tag" href="/tags/linux/" rel="nofollow"><i class="fa-solid fa-hashtag fa-fw" aria-hidden="true"></i><p>linux</p></a></div> <div class="new-meta-item meta-tags"><a class="tag" href="/tags/RTFSC/" rel="nofollow"><i class="fa-solid fa-hashtag fa-fw" aria-hidden="true"></i><p>RTFSC</p></a></div>
+  <span hidden itemprop="keywords">linux RTFSC</span>
   
 
 
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
     
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://blog.coldrain.ink/2025/11/30/Y8zQdAX1Poif9Xxib1JcmQBEn0f/&title=Linux epoll 实现原理  - Hiyasame&summary="
+          
+          >
+          
+            <img src="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qq.png" class="lazyload" data-srcset="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qq.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://blog.coldrain.ink/2025/11/30/Y8zQdAX1Poif9Xxib1JcmQBEn0f/&title=Linux epoll 实现原理  - Hiyasame&summary="
+          
+          >
+          
+            <img src="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qzone.png" class="lazyload" data-srcset="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qzone.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://service.weibo.com/share/share.php?url=http://blog.coldrain.ink/2025/11/30/Y8zQdAX1Poif9Xxib1JcmQBEn0f/&title=Linux epoll 实现原理  - Hiyasame&summary="
+          
+          >
+          
+            <img src="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/weibo.png" class="lazyload" data-srcset="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/weibo.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+          
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+    <!-- Custom Files bottomMeta begin -->
+    
+    <!-- Custom Files bottomMeta end -->
+  </div>
+
+
   
+  
+
+  
+    <div class="prev-next">
+      
+      
+        <a class='next' href='/2025/10/07/OFYJdNvLooCD5yxwDdrcl9gxnyc/'>
+          <p class='title'>霓虹之旅<i class="fa-solid fa-chevron-right" aria-hidden="true"></i></p>
+          <p class='content'>这是我第一次自己规划的出国旅行，在出发的前一周每天下班第一件事就是跟朋友拉飞书会议制定攻略，最后的结果总体来说是比较满意的。这次玩下来对日本的最大的印象就是街上遇到的女生都很会打扮，颜值都比较高...</p>
+        </a>
+      
+    </div>
+  
+  <!-- 文章推荐 -->
+  
+  
+  <!-- Custom Files postEnd begin-->
+  
+  <!-- Custom Files postEnd end-->
+</article>
+
+
+  
+
+
+  <article class="post white-box shadow floatable blur" id="comments">
+    <span hidden>
+      <meta itemprop="discussionUrl" content="/2025/11/30/Y8zQdAX1Poif9Xxib1JcmQBEn0f/index.html#comments">
+    </span>
+    <p ct><i class='fa-solid fa-comments'></i> 评论</p>
+    
+
+    <div id="layoutHelper-comments"></div>
+
+  </article>
+
+
+
+
+
+
 </div>
 <aside id='l_side' itemscope itemtype="https://schema.org.cn/WPSideBar">
   
@@ -2426,124 +2625,31 @@ https://pdos.csail.mit.edu/6.828/2020/readings/appel-l...
     
     
       
-<section class="widget blur floatable shadow blogger desktop mobile ">
-  <div class='content'>
     
-      
-        <a class='avatar flat-box circle' href='/about/'>
-          <img no-lazy src='/img/avatar.jpg'/>
-        </a>
-      
-    
-    <div class="site-author-box">
-      <p class="site-author-name" itemprop="name">寒雨</p>
-      <p class="site-author-description" itemprop="description">做难而有趣的事情</p>
-    </div>
-    <!-- 
-      <div class='text'>
-        
-        
-          <p>做难而有趣的事情</p>
-
-        
-        
-      </div>
-     -->
-    
-      <div class="social-wrapper">
-        
-          
-            <a href="/atom.xml"
-              class="social fa-solid fa-rss flat-btn"
-              target="_blank"
-              rel="external nofollow noopener noreferrer">
-              
-            </a>
-          
-        
-          
-            <a href="mailto:coldrain608@gmail.com"
-              class="social fa-solid fa-envelope flat-btn"
-              target="_blank"
-              rel="external nofollow noopener noreferrer">
-              
-            </a>
-          
-        
-          
-            <a href="https://github.com/hiyasame"
-              class="social fab fa-github flat-btn"
-              target="_blank"
-              rel="external nofollow noopener noreferrer">
-              
-            </a>
-          
-        
-      </div>
-    
-  </div>
-</section>
-
-    
-  
-
-  
-    
-    
-      
-  
-  <section class="widget category ">
-    
-  <header>
-    
-      <a href='/blog/categories/'><i class="fa-solid fa-folder-open fa-fw" aria-hidden="true"></i><span class='name'>文章分类</span></a>
-    
-  </header>
-
-
-    <div class='content'>
-      <ul class="entry navigation">
-        
-          <li><a class="flat-box"
-            title="/categories/%E7%AC%94%E8%AE%B0/" href="/categories/%E7%AC%94%E8%AE%B0/"
-            active-action="action-categoriesE7AC94E8AEB0"
-            ><div class='name'>笔记</div><div class='badge'>(3)</div></a></li>
-        
-      </ul>
-    </div>
-  </section>
-
-
-    
-  
-
-  
-    
-    
-      
-  
-  <section class="widget tagcloud desktop mobile">
-    
-  <header>
-    
-      <a href='/blog/tags/'><i class="fa-solid fa-tags fa-fw" aria-hidden="true"></i><span class='name'>热门标签</span></a>
-    
-  </header>
-
-
-    <div class='content'>
-      <a href="/tags/ART/" style="font-size: 14px; color: #999">ART</a> <a href="/tags/File-System/" style="font-size: 14px; color: #999">File System</a> <a href="/tags/MIT6-s081/" style="font-size: 16.5px; color: #888">MIT6.s081</a> <a href="/tags/RTFSC/" style="font-size: 14px; color: #999">RTFSC</a> <a href="/tags/android/" style="font-size: 19px; color: #777">android</a> <a href="/tags/fp/" style="font-size: 14px; color: #999">fp</a> <a href="/tags/jyy/" style="font-size: 14px; color: #999">jyy</a> <a href="/tags/lab/" style="font-size: 14px; color: #999">lab</a> <a href="/tags/lambda-calculus/" style="font-size: 14px; color: #999">lambda calculus</a> <a href="/tags/libc/" style="font-size: 14px; color: #999">libc</a> <a href="/tags/linux/" style="font-size: 16.5px; color: #888">linux</a> <a href="/tags/lisp/" style="font-size: 14px; color: #999">lisp</a> <a href="/tags/os/" style="font-size: 14px; color: #999">os</a> <a href="/tags/xv6/" style="font-size: 21.5px; color: #666">xv6</a> <a href="/tags/%E5%85%AB%E8%82%A1/" style="font-size: 16.5px; color: #888">八股</a> <a href="/tags/%E5%85%AC%E5%BC%80%E8%AF%BE/" style="font-size: 16.5px; color: #888">公开课</a> <a href="/tags/%E5%88%86%E4%BA%AB/" style="font-size: 14px; color: #999">分享</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size: 24px; color: #555">分布式系统</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 14px; color: #999">区块链</a> <a href="/tags/%E5%91%A8%E6%8A%A5/" style="font-size: 14px; color: #999">周报</a> <a href="/tags/%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/" style="font-size: 16.5px; color: #888">年度总结</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 14px; color: #999">并发</a> <a href="/tags/%E6%80%BB%E7%BB%93/" style="font-size: 16.5px; color: #888">总结</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 14px; color: #999">操作系统</a> <a href="/tags/%E6%97%85%E8%A1%8C/" style="font-size: 14px; color: #999">旅行</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 14px; color: #999">机器学习</a> <a href="/tags/%E7%BC%96%E8%AF%91/" style="font-size: 14px; color: #999">编译</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98/" style="font-size: 14px; color: #999">虚拟内存</a> <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" style="font-size: 21.5px; color: #666">论文阅读</a> <a href="/tags/%E9%80%86%E5%90%91/" style="font-size: 14px; color: #999">逆向</a> <a href="/tags/%E9%97%B2%E8%81%8A/" style="font-size: 14px; color: #999">闲聊</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 19px; color: #777">随笔</a>
-    </div>
-  </section>
-
-
-    
-  
-
   
 
 
 <div class="widget-sticky">
+
+  
+  
+
+
+<section class="widget toc-wrapper desktop mobile" id="toc-div" >
+  
+  <header>
+    
+      <i class="fa-solid fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+  <div class='content'>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#epoll-create"><span class="toc-text">epoll_create</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#epoll-ctl"><span class="toc-text">epoll_ctl</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#epoll-wait"><span class="toc-text">epoll_wait</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
+  </div>
+</section>
+
+  
 
 </div>
 
@@ -2551,6 +2657,7 @@ https://pdos.csail.mit.edu/6.828/2020/readings/appel-l...
   
   <!-- Custom Files side end -->
 </aside>
+
 
 
         </div>
@@ -3038,7 +3145,7 @@ https://pdos.csail.mit.edu/6.828/2020/readings/appel-l...
 </script>
 
 
-  <script type="application/ld+json">[{"@context":"https://schema.org.cn","@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},{"@context":"https://schema.org.cn","@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","sameAs":["https://github.com/volantis-x"],"description":"道阻且长，行则将至"},{"@context":"https://schema.org.cn","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"http://blog.coldrain.ink/","name":"Hiyasame"}},{"@type":"ListItem","position":2,"item":{"@id":"http://blog.coldrain.ink/tags/操作系统/","name":"操作系统"}}]},{"@context":"https://schema.org.cn","@type":"WebSite","name":"Hiyasame","url":"http://blog.coldrain.ink/","keywords":null,"description":"道阻且长，行则将至","author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","description":"道阻且长，行则将至"},"publisher":{"@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"potentialAction":{"@type":"SearchAction","name":"Site Search","target":{"@type":"EntryPoint","urlTemplate":"http://blog.coldrain.ink?s={search_term_string}"},"query-input":"required name=search_term_string"}},{"@context":"https://schema.org.cn","@type":"BlogPosting","description":"道阻且长，行则将至","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage"},"author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/"},"publisher":{"@type":"Organization","name":"Hiyasame","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"wordCount":0,"image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}}]</script>
+  <script type="application/ld+json">[{"@context":"https://schema.org.cn","@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},{"@context":"https://schema.org.cn","@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","sameAs":["https://github.com/volantis-x"],"description":"道阻且长，行则将至"},{"@context":"https://schema.org.cn","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"http://blog.coldrain.ink/","name":"Hiyasame"}},{"@type":"ListItem","position":3,"item":{"@id":"http://blog.coldrain.ink/2025/11/30/Y8zQdAX1Poif9Xxib1JcmQBEn0f/","name":"Linux epoll 实现原理 "}}]},{"@context":"https://schema.org.cn","@type":"WebSite","name":"Hiyasame","url":"http://blog.coldrain.ink/","keywords":null,"description":"道阻且长，行则将至","author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","description":"道阻且长，行则将至"},"publisher":{"@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"potentialAction":{"@type":"SearchAction","name":"Site Search","target":{"@type":"EntryPoint","urlTemplate":"http://blog.coldrain.ink?s={search_term_string}"},"query-input":"required name=search_term_string"}},{"@context":"https://schema.org.cn","@type":"BlogPosting","headline":"Linux epoll 实现原理 ","description":"道阻且长，行则将至","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http://blog.coldrain.ink/2025/11/30/Y8zQdAX1Poif9Xxib1JcmQBEn0f/"},"author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/"},"publisher":{"@type":"Organization","name":"Hiyasame","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"url":"http://blog.coldrain.ink/2025/11/30/Y8zQdAX1Poif9Xxib1JcmQBEn0f/","wordCount":0,"datePublished":"2025-11-30T21:28:21.000Z","dateModified":"2025-11-30T21:30:41.000Z","keywords":"linux,RTFSC","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}}]</script>
 
 
 
