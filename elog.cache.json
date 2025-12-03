@@ -462,6 +462,25 @@
       "realName": "Linux epoll 实现原理 ",
       "relativePath": "/Linux epoll 实现原理 .md",
       "docPath": "./source/_posts"
+    },
+    {
+      "id": "JGovdEiMao12nKx50rlclssinGb",
+      "doc_id": "JGovdEiMao12nKx50rlclssinGb",
+      "updated": 1764723686000,
+      "properties": {
+        "title": "C++ stack unwinding",
+        "urlname": "JGovdEiMao12nKx50rlclssinGb",
+        "date": "2025-12-03 09:00:54",
+        "updated": "2025-12-03 09:01:26",
+        "tags": [
+          "RTFSC",
+          "C++"
+        ]
+      },
+      "catalog": [],
+      "realName": "C++ stack unwinding",
+      "relativePath": "/C++ stack unwinding.md",
+      "docPath": "./source/_posts"
     }
   ],
   "catalog": [
@@ -751,6 +770,18 @@
       "catalog": [],
       "has_child": false,
       "node_token": "YuQCwHiSqishLwk1bSPcZY37nDc",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "JGovdEiMao12nKx50rlclssinGb",
+      "id": "JGovdEiMao12nKx50rlclssinGb",
+      "title": "C++ stack unwinding",
+      "createdAt": 1764723654000,
+      "updated": 1764723686000,
+      "updatedAt": 1764723686000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "OyFCwbcAQiygQZkJGd1cdcFennd",
       "parent_node_token": ""
     }
   ]
