@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <!-- SEO相关 -->
   <meta name="robots" content="noindex,follow">
-  <link rel="canonical" href="http://blog.coldrain.ink/archives/2024/"/>
+  <link rel="canonical" href="http://blog.coldrain.ink/archives/2025/12/"/>
   <!-- 渲染优化 -->
     <meta http-equiv='x-dns-prefetch-control' content='on' />
       <link rel='dns-prefetch' href='https://unpkg.com'>
@@ -34,13 +34,13 @@
   <!-- feed -->
       <link rel="alternate" href="/atom.xml" title="Hiyasame" type="application/atom+xml">
   <!-- 页面元数据 -->
-  <title>归档：2024 - Hiyasame</title>
+  <title>归档：2025/12 - Hiyasame</title>
   <meta name="keywords" content="null">
   <meta desc name="description" content="道阻且长，行则将至 - 寒雨 - Hiyasame">
   
 <meta property="og:type" content="website">
 <meta property="og:title" content="Hiyasame">
-<meta property="og:url" content="http://blog.coldrain.ink/archives/2024/index.html">
+<meta property="og:url" content="http://blog.coldrain.ink/archives/2025/12/index.html">
 <meta property="og:site_name" content="Hiyasame">
 <meta property="og:description" content="道阻且长，行则将至">
 <meta property="og:locale" content="zh_CN">
@@ -2333,14 +2333,6 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
         
           
         
-          
-        
-          
-        
-          
-        
-          
-        
       
     
     
@@ -2348,7 +2340,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
         
           <div class='post-wrapper'>
             <div class="post post-v3 white-box reveal shadow floatable blur"  itemscope itemtype="https://schema.org.cn/Article" >
-  <link itemprop="mainEntityOfPage" href="http://blog.coldrain.ink/2024/12/30/IF30dVgHWovrwgx6d6TcNM2DnSg/">
+  <link itemprop="mainEntityOfPage" href="http://blog.coldrain.ink/2025/12/03/JGovdEiMao12nKx50rlclssinGb/">
   <span hidden itemprop="publisher" itemscope itemtype="https://schema.org.cn/Organization">
     <meta itemprop="name" content="Hiyasame">
   </span>
@@ -2366,15 +2358,18 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   
     
     <h2 class="article-title"  itemprop="name headline">
-      <a href="/2024/12/30/IF30dVgHWovrwgx6d6TcNM2DnSg/"  itemprop="url">
-        区块链中的共识算法概述
+      <a href="/2025/12/03/JGovdEiMao12nKx50rlclssinGb/"  itemprop="url">
+        C++ stack unwinding
       </a>
     </h2>
   
   <div class='md article-desc' itemprop="articleBody">
     
       
-        Abstract共识算法是区块链技术的核心，能够让分布式网络中的节点在去中心化的环境下对共享账本的状态达成一致。它们确保了交易在复杂网络条件下的完整性和一致性，即便面对恶意行为也能维持系统的正常运行。本文概述了几种主流的共识算法，包括比特币（BTC）使用的工作量证明（PoW）、以太坊（ETH）2.0 采用的权益证明（PoS）、以及在分布式系统中具有重要地位的拜占庭容错（BFT）和崩溃容错（C...
+        其实在此之前我就大概知道，stack unwinding 是反向回溯栈的一种机制，在 throw 了什么东西后一层层回溯栈，一层层析构掉这些栈上的 RAII 对象，直到找到 try catch 块后跳转到 catch 块。
+但是问题是这种事情是怎样实现的？多说无益，我们直接从 throw 的源码入手分析。
+首先我们编写一段示例代码:
+12345678910111213141516171819...
       
     
   </div>
@@ -2382,258 +2377,12 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     <div class='meta-v3' line_style='solid'>
       <div>
         
-        <time itemprop="dateCreated datePublished" datetime="2024-12-30T16:15:57+00:00">2024-12-30</time>
+        <time itemprop="dateCreated datePublished" datetime="2025-12-03T09:00:54+00:00">2025-12-03</time>
         
       </div>
       
         <div>
-          <a class='readmore' href='/2024/12/30/IF30dVgHWovrwgx6d6TcNM2DnSg/' itemprop="url">
-            阅读全文
-          </a>
-        </div>
-      
-    </div>
-  
-
-</div>
-
-          </div>
-        
-      
-        
-          <div class='post-wrapper'>
-            <div class="post post-v3 white-box reveal shadow floatable blur"  itemscope itemtype="https://schema.org.cn/Article" >
-  <link itemprop="mainEntityOfPage" href="http://blog.coldrain.ink/2024/09/18/YL0xd3o8NoQWRpxm7aNcKzocn8b/">
-  <span hidden itemprop="publisher" itemscope itemtype="https://schema.org.cn/Organization">
-    <meta itemprop="name" content="Hiyasame">
-  </span>
-  <span hidden itemprop="post" itemscope itemtype="https://schema.org.cn/Post">
-    <meta itemprop="name" content="Hiyasame">
-    <meta itemprop="description" content="道阻且长，行则将至">
-  </span>
-  
-  
-  
-    <span hidden>
-      <meta itemprop="image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
-    </span>
-  
-  
-    
-    <h2 class="article-title"  itemprop="name headline">
-      <a href="/2024/09/18/YL0xd3o8NoQWRpxm7aNcKzocn8b/"  itemprop="url">
-        Y Combinator
-      </a>
-    </h2>
-  
-  <div class='md article-desc' itemprop="articleBody">
-    
-      
-        TL;DR
-
-combinator 函数必须不含自由变量，combinator 之间可以组合
-
-Y combinator 解决了匿名函数不能递归调用自身的问题 （在不能给函数命名的 lambda caculus 中也可以递归了）
-
-
-What is Combinator?
-A combinator is just a lambda expressions with no free varia...
-      
-    
-  </div>
-  
-    <div class='meta-v3' line_style='solid'>
-      <div>
-        
-        <time itemprop="dateCreated datePublished" datetime="2024-09-18T05:34:32+00:00">2024-09-18</time>
-        
-      </div>
-      
-        <div>
-          <a class='readmore' href='/2024/09/18/YL0xd3o8NoQWRpxm7aNcKzocn8b/' itemprop="url">
-            阅读全文
-          </a>
-        </div>
-      
-    </div>
-  
-
-</div>
-
-          </div>
-        
-      
-        
-          <div class='post-wrapper'>
-            <div class="post post-v3 white-box reveal shadow floatable blur"  itemscope itemtype="https://schema.org.cn/Article" >
-  <link itemprop="mainEntityOfPage" href="http://blog.coldrain.ink/2024/05/14/KEXzdAOJSo1UjlxaR0bcc6m5njT/">
-  <span hidden itemprop="publisher" itemscope itemtype="https://schema.org.cn/Organization">
-    <meta itemprop="name" content="Hiyasame">
-  </span>
-  <span hidden itemprop="post" itemscope itemtype="https://schema.org.cn/Post">
-    <meta itemprop="name" content="Hiyasame">
-    <meta itemprop="description" content="道阻且长，行则将至">
-  </span>
-  
-  
-  
-    <span hidden>
-      <meta itemprop="image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
-    </span>
-  
-  
-    
-    <h2 class="article-title"  itemprop="name headline">
-      <a href="/2024/05/14/KEXzdAOJSo1UjlxaR0bcc6m5njT/"  itemprop="url">
-        实现一个 crepl
-      </a>
-    </h2>
-  
-  <div class='md article-desc' itemprop="articleBody">
-    
-      
-        https://jyywiki.cn/OS/2024/labs/M4.md
-今年在追番蒋炎岩老师的 NJU OS 2024spring。因为之前已经做过不少 os lab，所以这次不打算做 os lab，但是发现 jyy 的非 OS lab 设计得都非常有意思，所以决定做一下。
-以前我从来没有思考过 crepl 要怎么实现，没想到利用 gcc 就可以如此容易的实现一个 crepl，以前没怎么...
-      
-    
-  </div>
-  
-    <div class='meta-v3' line_style='solid'>
-      <div>
-        
-        <time itemprop="dateCreated datePublished" datetime="2024-05-14T09:01:24+00:00">2024-05-14</time>
-        
-      </div>
-      
-        <div>
-          <a class='readmore' href='/2024/05/14/KEXzdAOJSo1UjlxaR0bcc6m5njT/' itemprop="url">
-            阅读全文
-          </a>
-        </div>
-      
-    </div>
-  
-
-</div>
-
-          </div>
-        
-      
-        
-          <div class='post-wrapper'>
-            <div class="post post-v3 white-box reveal shadow floatable blur"  itemscope itemtype="https://schema.org.cn/Article" >
-  <link itemprop="mainEntityOfPage" href="http://blog.coldrain.ink/2024/03/03/QJR7dadPhoMef5xUVacc8mVqnGg/">
-  <span hidden itemprop="publisher" itemscope itemtype="https://schema.org.cn/Organization">
-    <meta itemprop="name" content="Hiyasame">
-  </span>
-  <span hidden itemprop="post" itemscope itemtype="https://schema.org.cn/Post">
-    <meta itemprop="name" content="Hiyasame">
-    <meta itemprop="description" content="道阻且长，行则将至">
-  </span>
-  
-  
-  
-    <span hidden>
-      <meta itemprop="image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
-    </span>
-  
-  
-    
-    <h2 class="article-title"  itemprop="name headline">
-      <a href="/2024/03/03/QJR7dadPhoMef5xUVacc8mVqnGg/"  itemprop="url">
-        Linux 并发原语实现
-      </a>
-    </h2>
-  
-  <div class='md article-desc' itemprop="articleBody">
-    
-      
-        起因之前听到群里有人在问条件变量的实现，发现自己对这方面一无所知。
-先复习一下 xv6内核中用到了两种锁，自旋锁和睡眠锁。
-自旋锁先看看实现
-123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354// Acquire the lock.// Loop...
-      
-    
-  </div>
-  
-    <div class='meta-v3' line_style='solid'>
-      <div>
-        
-        <time itemprop="dateCreated datePublished" datetime="2024-03-03T02:49:16+00:00">2024-03-03</time>
-        
-          <span class="dot"></span>
-          <a class="category-link" href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a>
-          
-            <span hidden itemprop="about" itemscope itemtype="https://schema.org.cn/Thing">
-              <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url"><span itemprop="name">笔记</span></a>
-            </span>
-          
-        
-      </div>
-      
-        <div>
-          <a class='readmore' href='/2024/03/03/QJR7dadPhoMef5xUVacc8mVqnGg/' itemprop="url">
-            阅读全文
-          </a>
-        </div>
-      
-    </div>
-  
-
-</div>
-
-          </div>
-        
-      
-        
-          <div class='post-wrapper'>
-            <div class="post post-v3 white-box reveal shadow floatable blur"  itemscope itemtype="https://schema.org.cn/Article" >
-  <link itemprop="mainEntityOfPage" href="http://blog.coldrain.ink/2024/01/18/GcC9d15VKoMKpixcYB5cPntunsf/">
-  <span hidden itemprop="publisher" itemscope itemtype="https://schema.org.cn/Organization">
-    <meta itemprop="name" content="Hiyasame">
-  </span>
-  <span hidden itemprop="post" itemscope itemtype="https://schema.org.cn/Post">
-    <meta itemprop="name" content="Hiyasame">
-    <meta itemprop="description" content="道阻且长，行则将至">
-  </span>
-  
-  
-  
-    <span hidden>
-      <meta itemprop="image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
-    </span>
-  
-  
-    
-    <h2 class="article-title"  itemprop="name headline">
-      <a href="/2024/01/18/GcC9d15VKoMKpixcYB5cPntunsf/"  itemprop="url">
-        博客写作部署分离实践
-      </a>
-    </h2>
-  
-  <div class='md article-desc' itemprop="articleBody">
-    
-      
-        使用了 Elog 一键同步飞书文档上编写的博客文章到 hexo 仓库，以后博文迁移到飞书文档上编写。
-发现这玩意好像也不是很好用，感觉可以自己写一个。不过感觉有点浪费时间，算了。
-
-该博文同步自飞书文档
-
-
-      
-    
-  </div>
-  
-    <div class='meta-v3' line_style='solid'>
-      <div>
-        
-        <time itemprop="dateCreated datePublished" datetime="2024-01-18T08:10:27+00:00">2024-01-18</time>
-        
-      </div>
-      
-        <div>
-          <a class='readmore' href='/2024/01/18/GcC9d15VKoMKpixcYB5cPntunsf/' itemprop="url">
+          <a class='readmore' href='/2025/12/03/JGovdEiMao12nKx50rlclssinGb/' itemprop="url">
             阅读全文
           </a>
         </div>
@@ -3274,7 +3023,7 @@ A combinator is just a lambda expressions with no free varia...
 </script>
 
 
-  <script type="application/ld+json">[{"@context":"https://schema.org.cn","@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},{"@context":"https://schema.org.cn","@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","sameAs":["https://github.com/volantis-x"],"description":"道阻且长，行则将至"},{"@context":"https://schema.org.cn","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"http://blog.coldrain.ink/","name":"Hiyasame"}},{"@type":"ListItem","position":2,"item":{"@id":"http://blog.coldrain.ink/archives/","name":"Archive"}},{"@type":"ListItem","position":3,"item":{"@id":"http://blog.coldrain.ink/archives/2024/","name":"2024年"}}]},{"@context":"https://schema.org.cn","@type":"WebSite","name":"Hiyasame","url":"http://blog.coldrain.ink/","keywords":null,"description":"道阻且长，行则将至","author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","description":"道阻且长，行则将至"},"publisher":{"@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"potentialAction":{"@type":"SearchAction","name":"Site Search","target":{"@type":"EntryPoint","urlTemplate":"http://blog.coldrain.ink?s={search_term_string}"},"query-input":"required name=search_term_string"}},{"@context":"https://schema.org.cn","@type":"BlogPosting","description":"道阻且长，行则将至","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage"},"author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/"},"publisher":{"@type":"Organization","name":"Hiyasame","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"wordCount":0,"image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}}]</script>
+  <script type="application/ld+json">[{"@context":"https://schema.org.cn","@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},{"@context":"https://schema.org.cn","@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","sameAs":["https://github.com/volantis-x"],"description":"道阻且长，行则将至"},{"@context":"https://schema.org.cn","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"http://blog.coldrain.ink/","name":"Hiyasame"}},{"@type":"ListItem","position":2,"item":{"@id":"http://blog.coldrain.ink/archives/","name":"Archive"}},{"@type":"ListItem","position":3,"item":{"@id":"http://blog.coldrain.ink/archives/2025/","name":"2025年"}},{"@type":"ListItem","position":4,"item":{"@id":"http://blog.coldrain.ink/archives/2025/12/","name":"12月"}}]},{"@context":"https://schema.org.cn","@type":"WebSite","name":"Hiyasame","url":"http://blog.coldrain.ink/","keywords":null,"description":"道阻且长，行则将至","author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","description":"道阻且长，行则将至"},"publisher":{"@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"potentialAction":{"@type":"SearchAction","name":"Site Search","target":{"@type":"EntryPoint","urlTemplate":"http://blog.coldrain.ink?s={search_term_string}"},"query-input":"required name=search_term_string"}},{"@context":"https://schema.org.cn","@type":"BlogPosting","description":"道阻且长，行则将至","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage"},"author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/"},"publisher":{"@type":"Organization","name":"Hiyasame","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"wordCount":0,"image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}}]</script>
 
 
 

@@ -1,0 +1,3171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head hexo-theme='https://github.com/volantis-x/hexo-theme-volantis/#6.0.0-alpha.1'>
+  <meta name="generator" content="Hexo 6.3.0">
+  <meta name="Volantis" content="6.0.0-alpha.1">
+  <meta charset="utf-8">
+  <!-- SEO相关 -->
+  
+  <link rel="canonical" href="http://blog.coldrain.ink/2025/12/03/jgovdeimao12nkx50rlclssingb/"/>
+  <!-- 渲染优化 -->
+    <meta http-equiv='x-dns-prefetch-control' content='on' />
+      <link rel='dns-prefetch' href='https://unpkg.com'>
+      <link rel="preconnect" href="https://unpkg.com" crossorigin>
+      <link rel='dns-prefetch' href='https://cdn.bootcdn.net'>
+      <link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Content-Security-Policy" content=" default-src 'self' https:; block-all-mixed-content; base-uri 'self' https:; form-action 'self' https:; worker-src 'self' https:; connect-src 'self' https: *; img-src 'self' data: https: *; media-src 'self' https: *; font-src 'self' data: https: *; frame-src 'self' https: *; manifest-src 'self' https: *; child-src https:; script-src 'self' https: 'unsafe-inline' *; style-src 'self' https: 'unsafe-inline' *; ">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+  <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
+  <meta content="telephone=no" name="format-detection">
+  <!-- import head_begin begin -->
+  <!-- import head_begin end -->
+  <!-- Custom Files headBegin begin-->
+  
+  <!-- Custom Files headBegin end-->
+  <link rel="preload" href="/css/style.css" as="style">
+  <link rel="preload" href="https://unpkg.com/volantis-static@0.0.1660614606622/media/fonts/VarelaRound/VarelaRound-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+<link rel="preload" href="https://unpkg.com/volantis-static@0.0.1660614606622/media/fonts/UbuntuMono/UbuntuMono-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+
+  <!-- feed -->
+      <link rel="alternate" href="/atom.xml" title="Hiyasame" type="application/atom+xml">
+  <!-- 页面元数据 -->
+  <title>C++ stack unwinding - Hiyasame</title>
+  <meta name="keywords" content="RTFSC,C++,null">
+  <meta desc name="description" content="道阻且长，行则将至 - 寒雨 - Hiyasame">
+  
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++ stack unwinding">
+<meta property="og:url" content="http://blog.coldrain.ink/2025/12/03/JGovdEiMao12nKx50rlclssinGb/index.html">
+<meta property="og:site_name" content="Hiyasame">
+<meta property="og:description" content="其实在此之前我就大概知道，stack unwinding 是反向回溯栈的一种机制，在 throw 了什么东西后一层层回溯栈，一层层析构掉这些栈上的 RAII 对象，直到找到 try catch 块后跳转到 catch 块。 但是问题是这种事情是怎样实现的？多说无益，我们直接从 throw 的源码入手分析。 首先我们编写一段示例代码: 12345678910111213141516171819202">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
+<meta property="article:published_time" content="2025-12-03T09:00:54.000Z">
+<meta property="article:modified_time" content="2025-12-03T09:01:26.000Z">
+<meta property="article:author" content="寒雨">
+<meta property="article:tag" content="RTFSC">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
+  <style>
+    /* 首屏样式 */
+    #safearea {
+  display: none;
+}
+:root {
+  --color-site-body: #f4f4f4;
+  --color-site-bg: #f4f4f4;
+  --color-site-inner: #fff;
+  --color-site-footer: #666;
+  --color-card: #fff;
+  --color-text: #444;
+  --color-block: #f6f6f6;
+  --color-inlinecode: #c74f00;
+  --color-codeblock: #fff7ea;
+  --color-h1: #3a3a3a;
+  --color-h2: #3a3a3a;
+  --color-h3: #333;
+  --color-h4: #444;
+  --color-h5: #555;
+  --color-h6: #666;
+  --color-p: #444;
+  --color-list: #666;
+  --color-list-hl: #30ad91;
+  --color-meta: #888;
+  --color-read-bkg: #e0d8c8;
+  --color-read-post: #f8f1e2;
+  --color-copyright-bkg: #f5f5f5;
+  --link-color: #00323c;
+}
+* {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  outline: none;
+  margin: 0;
+  padding: 0;
+}
+*::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+*::-webkit-scrollbar-track-piece {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: #3dd9b6;
+  cursor: pointer;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #ff5722;
+}
+html {
+  color: var(--color-text);
+  width: 100%;
+  height: 100%;
+  font-family: UbuntuMono, "Varela Round", "PingFang SC", "Microsoft YaHei", Helvetica, Arial, Menlo, Monaco, monospace, sans-serif;
+  font-size: 16px;
+}
+html >::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+html >::-webkit-scrollbar-track-piece {
+  background: transparent;
+}
+html >::-webkit-scrollbar-thumb {
+  background: #3dd9b6;
+  cursor: pointer;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+}
+html >::-webkit-scrollbar-thumb:hover {
+  background: #ff5722;
+}
+body {
+  background-color: var(--color-site-body);
+  text-rendering: optimizelegibility;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+body.modal-active {
+  overflow: hidden;
+}
+@media screen and (max-width: 680px) {
+  body.modal-active {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+}
+a {
+  color: #2092ec;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+}
+a:hover {
+  color: #ff5722;
+}
+a:active,
+a:hover {
+  outline: 0;
+}
+ul,
+ol {
+  padding-left: 0;
+}
+ul li,
+ol li {
+  list-style: none;
+}
+header {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+}
+img {
+  border: 0;
+  background: none;
+  max-width: 100%;
+}
+svg:not(:root) {
+  overflow: hidden;
+}
+hr {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  height: 0;
+  border: 0;
+  border-radius: 1px;
+  -webkit-border-radius: 1px;
+  border-bottom: 1px solid rgba(68,68,68,0.1);
+}
+button,
+input {
+  color: inherit;
+  font: inherit;
+  margin: 0;
+}
+button {
+  overflow: visible;
+  text-transform: none;
+  -webkit-appearance: button;
+  cursor: pointer;
+}
+@supports (backdrop-filter: blur(20px)) {
+  .blur {
+    background: rgba(255,255,255,0.9) !important;
+    backdrop-filter: saturate(200%) blur(20px);
+  }
+}
+.shadow {
+  box-shadow: 0 1px 2px 0px rgba(0,0,0,0.1);
+  -webkit-box-shadow: 0 1px 2px 0px rgba(0,0,0,0.1);
+}
+.shadow.floatable {
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+}
+.shadow.floatable:hover {
+  box-shadow: 0 2px 4px 0px rgba(0,0,0,0.1), 0 4px 8px 0px rgba(0,0,0,0.1), 0 8px 16px 0px rgba(0,0,0,0.1);
+  -webkit-box-shadow: 0 2px 4px 0px rgba(0,0,0,0.1), 0 4px 8px 0px rgba(0,0,0,0.1), 0 8px 16px 0px rgba(0,0,0,0.1);
+}
+#l_cover {
+  min-height: 64px;
+}
+.cover-wrapper {
+  top: 0;
+  left: 0;
+  max-width: 100%;
+  height: 100vh;
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  flex-wrap: nowrap;
+  -webkit-flex-wrap: nowrap;
+  -khtml-flex-wrap: nowrap;
+  -moz-flex-wrap: nowrap;
+  -o-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  align-items: center;
+  align-self: center;
+  align-content: center;
+  color: var(--color-site-inner);
+  padding: 0 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: -100px;
+}
+.cover-wrapper .cover-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+}
+.cover-wrapper .cover-bg.lazyload:not(.loaded) {
+  opacity: 0;
+  -webkit-opacity: 0;
+  -moz-opacity: 0;
+}
+.cover-wrapper .cover-bg.lazyload.loaded {
+  animation-delay: 0s;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+  animation-name: fadeIn;
+}
+@-moz-keyframes fadeIn {
+  0% {
+    opacity: 0;
+    -webkit-opacity: 0;
+    -moz-opacity: 0;
+    filter: blur(12px);
+    transform: scale(1.02);
+    -webkit-transform: scale(1.02);
+    -khtml-transform: scale(1.02);
+    -moz-transform: scale(1.02);
+    -o-transform: scale(1.02);
+    -ms-transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+    -webkit-opacity: 0;
+    -moz-opacity: 0;
+    filter: blur(12px);
+    transform: scale(1.02);
+    -webkit-transform: scale(1.02);
+    -khtml-transform: scale(1.02);
+    -moz-transform: scale(1.02);
+    -o-transform: scale(1.02);
+    -ms-transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+@-o-keyframes fadeIn {
+  0% {
+    opacity: 0;
+    -webkit-opacity: 0;
+    -moz-opacity: 0;
+    filter: blur(12px);
+    transform: scale(1.02);
+    -webkit-transform: scale(1.02);
+    -khtml-transform: scale(1.02);
+    -moz-transform: scale(1.02);
+    -o-transform: scale(1.02);
+    -ms-transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    -webkit-opacity: 0;
+    -moz-opacity: 0;
+    filter: blur(12px);
+    transform: scale(1.02);
+    -webkit-transform: scale(1.02);
+    -khtml-transform: scale(1.02);
+    -moz-transform: scale(1.02);
+    -o-transform: scale(1.02);
+    -ms-transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+.cover-wrapper .cover-body {
+  z-index: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.cover-wrapper#full {
+  height: calc(100vh + 100px);
+  padding-bottom: 100px;
+}
+.cover-wrapper#half {
+  max-height: 640px;
+  min-height: 400px;
+  height: calc(36vh - 64px + 200px);
+}
+.cover-wrapper #scroll-down {
+  width: 100%;
+  height: 64px;
+  position: absolute;
+  bottom: 100px;
+  text-align: center;
+  cursor: pointer;
+}
+.cover-wrapper #scroll-down .scroll-down-effects {
+  color: #fff;
+  font-size: 24px;
+  line-height: 64px;
+  position: absolute;
+  width: 24px;
+  left: calc(50% - 12px);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  animation: scroll-down-effect 1.5s infinite;
+  -webkit-animation: scroll-down-effect 1.5s infinite;
+  -khtml-animation: scroll-down-effect 1.5s infinite;
+  -moz-animation: scroll-down-effect 1.5s infinite;
+  -o-animation: scroll-down-effect 1.5s infinite;
+  -ms-animation: scroll-down-effect 1.5s infinite;
+}
+@-moz-keyframes scroll-down-effect {
+  0% {
+    top: 0;
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+  50% {
+    top: -16px;
+    opacity: 0.4;
+    -webkit-opacity: 0.4;
+    -moz-opacity: 0.4;
+  }
+  100% {
+    top: 0;
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+@-webkit-keyframes scroll-down-effect {
+  0% {
+    top: 0;
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+  50% {
+    top: -16px;
+    opacity: 0.4;
+    -webkit-opacity: 0.4;
+    -moz-opacity: 0.4;
+  }
+  100% {
+    top: 0;
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+@-o-keyframes scroll-down-effect {
+  0% {
+    top: 0;
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+  50% {
+    top: -16px;
+    opacity: 0.4;
+    -webkit-opacity: 0.4;
+    -moz-opacity: 0.4;
+  }
+  100% {
+    top: 0;
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+@keyframes scroll-down-effect {
+  0% {
+    top: 0;
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+  50% {
+    top: -16px;
+    opacity: 0.4;
+    -webkit-opacity: 0.4;
+    -moz-opacity: 0.4;
+  }
+  100% {
+    top: 0;
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+.cover-wrapper .cover-body {
+  margin-top: 64px;
+  margin-bottom: 100px;
+}
+.cover-wrapper .cover-body,
+.cover-wrapper .cover-body .top,
+.cover-wrapper .cover-body .bottom {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  -webkit-justify-content: center;
+  -khtml-justify-content: center;
+  -moz-justify-content: center;
+  -o-justify-content: center;
+  -ms-justify-content: center;
+  max-width: 100%;
+}
+.cover-wrapper .cover-body .bottom {
+  margin-top: 32px;
+}
+.cover-wrapper .cover-body .title {
+  font-family: "Varela Round", "PingFang SC", "Microsoft YaHei", Helvetica, Arial, Helvetica, monospace;
+  font-size: 3.125rem;
+  line-height: 1.2;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+.cover-wrapper .cover-body .subtitle {
+  font-size: 20px;
+}
+.cover-wrapper .cover-body .logo {
+  max-height: 120px;
+  max-width: calc(100% - 4 * 16px);
+}
+@media screen and (min-height: 1024px) {
+  .cover-wrapper .cover-body .title {
+    font-size: 3rem;
+  }
+  .cover-wrapper .cover-body .subtitle {
+    font-size: 1.05rem;
+  }
+  .cover-wrapper .cover-body .logo {
+    max-height: 150px;
+  }
+}
+.cover-wrapper .cover-body .m_search {
+  position: relative;
+  max-width: calc(100% - 16px);
+  width: 320px;
+  vertical-align: middle;
+}
+.cover-wrapper .cover-body .m_search .form {
+  position: relative;
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+  width: 100%;
+}
+.cover-wrapper .cover-body .m_search .icon,
+.cover-wrapper .cover-body .m_search .input {
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+}
+.cover-wrapper .cover-body .m_search .icon {
+  position: absolute;
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+  line-height: 2.5rem;
+  width: 32px;
+  top: 0;
+  left: 5px;
+  color: rgba(68,68,68,0.75);
+}
+.cover-wrapper .cover-body .m_search .input {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+  height: 2.5rem;
+  width: 100%;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  font-size: 0.875rem;
+  -webkit-appearance: none;
+  padding-left: 36px;
+  border-radius: 1.4rem;
+  -webkit-border-radius: 1.4rem;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(10px);
+  border: none;
+  color: var(--color-text);
+}
+@media screen and (max-width: 500px) {
+  .cover-wrapper .cover-body .m_search .input {
+    padding-left: 36px;
+  }
+}
+.cover-wrapper .cover-body .m_search .input:hover {
+  background: rgba(255,255,255,0.8);
+}
+.cover-wrapper .cover-body .m_search .input:focus {
+  background: #fff;
+}
+.cover-wrapper .list-h {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  -khtml-flex-wrap: wrap;
+  -moz-flex-wrap: wrap;
+  -o-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  align-items: stretch;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.cover-wrapper .list-h a {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1 0;
+  -ms-flex: 1 0;
+  flex: 1 0;
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  font-weight: 600;
+}
+.cover-wrapper .list-h a img {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  margin: 4px;
+  min-width: 40px;
+  max-width: 44px;
+}
+@media screen and (max-width: 768px) {
+  .cover-wrapper .list-h a img {
+    min-width: 36px;
+    max-width: 40px;
+  }
+}
+@media screen and (max-width: 500px) {
+  .cover-wrapper .list-h a img {
+    margin: 2px 4px;
+    min-width: 32px;
+    max-width: 36px;
+  }
+}
+@media screen and (max-width: 375px) {
+  .cover-wrapper .list-h a img {
+    min-width: 28px;
+    max-width: 32px;
+  }
+}
+.cover-wrapper {
+  max-width: 100%;
+}
+.cover-wrapper.search .bottom .menu {
+  margin-top: 16px;
+}
+.cover-wrapper.search .bottom .menu .list-h a {
+  white-space: nowrap;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  align-items: baseline;
+  padding: 2px;
+  margin: 4px;
+  color: var(--color-site-inner);
+  opacity: 0.75;
+  -webkit-opacity: 0.75;
+  -moz-opacity: 0.75;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  border-bottom: 2px solid transparent;
+}
+.cover-wrapper.search .bottom .menu .list-h a i {
+  margin-right: 4px;
+}
+.cover-wrapper.search .bottom .menu .list-h a p {
+  font-size: 0.9375rem;
+}
+.cover-wrapper.search .bottom .menu .list-h a:hover,
+.cover-wrapper.search .bottom .menu .list-h a.active,
+.cover-wrapper.search .bottom .menu .list-h a:active {
+  opacity: 1;
+  -webkit-opacity: 1;
+  -moz-opacity: 1;
+  border-bottom: 2px solid var(--color-site-inner);
+}
+@font-face {
+  font-family: 'UbuntuMono';
+  src: url("https://unpkg.com/volantis-static@0.0.1660614606622/media/fonts/UbuntuMono/UbuntuMono-Regular.ttf");
+  font-weight: 'normal';
+  font-style: 'normal';
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Varela Round';
+  src: url("https://unpkg.com/volantis-static@0.0.1660614606622/media/fonts/VarelaRound/VarelaRound-Regular.ttf");
+  font-weight: 'normal';
+  font-style: 'normal';
+  font-display: swap;
+}
+.l_header {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  width: 100%;
+  height: 64px;
+  background: var(--color-card);
+  box-shadow: 0 1px 2px 0px rgba(0,0,0,0.1);
+  -webkit-box-shadow: 0 1px 2px 0px rgba(0,0,0,0.1);
+}
+.l_header.auto {
+  transition: opacity 0.4s ease;
+  -webkit-transition: opacity 0.4s ease;
+  -khtml-transition: opacity 0.4s ease;
+  -moz-transition: opacity 0.4s ease;
+  -o-transition: opacity 0.4s ease;
+  -ms-transition: opacity 0.4s ease;
+  visibility: hidden;
+}
+.l_header.auto.show {
+  opacity: 1 !important;
+  -webkit-opacity: 1 !important;
+  -moz-opacity: 1 !important;
+  visibility: visible;
+}
+.l_header .container {
+  margin-left: 16px;
+  margin-right: 16px;
+}
+.l_header #wrapper {
+  height: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.l_header #wrapper .nav-main,
+.l_header #wrapper .nav-sub {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  flex-wrap: nowrap;
+  -webkit-flex-wrap: nowrap;
+  -khtml-flex-wrap: nowrap;
+  -moz-flex-wrap: nowrap;
+  -o-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  justify-content: space-between;
+  -webkit-justify-content: space-between;
+  -khtml-justify-content: space-between;
+  -moz-justify-content: space-between;
+  -o-justify-content: space-between;
+  -ms-justify-content: space-between;
+  align-items: center;
+}
+.l_header #wrapper .nav-main {
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+}
+.l_header #wrapper.sub .nav-main {
+  transform: translateY(-64px);
+  -webkit-transform: translateY(-64px);
+  -khtml-transform: translateY(-64px);
+  -moz-transform: translateY(-64px);
+  -o-transform: translateY(-64px);
+  -ms-transform: translateY(-64px);
+}
+.l_header #wrapper .nav-sub {
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+  opacity: 0;
+  -webkit-opacity: 0;
+  -moz-opacity: 0;
+  height: 64px;
+  width: calc(100% - 2 * 16px);
+  position: absolute;
+}
+.l_header #wrapper .nav-sub ::-webkit-scrollbar {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: none;
+}
+@media screen and (min-width: 2048px) {
+  .l_header #wrapper .nav-sub {
+    max-width: 55vw;
+    margin: auto;
+  }
+}
+.l_header #wrapper.sub .nav-sub {
+  opacity: 1;
+  -webkit-opacity: 1;
+  -moz-opacity: 1;
+}
+.l_header #wrapper .title {
+  position: relative;
+  color: var(--color-text);
+  padding-left: 24px;
+  max-height: 64px;
+}
+.l_header #wrapper .nav-main .title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+  line-height: 64px;
+  padding: 0 24px;
+  font-size: 1.25rem;
+  font-family: "Varela Round", "PingFang SC", "Microsoft YaHei", Helvetica, Arial, Helvetica, monospace;
+}
+.l_header #wrapper .nav-main .title img {
+  height: 64px;
+}
+.l_header .nav-sub {
+  max-width: 1080px;
+  margin: auto;
+}
+.l_header .nav-sub .title {
+  font-weight: bold;
+  font-family: UbuntuMono, "Varela Round", "PingFang SC", "Microsoft YaHei", Helvetica, Arial, Menlo, Monaco, monospace, sans-serif;
+  line-height: 1.2;
+  max-height: 64px;
+  white-space: normal;
+  flex-shrink: 1;
+}
+.l_header .switcher {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: none;
+  line-height: 64px;
+  align-items: center;
+}
+.l_header .switcher .s-toc {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: none;
+}
+@media screen and (max-width: 768px) {
+  .l_header .switcher .s-toc {
+    display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+    display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+    display: -ms-flexbox /* TWEENER - IE 10 */;
+    display: -webkit-flex /* NEW - Chrome */;
+    display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+    display: flex;
+  }
+}
+.l_header .switcher >li {
+  height: 48px;
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+  margin: 2px;
+}
+@media screen and (max-width: 500px) {
+  .l_header .switcher >li {
+    margin: 0 1px;
+    height: 48px;
+  }
+}
+.l_header .switcher >li >a {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  justify-content: center;
+  -webkit-justify-content: center;
+  -khtml-justify-content: center;
+  -moz-justify-content: center;
+  -o-justify-content: center;
+  -ms-justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0.85em 1.1em;
+  border-radius: 100px;
+  -webkit-border-radius: 100px;
+  border: none;
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+  color: #3dd9b6;
+}
+.l_header .switcher >li >a:hover {
+  border: none;
+}
+.l_header .switcher >li >a.active,
+.l_header .switcher >li >a:active {
+  border: none;
+  background: var(--color-site-bg);
+}
+@media screen and (max-width: 500px) {
+  .l_header .switcher >li >a {
+    width: 36px;
+    height: 48px;
+  }
+}
+.l_header .nav-sub .switcher {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+}
+.l_header .m_search {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  height: 64px;
+  width: 240px;
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+}
+@media screen and (max-width: 1024px) {
+  .l_header .m_search {
+    width: 44px;
+    min-width: 44px;
+  }
+  .l_header .m_search input::placeholder {
+    opacity: 0;
+    -webkit-opacity: 0;
+    -moz-opacity: 0;
+  }
+  .l_header .m_search:hover {
+    width: 240px;
+  }
+  .l_header .m_search:hover input::placeholder {
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+@media screen and (min-width: 500px) {
+  .l_header .m_search:hover .input {
+    width: 100%;
+  }
+  .l_header .m_search:hover .input::placeholder {
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+@media screen and (max-width: 500px) {
+  .l_header .m_search {
+    min-width: 0;
+  }
+  .l_header .m_search input::placeholder {
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+.l_header .m_search .form {
+  position: relative;
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+.l_header .m_search .icon {
+  position: absolute;
+  width: 36px;
+  left: 5px;
+  color: var(--color-meta);
+}
+@media screen and (max-width: 500px) {
+  .l_header .m_search .icon {
+    display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+    display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+    display: none;
+  }
+}
+.l_header .m_search .input {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  line-height: 1.3;
+  width: 100%;
+  color: var(--color-text);
+  background: #fafafa;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  padding-left: 40px;
+  font-size: 0.875rem;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border: none;
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+}
+@media screen and (min-width: 500px) {
+  .l_header .m_search .input:focus {
+    box-shadow: 0 4px 8px 0px rgba(0,0,0,0.1);
+    -webkit-box-shadow: 0 4px 8px 0px rgba(0,0,0,0.1);
+  }
+}
+@media screen and (max-width: 500px) {
+  .l_header .m_search .input {
+    background: var(--color-block);
+    padding-left: 8px;
+    border: none;
+  }
+  .l_header .m_search .input:hover,
+  .l_header .m_search .input:focus {
+    border: none;
+  }
+}
+@media (max-width: 500px) {
+  .l_header .m_search {
+    left: 0;
+    width: 0;
+    overflow: hidden;
+    position: absolute;
+    background: #fff;
+    transition: all 0.28s ease;
+    -webkit-transition: all 0.28s ease;
+    -khtml-transition: all 0.28s ease;
+    -moz-transition: all 0.28s ease;
+    -o-transition: all 0.28s ease;
+    -ms-transition: all 0.28s ease;
+  }
+  .l_header .m_search .input {
+    border-radius: 32px;
+    -webkit-border-radius: 32px;
+    margin-left: 16px;
+    padding-left: 16px;
+  }
+  .l_header.z_search-open .m_search {
+    width: 100%;
+  }
+  .l_header.z_search-open .m_search .input {
+    width: calc(100% - 120px);
+  }
+}
+ul.m-pc >li>a {
+  color: inherit;
+  border-bottom: 2px solid transparent;
+}
+ul.m-pc >li>a:active,
+ul.m-pc >li>a.active {
+  border-bottom: 2px solid #3dd9b6;
+}
+ul.m-pc li:hover >ul.list-v,
+ul.list-v li:hover >ul.list-v {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+}
+ul.nav-list-h {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  align-items: stretch;
+}
+ul.nav-list-h>li {
+  position: relative;
+  justify-content: center;
+  -webkit-justify-content: center;
+  -khtml-justify-content: center;
+  -moz-justify-content: center;
+  -o-justify-content: center;
+  -ms-justify-content: center;
+  height: 100%;
+  line-height: 2.4;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+ul.nav-list-h>li >a {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 600;
+}
+ul.list-v {
+  z-index: 1;
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: none;
+  position: absolute;
+  background: var(--color-card);
+  box-shadow: 0 2px 4px 0px rgba(0,0,0,0.08), 0 4px 8px 0px rgba(0,0,0,0.08), 0 8px 16px 0px rgba(0,0,0,0.08);
+  -webkit-box-shadow: 0 2px 4px 0px rgba(0,0,0,0.08), 0 4px 8px 0px rgba(0,0,0,0.08), 0 8px 16px 0px rgba(0,0,0,0.08);
+  margin-top: -6px;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  padding: 8px 0;
+}
+ul.list-v.show {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+}
+ul.list-v hr {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+ul.list-v >li {
+  white-space: nowrap;
+  word-break: keep-all;
+}
+ul.list-v >li.header {
+  font-size: 0.78125rem;
+  font-weight: bold;
+  line-height: 2em;
+  color: var(--color-meta);
+  margin: 8px 16px 4px;
+}
+ul.list-v >li.header i {
+  margin-right: 8px;
+}
+ul.list-v >li ul {
+  margin-left: 0;
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: none;
+  margin-top: -40px;
+}
+ul.list-v .aplayer-container {
+  min-height: 64px;
+  padding: 6px 16px;
+}
+ul.list-v >li>a {
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+  color: var(--color-list);
+  font-size: 0.875rem;
+  font-weight: bold;
+  line-height: 36px;
+  padding: 0 20px 0 16px;
+  text-overflow: ellipsis;
+  margin: 0 4px;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+@media screen and (max-width: 1024px) {
+  ul.list-v >li>a {
+    line-height: 40px;
+  }
+}
+ul.list-v >li>a >i {
+  margin-right: 8px;
+}
+ul.list-v >li>a:active,
+ul.list-v >li>a.active {
+  color: var(--color-list-hl);
+}
+ul.list-v >li>a:hover {
+  color: var(--color-list-hl);
+  background: var(--color-site-bg);
+}
+.l_header .menu >ul>li>a {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+  padding: 0 8px;
+}
+.l_header .menu >ul>li>a >i {
+  margin-right: 4px;
+}
+.l_header ul.nav-list-h>li {
+  color: var(--color-list);
+  line-height: 64px;
+}
+.l_header ul.nav-list-h>li >a {
+  max-height: 64px;
+  overflow: hidden;
+  color: inherit;
+}
+.l_header ul.nav-list-h>li >a:active,
+.l_header ul.nav-list-h>li >a.active {
+  color: #3dd9b6;
+}
+.l_header ul.nav-list-h>li:hover>a {
+  color: var(--color-list-hl);
+}
+.l_header ul.nav-list-h>li i.music {
+  animation: rotate-effect 1.5s linear infinite;
+  -webkit-animation: rotate-effect 1.5s linear infinite;
+  -khtml-animation: rotate-effect 1.5s linear infinite;
+  -moz-animation: rotate-effect 1.5s linear infinite;
+  -o-animation: rotate-effect 1.5s linear infinite;
+  -ms-animation: rotate-effect 1.5s linear infinite;
+}
+@-moz-keyframes rotate-effect {
+  0% {
+    transform: rotate(0);
+    -webkit-transform: rotate(0);
+    -khtml-transform: rotate(0);
+    -moz-transform: rotate(0);
+    -o-transform: rotate(0);
+    -ms-transform: rotate(0);
+  }
+  25% {
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -khtml-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+  }
+  50% {
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -khtml-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+    -khtml-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -khtml-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes rotate-effect {
+  0% {
+    transform: rotate(0);
+    -webkit-transform: rotate(0);
+    -khtml-transform: rotate(0);
+    -moz-transform: rotate(0);
+    -o-transform: rotate(0);
+    -ms-transform: rotate(0);
+  }
+  25% {
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -khtml-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+  }
+  50% {
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -khtml-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+    -khtml-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -khtml-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+  }
+}
+@-o-keyframes rotate-effect {
+  0% {
+    transform: rotate(0);
+    -webkit-transform: rotate(0);
+    -khtml-transform: rotate(0);
+    -moz-transform: rotate(0);
+    -o-transform: rotate(0);
+    -ms-transform: rotate(0);
+  }
+  25% {
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -khtml-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+  }
+  50% {
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -khtml-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+    -khtml-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -khtml-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+  }
+}
+@keyframes rotate-effect {
+  0% {
+    transform: rotate(0);
+    -webkit-transform: rotate(0);
+    -khtml-transform: rotate(0);
+    -moz-transform: rotate(0);
+    -o-transform: rotate(0);
+    -ms-transform: rotate(0);
+  }
+  25% {
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -khtml-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+  }
+  50% {
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -khtml-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+    -khtml-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -khtml-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+  }
+}
+.menu-phone li ul.list-v {
+  right: calc(100% - 0.5 * 16px);
+}
+.menu-phone li ul.list-v ul {
+  right: calc(100% - 0.5 * 16px);
+}
+#wrapper {
+  max-width: 1080px;
+  margin: auto;
+}
+@media screen and (min-width: 2048px) {
+  #wrapper {
+    max-width: 55vw;
+  }
+}
+#wrapper .menu {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1 1;
+  -ms-flex: 1 1;
+  flex: 1 1;
+  margin: 0 16px 0 0;
+}
+#wrapper .menu .list-v ul {
+  left: calc(100% - 0.5 * 16px);
+}
+.menu-phone {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: none;
+  margin-top: 16px;
+  right: 8px;
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+}
+.menu-phone ul {
+  right: calc(100% - 0.5 * 16px);
+}
+@media screen and (max-width: 500px) {
+  .menu-phone {
+    display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+    display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+    display: block;
+  }
+}
+.l_header {
+  max-width: 65vw;
+  left: calc((100% - 65vw) * 0.5);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+@media screen and (max-width: 2048px) {
+  .l_header {
+    max-width: 1112px;
+    left: calc((100% - 1112px) * 0.5);
+  }
+}
+@media screen and (max-width: 1112px) {
+  .l_header {
+    left: 0;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    max-width: 100%;
+  }
+}
+@media screen and (max-width: 500px) {
+  .l_header .container {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .l_header #wrapper .nav-main .title {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .l_header #wrapper .nav-sub {
+    width: 100%;
+  }
+  .l_header #wrapper .nav-sub .title {
+    overflow-y: scroll;
+    margin-top: 2px;
+    padding: 8px 16px;
+  }
+  .l_header #wrapper .switcher {
+    display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+    display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+    display: -ms-flexbox /* TWEENER - IE 10 */;
+    display: -webkit-flex /* NEW - Chrome */;
+    display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+    display: flex;
+    margin-right: 8px;
+  }
+  .l_header .menu {
+    display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+    display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+    display: none;
+  }
+}
+@media screen and (max-width: 500px) {
+  .list-v li {
+    max-width: 270px;
+  }
+}
+#u-search {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 60px 20px;
+  z-index: 1001;
+}
+@media screen and (max-width: 680px) {
+  #u-search {
+    padding: 0px;
+  }
+}
+
+  </style>
+  <link rel="stylesheet" href="/css/style.css" media="print" onload="this.media='all';this.onload=null">
+  <noscript><link rel="stylesheet" href="/css/style.css"></noscript>
+  
+<script>
+if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMode))
+    document.write(
+	'<style>'+
+		'html{'+
+			'overflow-x: hidden !important;'+
+			'overflow-y: hidden !important;'+
+		'}'+
+		'.kill-ie{'+
+			'text-align:center;'+
+			'height: 100%;'+
+			'margin-top: 15%;'+
+			'margin-bottom: 5500%;'+
+		'}'+
+    '.kill-t{'+
+      'font-size: 2rem;'+
+    '}'+
+    '.kill-c{'+
+      'font-size: 1.2rem;'+
+    '}'+
+		'#l_header,#l_body{'+
+			'display: none;'+
+		'}'+
+	'</style>'+
+    '<div class="kill-ie">'+
+        `<span class="kill-t"><b>抱歉，您的浏览器无法访问本站</b></span><br/>`+
+        `<span class="kill-c">微软已经于2016年终止了对 Internet Explorer (IE) 10 及更早版本的支持，<br/>继续使用存在极大的安全隐患，请使用当代主流的浏览器进行访问。</span><br/>`+
+        `<a target="_blank" rel="noopener" href="https://blogs.windows.com/windowsexperience/2021/05/19/the-future-of-internet-explorer-on-windows-10-is-in-microsoft-edge/"><strong>了解详情 ></strong></a>`+
+    '</div>');
+</script>
+
+
+<noscript>
+	<style>
+		html{
+			overflow-x: hidden !important;
+			overflow-y: hidden !important;
+		}
+		.kill-noscript{
+			text-align:center;
+			height: 100%;
+			margin-top: 15%;
+			margin-bottom: 5500%;
+		}
+    .kill-t{
+      font-size: 2rem;
+    }
+    .kill-c{
+      font-size: 1.2rem;
+    }
+		#l_header,#l_body{
+			display: none;
+		}
+	</style>
+    <div class="kill-noscript">
+        <span class="kill-t"><b>抱歉，您的浏览器无法访问本站</b></span><br/>
+        <span class="kill-c">本页面需要浏览器支持（启用）JavaScript</span><br/>
+        <a target="_blank" rel="noopener" href="https://www.baidu.com/s?wd=启用JavaScript"><strong>了解详情 ></strong></a>
+    </div>
+</noscript>
+
+
+  <script>
+  /************这个文件存放不需要重载的全局变量和全局函数*********/
+  window.volantis = {}; // volantis 全局变量
+  volantis.debug = "env"; // 调试模式
+  volantis.dom = {}; // 页面Dom see: /source/js/app.js etc.
+  /******************** volantis.dom.$ ********************************/
+  // 注：这里没有选择器，也没有forEach一次只处理一个dom，这里重新封装主题常用的dom方法，返回的是dom对象，对象包含了以下方法，同时保留dom的原生API
+  function volantisDom(ele) {
+    if (!ele) ele = document.createElement("div")
+    this.ele = ele;
+    // ==============================================================
+    this.ele.find = (c) => {
+      let q = this.ele.querySelector(c)
+      if (q)
+        return new volantisDom(q)
+    }
+    // ==============================================================
+    this.ele.hasClass = (c) => {
+      return this.ele.className.match(new RegExp('(\\s|^)' + c + '(\\s|$)'));
+    }
+    this.ele.addClass = (c) => {
+      this.ele.classList.add(c);
+      return this.ele
+    }
+    this.ele.removeClass = (c) => {
+      this.ele.classList.remove(c);
+      return this.ele
+    }
+    this.ele.toggleClass = (c) => {
+      if (this.ele.hasClass(c)) {
+        this.ele.removeClass(c)
+      } else {
+        this.ele.addClass(c)
+      }
+      return this.ele
+    }
+    // ==============================================================
+    this.ele.on = (c, f) => {
+      this.ele.addEventListener(c, f, false)
+      return this.ele
+    }
+    this.ele.click = (f, r) => {
+      this.ele.on("click", f, r)
+      return this.ele
+    }
+    this.ele.scroll = (f, r) => {
+      this.ele.on("scroll", f, r)
+      return this.ele
+    }
+    // ==============================================================
+    this.ele.html = (c) => {
+      // if(c=== undefined){
+      //   return this.ele.innerHTML
+      // }else{
+      this.ele.innerHTML = c
+      return this.ele
+      // }
+    }
+    // ==============================================================
+    this.ele.hide = (c) => {
+      this.ele.style.display = "none"
+      return this.ele
+    }
+    this.ele.show = (c) => {
+      this.ele.style.display = "block"
+      return this.ele
+    }
+    // ==============================================================
+    return this.ele
+  }
+  volantis.dom.$ = (ele) => {
+    return !!ele ? new volantisDom(ele) : null;
+  }
+  /******************** RunItem ********************************/
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          volantis.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+  /******************** RightMenu ********************************/
+  // volantis.rightmenu.handle(callBack[,"callBackName"]) 外部菜单项控制
+  // 可在 volantis.mouseEvent 处获取右键事件
+  volantis.rightmenu = {};
+  volantis.rightmenu.method = {
+    handle: new RunItem(),
+  }
+  volantis.rightmenu = Object.assign(volantis.rightmenu, {
+    handle: volantis.rightmenu.method.handle.push,
+  });
+  /********************  Dark Mode  ********************************/
+  // /layout/_partial/scripts/darkmode.ejs
+  // volantis.dark.mode 当前模式 dark or light
+  // volantis.dark.toggle() 暗黑模式触发器
+  // volantis.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  volantis.dark = {};
+  volantis.dark.method = {
+    toggle: new RunItem(),
+  };
+  volantis.dark = Object.assign(volantis.dark, {
+    push: volantis.dark.method.toggle.push,
+  });
+  /********************  Message  ********************************/
+  // VolantisApp.message
+  /********************  isMobile  ********************************/
+  // /source/js/app.js
+  // volantis.isMobile
+  // volantis.isMobileOld
+  /********************脚本动态加载函数********************************/
+  // volantis.js(src, cb)  cb 可以传入onload回调函数 或者 JSON对象 例如: volantis.js("src", ()=>{}) 或 volantis.js("src", {defer:true,onload:()=>{}})
+  // volantis.css(src)
+
+  // 返回Promise对象，如下方法同步加载资源，这利于处理文件资源之间的依赖关系，例如：APlayer 需要在 MetingJS 之前加载
+  // (async () => {
+  //     await volantis.js("...theme.plugins.aplayer.js.aplayer...")
+  //     await volantis.js("...theme.plugins.aplayer.js.meting...")
+  // })();
+
+  // 已经加入了setTimeout
+  volantis.js = (src, cb) => {
+    return new Promise(resolve => {
+      setTimeout(function () {
+        var HEAD = document.getElementsByTagName("head")[0] || document.documentElement;
+        var script = document.createElement("script");
+        script.setAttribute("type", "text/javascript");
+        if (cb) {
+          if (JSON.stringify(cb)) {
+            for (let p in cb) {
+              if (p == "onload") {
+                script[p] = () => {
+                  cb[p]()
+                  resolve()
+                }
+              } else {
+                script[p] = cb[p]
+                script.onload = resolve
+              }
+            }
+          } else {
+            script.onload = () => {
+              cb()
+              resolve()
+            };
+          }
+        } else {
+          script.onload = resolve
+        }
+        script.setAttribute("src", src);
+        HEAD.appendChild(script);
+      });
+    });
+  }
+  volantis.css = (src) => {
+    return new Promise(resolve => {
+      setTimeout(function () {
+        var link = document.createElement('link');
+        link.rel = "stylesheet";
+        link.href = src;
+        link.onload = resolve;
+        document.getElementsByTagName("head")[0].appendChild(link);
+      });
+    });
+  }
+  /********************按需加载的插件********************************/
+  // volantis.import.jQuery().then(()=>{})
+  volantis.import = {
+    jQuery: () => {
+      if (typeof jQuery == "undefined") {
+        return volantis.js("https://unpkg.com/jquery@3.7.1/dist/jquery.min.js")
+      } else {
+        return new Promise(resolve => {
+          resolve()
+        });
+      }
+    }
+  }
+  /********************** requestAnimationFrame ********************************/
+  // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+  // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+  volantis.requestAnimationFrame = (fn) => {
+    if (!window.requestAnimationFrame) {
+      window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+    }
+    window.requestAnimationFrame(fn)
+  }
+  /************************ layoutHelper *****************************************/
+  volantis.layoutHelper = (helper, html, opt) => {
+    opt = Object.assign({ clean: false}, opt)
+    function myhelper(helper, html, clean) {
+      volantis.tempDiv = document.createElement("div");
+      volantis.tempDiv.innerHTML = html;
+      let layoutHelper = document.querySelector("#layoutHelper-" + helper)
+      if (layoutHelper) {
+        if (clean) {
+          layoutHelper.innerHTML = ""
+        }
+        layoutHelper.append(volantis.tempDiv);
+      }
+    }
+    myhelper(helper, html, opt.clean)
+  }
+  /****************************** 滚动事件处理 ****************************************/
+  volantis.scroll = {
+    engine: new RunItem(),
+    unengine: new RunItem(),
+  };
+  volantis.scroll = Object.assign(volantis.scroll, {
+    push: volantis.scroll.engine.push,
+  });
+  // 滚动条距离顶部的距离
+  volantis.scroll.getScrollTop = () => {
+    let scrollPos;
+    if (window.pageYOffset) {
+      scrollPos = window.pageYOffset;
+    } else if (document.compatMode && document.compatMode != 'BackCompat') {
+      scrollPos = document.documentElement.scrollTop;
+    } else if (document.body) {
+      scrollPos = document.body.scrollTop;
+    }
+    return scrollPos;
+  }
+  volantis.scroll.scrollHeight = function () {
+    return Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight,
+    )
+  }
+  volantis.scroll.offsetHeight = function () {
+    return Math.max(
+      document.body.offsetHeight,
+      document.documentElement.offsetHeight,
+      document.body.clientHeight,
+      document.documentElement.clientHeight
+    )
+  }
+  volantis.scroll.progress = function () {
+    return volantis.scroll.getScrollTop() / (volantis.scroll.scrollHeight() - volantis.scroll.offsetHeight())
+  }
+  // 使用 requestAnimationFrame 处理滚动事件
+  // `volantis.scroll.del` 中存储了一个数值, 该数值检测一定时间间隔内滚动条滚动的位移, 数值的检测频率是浏览器的刷新频率. 数值为正数时, 表示向下滚动. 数值为负数时, 表示向上滚动.
+  volantis.scroll.handleScrollEvents = () => {
+    volantis.scroll.lastScrollTop = volantis.scroll.getScrollTop()
+    function loop() {
+      const scrollTop = volantis.scroll.getScrollTop();
+      if (volantis.scroll.lastScrollTop !== scrollTop) {
+        volantis.scroll.del = scrollTop - volantis.scroll.lastScrollTop;
+        volantis.scroll.lastScrollTop = scrollTop;
+        // if (volantis.scroll.del > 0) {
+        //   console.log("向下滚动");
+        // } else {
+        //   console.log("向上滚动");
+        // }
+        // 注销过期的unengine未滚动事件
+        volantis.scroll.unengine.list = []
+        volantis.scroll.engine.start();
+      } else {
+        volantis.scroll.unengine.start();
+      }
+      volantis.requestAnimationFrame(loop)
+    }
+    volantis.requestAnimationFrame(loop)
+  }
+  volantis.scroll.handleScrollEvents()
+  volantis.scroll.ele = null;
+  // 触发页面滚动至目标元素位置
+  volantis.scroll.to = (ele, option = {}) => {
+    if (!ele) return;
+    volantis.scroll.ele = ele;
+    // 默认配置
+    opt = {
+      top: ele.getBoundingClientRect().top + document.documentElement.scrollTop,
+      behavior: "smooth"
+    }
+    // 定义配置
+    if ("top" in option) {
+      opt.top = option.top
+    }
+    if ("behavior" in option) {
+      opt.behavior = option.behavior
+    }
+    if ("addTop" in option) {
+      opt.top += option.addTop
+    }
+    if (!("observerDic" in option)) {
+      option.observerDic = 100
+    }
+    // 滚动
+    window.scrollTo(opt);
+    // 监视器
+    // 监视并矫正元素滚动到指定位置
+    // 用于处理 lazyload 引起的 cls 导致的定位失败问题
+    // option.observer = false
+    if (option.observer) {
+      setTimeout(() => {
+        if (volantis.scroll.ele != ele) {
+          return
+        }
+        volantis.scroll.unengine.push(() => {
+          let me = ele.getBoundingClientRect().top
+          if (!(me >= -option.observerDic && me <= option.observerDic)) {
+            volantis.scroll.to(ele, option)
+          }
+          volantis.scroll.unengine.remove("unengineObserver")
+        }, "unengineObserver")
+      }, 1000)
+    }
+  }
+  /********************** Content Visibility ********************************/
+  // 见 source/css/first.styl 如果遇到任何问题 删除 .post-story 即可
+  // 一个元素被声明 content-visibility 属性后 如果元素不在 viewport 中 浏览器不会计算其后代元素样式和属性 从而节省 Style & Layout 耗时
+  // content-visibility 的副作用: 锚点失效 等等(实验初期 暂不明确), 使用此方法清除样式
+  volantis.cleanContentVisibility = () => {
+    if (document.querySelector(".post-story")) {
+      console.log("cleanContentVisibility");
+      document.querySelectorAll(".post-story").forEach(e => {
+        e.classList.remove("post-story")
+      })
+    }
+  }
+  /******************************************************************************/
+  /******************************************************************************/
+  /******************************************************************************/
+  //图像加载出错时的处理
+  function errorImgAvatar(img) {
+    img.src = "/img/avatar.jpg";
+    img.onerror = null;
+  }
+  function errorImgCover(img) {
+    img.src = "https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/cover/76b86c0226ffd.svg";
+    img.onerror = null;
+  }
+  /******************************************************************************/
+</script>
+
+<script>
+  window.pdata={}
+  pdata.ispage=true;
+  pdata.commentPath="";
+  pdata.commentPlaceholder="";
+  pdata.commentConfig={};
+  volantis.GLOBAL_CONFIG ={
+    root: '/',
+    debug: "env",
+    default: {"avatar":"/img/avatar.jpg","link":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/link/8f277b4ee0ecd.svg","cover":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/cover/76b86c0226ffd.svg","image":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/image/2659360.svg"},
+    lastupdate: new Date(1764723766396),
+    cdn: {
+      izitoast_css: 'https://unpkg.com/izitoast@1.4.0/dist/css/iziToast.min.css',
+      izitoast_js: 'https://unpkg.com/izitoast@1.4.0/dist/js/iziToast.min.js',
+      fancybox_css: 'https://unpkg.com/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.css',
+      fancybox_js: 'https://unpkg.com/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.umd.js'
+    },
+    sidebar: {
+      for_page: ["blogger","category","tagcloud","donate"],
+      for_post: ["toc"],
+      webinfo: {
+        lastupd: {
+          enable: true,
+          friendlyShow: true
+        },
+        runtime: {
+          data: "2020/01/01",
+          unit: "天"
+        }
+      }
+    },
+    plugins: {
+      message: {"enable":true,"icon":{"default":"fa-solid fa-info-circle light-blue","quection":"fa-solid fa-question-circle light-blue"},"time":{"default":5000,"quection":20000},"position":"topRight","transitionIn":"bounceInLeft","transitionOut":"fadeOutRight","titleColor":"var(--color-text)","messageColor":"var(--color-text)","backgroundColor":"var(--color-card)","zindex":2147483647,"copyright":{"enable":true,"title":"知识共享许可协议","message":"请遵守 CC BY-NC-SA 4.0 协议。","icon":"far fa-copyright light-blue"},"aplayer":{"enable":true,"play":"fa-solid fa-play","pause":"fa-solid fa-pause"},"rightmenu":{"enable":true,"notice":true}},
+      
+      
+    },
+    search: {
+      
+
+      
+        dataPath: (("/" || "/").endsWith("/") ? "/" || "/" : "//" || "/") + "content.json",
+      
+
+      
+    },
+    languages: {
+      
+        search: {
+          hits_empty: "找不到您查询的内容：${query}",
+          hits_stats: "找到 ${hits} 条结果，用时 ${time} 毫秒",
+        }
+      
+    }
+  }
+</script>
+  <!-- import head_end begin -->
+  <!-- import head_end end -->
+  <!-- Custom Files headEnd begin-->
+  
+  <!-- Custom Files headEnd end-->
+</head>
+  <body itemscope itemtype="https://schema.org.cn/WebPage">
+    <!-- import body_begin begin-->
+    <!-- import body_begin end-->
+    <!-- Custom Files bodyBegin begin-->
+    
+    <!-- Custom Files bodyBegin end-->
+    <header itemscope itemtype="https://schema.org.cn/WPHeader" id="l_header" class="l_header auto shadow floatable blur show" style='opacity: 0' >
+  <div class='container'>
+  <div id='wrapper'>
+    <div class='nav-sub'>
+      <p class="title"></p>
+      <ul class='switcher nav-list-h m-phone'>
+        <li><a id="s-comment" class="fa-solid fa-comments fa-fw" target="_self" title="comment"></a></li>
+        
+          <li><a id="s-toc" class="s-toc fa-solid fa-list fa-fw" target="_self" title="toc"></a></li>
+        
+      </ul>
+    </div>
+		<div class="nav-main">
+      
+        
+        <a class="title flat-box" target="_self" href='/'>
+          
+          
+          
+            hiyasame's blog
+          
+        </a>
+      
+
+			<div class='menu navigation'>
+				<ul class='nav-list-h m-pc'>
+          
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/" title="博客"
+                  
+                  
+                  
+                    active-action="action-home"
+                  >
+                  <i class='fa-solid fa-rss fa-fw'></i>博客
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/categories/" title="分类"
+                  
+                  
+                  
+                    active-action="action-categories"
+                  >
+                  <i class='fa-solid fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/tags/" title="标签"
+                  
+                  
+                  
+                    active-action="action-tags"
+                  >
+                  <i class='fa-solid fa-tags fa-fw'></i>标签
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/archives/" title="归档"
+                  
+                  
+                  
+                    active-action="action-archives"
+                  >
+                  <i class='fa-solid fa-archive fa-fw'></i>归档
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/friends/" title="友链"
+                  
+                  
+                  
+                    active-action="action-friends"
+                  >
+                  <i class='fa-solid fa-link fa-fw'></i>友链
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/about/" title="关于"
+                  
+                  
+                  
+                    active-action="action-about"
+                  >
+                  <i class='fa-solid fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+          
+				</ul>
+			</div>
+      
+      <div class="m_search">
+        <form name="searchform" class="form u-search-form">
+          <i class="icon fa-solid fa-search fa-fw"></i>
+          <input type="text" class="input u-search-input" placeholder="Search..." />
+        </form>
+      </div>
+      
+
+			<ul class='switcher nav-list-h m-phone'>
+				
+					<li><a class="s-search fa-solid fa-search fa-fw" target="_self" title="search"></a></li>
+				
+				<li>
+          <a class="s-menu fa-solid fa-bars fa-fw" target="_self" title="menu"></a>
+          <ul class="menu-phone list-v navigation white-box">
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/" title="博客"
+                  
+                  
+                  
+                    active-action="action-home"
+                  >
+                  <i class='fa-solid fa-rss fa-fw'></i>博客
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/categories/" title="分类"
+                  
+                  
+                  
+                    active-action="action-categories"
+                  >
+                  <i class='fa-solid fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/tags/" title="标签"
+                  
+                  
+                  
+                    active-action="action-tags"
+                  >
+                  <i class='fa-solid fa-tags fa-fw'></i>标签
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/archives/" title="归档"
+                  
+                  
+                  
+                    active-action="action-archives"
+                  >
+                  <i class='fa-solid fa-archive fa-fw'></i>归档
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/friends/" title="友链"
+                  
+                  
+                  
+                    active-action="action-friends"
+                  >
+                  <i class='fa-solid fa-link fa-fw'></i>友链
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/about/" title="关于"
+                  
+                  
+                  
+                    active-action="action-about"
+                  >
+                  <i class='fa-solid fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+            
+          </ul>
+        </li>
+			</ul>
+
+      <!-- Custom Files header begin -->
+      
+      <!-- Custom Files header end -->
+		</div>
+	</div>
+  </div>
+</header>
+
+    <div id="l_body">
+      <div id="l_cover">
+  
+</div>
+
+      <div id="safearea">
+        <div class="body-wrapper">
+          
+<div id="l_main" class=''>
+  <article itemscope itemtype="https://schema.org.cn/Article" class="article post white-box reveal md shadow floatable blur article-type-post" id="post" itemscope itemprop="blogPost">
+  <link itemprop="mainEntityOfPage" href="http://blog.coldrain.ink/2025/12/03/JGovdEiMao12nKx50rlclssinGb/">
+  <span hidden itemprop="publisher" itemscope itemtype="https://schema.org.cn/Organization">
+    <meta itemprop="name" content="Hiyasame">
+  </span>
+  <span hidden itemprop="post" itemscope itemtype="https://schema.org.cn/Post">
+    <meta itemprop="name" content="Hiyasame">
+    <meta itemprop="description" content="道阻且长，行则将至">
+  </span>
+  
+
+
+  
+    <span hidden>
+      <meta itemprop="image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
+    </span>
+  
+  <div class="article-meta" id="top">
+    
+    
+    
+      <h1 class="title" itemprop="name headline">
+        C++ stack unwinding
+      </h1>
+      <div class='new-meta-box'>
+        
+          
+            
+<div class='new-meta-item author' itemprop="author" itemscope itemtype="https://schema.org.cn/Person">
+  <a itemprop="url" class='author' href="/" rel="nofollow">
+    <img itemprop="image" src="/img/avatar.jpg" class="lazyload" data-srcset="/img/avatar.jpg" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+    <p itemprop="name">寒雨</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+
+
+          
+        
+          
+            <div class="new-meta-item date" itemprop="dateCreated datePublished" datetime="2025-12-03T09:00:54+00:00">
+  <a class='notlink'>
+    <i class="fa-solid fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：2025年12月3日</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+
+
+
+          
+        
+        <!-- Custom Files topMeta begin-->
+        
+        <!-- Custom Files topMeta end-->
+      </div>
+    
+  </div>
+
+
+  <div id="layoutHelper-page-plugins"></div>
+  <div id="post-body" itemprop="articleBody">
+    <p>其实在此之前我就大概知道，stack unwinding 是反向回溯栈的一种机制，在 throw 了什么东西后一层层回溯栈，一层层析构掉这些栈上的 RAII 对象，直到找到 try catch 块后跳转到 catch 块。</p>
+<p>但是问题是这种事情是怎样实现的？多说无益，我们直接从 throw 的源码入手分析。</p>
+<p>首先我们编写一段示例代码:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">func2</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">func1</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Hello&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    func2();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">func2</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;World&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    throw <span class="built_in">std</span>::<span class="built_in">string</span>(<span class="string">&quot;C++&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">string</span> s1 = <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line"></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">std</span>::<span class="built_in">string</span> s2 = <span class="string">&quot;World&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">string</span> s3 = <span class="string">&quot;Stack Unwinding&quot;</span>;</span><br><span class="line">        </span><br><span class="line">        func1();</span><br><span class="line">    &#125; catch (<span class="type">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; e) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; e &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译后使用 objdump -d 看 func2 的内容，发现 throw 被编译成了 __cxa_throw 调用：<br><img src="/images/IXXeb4vsnor5nXxkrcCcLMdenPf.png" class="lazyload" data-srcset="/images/IXXeb4vsnor5nXxkrcCcLMdenPf.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"></p>
+<h2 id="cxa-throw"><a href="#cxa-throw" class="headerlink" title="__cxa_throw"></a>__cxa_throw</h2><p>__cxa_throw 位于 llvm 的 libcxxabi 子项目中：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __wasm__</span></span><br><span class="line"><span class="comment">// In Wasm, a destructor returns its argument</span></span><br><span class="line">__cxa_throw(<span class="type">void</span> *thrown_object, std::type_info *tinfo, <span class="type">void</span> *(_LIBCXXABI_DTOR_FUNC *dest)(<span class="type">void</span> *)) &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">__cxa_throw(<span class="type">void</span> *thrown_object, std::type_info *tinfo, <span class="built_in">void</span> (_LIBCXXABI_DTOR_FUNC *dest)(<span class="type">void</span> *)) &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">  __cxa_eh_globals* globals = __cxa_get_globals();</span><br><span class="line">  globals-&gt;uncaughtExceptions += <span class="number">1</span>; <span class="comment">// Not atomically, since globals are thread-local</span></span><br><span class="line"></span><br><span class="line">  __cxa_exception* exception_header = __cxa_init_primary_exception(thrown_object, tinfo, dest);</span><br><span class="line">  exception_header-&gt;referenceCount = <span class="number">1</span>; <span class="comment">// This is a newly allocated exception, no need for thread safety.</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> __has_feature(address_sanitizer)</span></span><br><span class="line">  <span class="comment">// Inform the ASan runtime that now might be a good time to clean stuff up.</span></span><br><span class="line">  __asan_handle_no_return();</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __USING_SJLJ_EXCEPTIONS__</span></span><br><span class="line">    _Unwind_SjLj_RaiseException(&amp;exception_header-&gt;unwindHeader);</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">    _Unwind_RaiseException(&amp;exception_header-&gt;unwindHeader);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    <span class="comment">//  This only happens when there is no handler, or some unexpected unwinding</span></span><br><span class="line">    <span class="comment">//     error happens.</span></span><br><span class="line">    <span class="built_in">failed_throw</span>(exception_header);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>能看出来其核心实现在 <code>_Unwind_RaiseException</code> </p>
+<h2 id="Unwind-RaiseException"><a href="#Unwind-RaiseException" class="headerlink" title="_Unwind_RaiseException"></a>_Unwind_RaiseException</h2><p>在 libunwind 子项目中找到其实现：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// Called by __cxa_throw.  Only returns if there is a fatal error.</span></span><br><span class="line">_LIBUNWIND_EXPORT _Unwind_Reason_Code</span><br><span class="line">_Unwind_RaiseException(_Unwind_Exception *exception_object) &#123;</span><br><span class="line">  _LIBUNWIND_TRACE_API(<span class="string">&quot;_Unwind_RaiseException(ex_obj=%p)&quot;</span>,</span><br><span class="line">                       (<span class="type">void</span> *)exception_object);</span><br><span class="line">  <span class="type">unw_context_t</span> uc;</span><br><span class="line">  <span class="type">unw_cursor_t</span> cursor;</span><br><span class="line">  __unw_getcontext(&amp;uc);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Mark that this is a non-forced unwind, so _Unwind_Resume()</span></span><br><span class="line">  <span class="comment">// can do the right thing.</span></span><br><span class="line">  exception_object-&gt;private_1 = <span class="number">0</span>;</span><br><span class="line">  exception_object-&gt;private_2 = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// phase 1: the search phase</span></span><br><span class="line">  _Unwind_Reason_Code phase1 = <span class="built_in">unwind_phase1</span>(&amp;uc, &amp;cursor, exception_object);</span><br><span class="line">  <span class="keyword">if</span> (phase1 != _URC_NO_REASON)</span><br><span class="line">    <span class="keyword">return</span> phase1;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// phase 2: the clean up phase</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">unwind_phase2</span>(&amp;uc, &amp;cursor, exception_object);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这里我们可以发现有两个 phase：</p>
+<h3 id="search-phase"><a href="#search-phase" class="headerlink" title="search phase"></a>search phase</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> _Unwind_Reason_Code</span><br><span class="line"><span class="title function_">unwind_phase1</span><span class="params">(<span class="type">unw_context_t</span> *uc, <span class="type">unw_cursor_t</span> *cursor, _Unwind_Exception *exception_object)</span> &#123;</span><br><span class="line">  __unw_init_local(cursor, uc);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Walk each frame looking for a place to stop.</span></span><br><span class="line">  <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">    <span class="comment">// Ask libunwind to get next frame (skip over first which is</span></span><br><span class="line">    <span class="comment">// _Unwind_RaiseException).</span></span><br><span class="line">    <span class="type">int</span> stepResult = __unw_step(cursor);</span><br><span class="line">    <span class="keyword">if</span> (stepResult == <span class="number">0</span>) &#123;</span><br><span class="line">      _LIBUNWIND_TRACE_UNWINDING(</span><br><span class="line">          <span class="string">&quot;unwind_phase1(ex_obj=%p): __unw_step() reached &quot;</span></span><br><span class="line">          <span class="string">&quot;bottom =&gt; _URC_END_OF_STACK&quot;</span>,</span><br><span class="line">          (<span class="type">void</span> *)exception_object);</span><br><span class="line">      <span class="keyword">return</span> _URC_END_OF_STACK;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (stepResult &lt; <span class="number">0</span>) &#123;</span><br><span class="line">      _LIBUNWIND_TRACE_UNWINDING(</span><br><span class="line">          <span class="string">&quot;unwind_phase1(ex_obj=%p): __unw_step failed =&gt; &quot;</span></span><br><span class="line">          <span class="string">&quot;_URC_FATAL_PHASE1_ERROR&quot;</span>,</span><br><span class="line">          (<span class="type">void</span> *)exception_object);</span><br><span class="line">      <span class="keyword">return</span> _URC_FATAL_PHASE1_ERROR;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// See if frame has code to run (has personality routine).</span></span><br><span class="line">    <span class="type">unw_proc_info_t</span> frameInfo;</span><br><span class="line">    <span class="type">unw_word_t</span> sp;</span><br><span class="line">    <span class="keyword">if</span> (__unw_get_proc_info(cursor, &amp;frameInfo) != UNW_ESUCCESS) &#123;</span><br><span class="line">      _LIBUNWIND_TRACE_UNWINDING(</span><br><span class="line">          <span class="string">&quot;unwind_phase1(ex_obj=%p): __unw_get_proc_info &quot;</span></span><br><span class="line">          <span class="string">&quot;failed =&gt; _URC_FATAL_PHASE1_ERROR&quot;</span>,</span><br><span class="line">          (<span class="type">void</span> *)exception_object);</span><br><span class="line">      <span class="keyword">return</span> _URC_FATAL_PHASE1_ERROR;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> NDEBUG</span></span><br><span class="line">    <span class="comment">// When tracing, print state information.</span></span><br><span class="line">    <span class="keyword">if</span> (_LIBUNWIND_TRACING_UNWINDING) &#123;</span><br><span class="line">      <span class="type">char</span> functionBuf[<span class="number">512</span>];</span><br><span class="line">      <span class="type">const</span> <span class="type">char</span> *functionName = functionBuf;</span><br><span class="line">      <span class="type">unw_word_t</span> offset;</span><br><span class="line">      <span class="keyword">if</span> ((__unw_get_proc_name(cursor, functionBuf, <span class="keyword">sizeof</span>(functionBuf),</span><br><span class="line">                               &amp;offset) != UNW_ESUCCESS) ||</span><br><span class="line">          (frameInfo.start_ip + offset &gt; frameInfo.end_ip))</span><br><span class="line">        functionName = <span class="string">&quot;.anonymous.&quot;</span>;</span><br><span class="line">      <span class="type">unw_word_t</span> pc;</span><br><span class="line">      __unw_get_reg(cursor, UNW_REG_IP, &amp;pc);</span><br><span class="line">      _LIBUNWIND_TRACE_UNWINDING(</span><br><span class="line">          <span class="string">&quot;unwind_phase1(ex_obj=%p): pc=0x%&quot;</span> PRIxPTR <span class="string">&quot;, start_ip=0x%&quot;</span> PRIxPTR</span><br><span class="line">          <span class="string">&quot;, func=%s, lsda=0x%&quot;</span> PRIxPTR <span class="string">&quot;, personality=0x%&quot;</span> PRIxPTR <span class="string">&quot;&quot;</span>,</span><br><span class="line">          (<span class="type">void</span> *)exception_object, pc, frameInfo.start_ip, functionName,</span><br><span class="line">          frameInfo.lsda, frameInfo.handler);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// If there is a personality routine, ask it if it will want to stop at</span></span><br><span class="line">    <span class="comment">// this frame.</span></span><br><span class="line">    <span class="keyword">if</span> (frameInfo.handler != <span class="number">0</span>) &#123;</span><br><span class="line">      _Unwind_Personality_Fn p = get_handler_function(&amp;frameInfo);</span><br><span class="line">      _LIBUNWIND_TRACE_UNWINDING(</span><br><span class="line">          <span class="string">&quot;unwind_phase1(ex_obj=%p): calling personality function %p&quot;</span>,</span><br><span class="line">          (<span class="type">void</span> *)exception_object, (<span class="type">void</span> *)(<span class="type">uintptr_t</span>)p);</span><br><span class="line">      _Unwind_Reason_Code personalityResult =</span><br><span class="line">          (*p)(<span class="number">1</span>, _UA_SEARCH_PHASE, exception_object-&gt;exception_class,</span><br><span class="line">               exception_object, (<span class="keyword">struct</span> _Unwind_Context *)(cursor));</span><br><span class="line">      <span class="keyword">switch</span> (personalityResult) &#123;</span><br><span class="line">      <span class="keyword">case</span> _URC_HANDLER_FOUND:</span><br><span class="line">        <span class="comment">// found a catch clause or locals that need destructing in this frame</span></span><br><span class="line">        <span class="comment">// stop search and remember stack pointer at the frame</span></span><br><span class="line">        __unw_get_reg(cursor, UNW_REG_SP, &amp;sp);</span><br><span class="line">        exception_object-&gt;private_2 = (<span class="type">uintptr_t</span>)sp;</span><br><span class="line">        _LIBUNWIND_TRACE_UNWINDING(</span><br><span class="line">            <span class="string">&quot;unwind_phase1(ex_obj=%p): _URC_HANDLER_FOUND&quot;</span>,</span><br><span class="line">            (<span class="type">void</span> *)exception_object);</span><br><span class="line">        <span class="keyword">return</span> _URC_NO_REASON;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">case</span> _URC_CONTINUE_UNWIND:</span><br><span class="line">        _LIBUNWIND_TRACE_UNWINDING(</span><br><span class="line">            <span class="string">&quot;unwind_phase1(ex_obj=%p): _URC_CONTINUE_UNWIND&quot;</span>,</span><br><span class="line">            (<span class="type">void</span> *)exception_object);</span><br><span class="line">        <span class="comment">// continue unwinding</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">default</span>:</span><br><span class="line">        <span class="comment">// something went wrong</span></span><br><span class="line">        _LIBUNWIND_TRACE_UNWINDING(</span><br><span class="line">            <span class="string">&quot;unwind_phase1(ex_obj=%p): _URC_FATAL_PHASE1_ERROR&quot;</span>,</span><br><span class="line">            (<span class="type">void</span> *)exception_object);</span><br><span class="line">        <span class="keyword">return</span> _URC_FATAL_PHASE1_ERROR;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> _URC_NO_REASON;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>向下找一个栈帧</p>
+</li>
+<li><p>通过查表(<code>.eh_frame_hdr</code>)获取这个栈帧的 FDE 头</p>
+</li>
+</ul>
+<p>search phase 比较好理解，一次只往下找一个栈，如果找到了 catch clause 或者需要析构的 RAII 对象，则会返回 <code>_URC_NO_REASON</code>，只有 search phase 返回 <code>_URC_NO_REASON</code> 才会继续向下走到 clean up phase。</p>
+<h4 id="unw-step"><a href="#unw-step" class="headerlink" title="__unw_step"></a>__unw_step</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// Move cursor to next frame.</span></span><br><span class="line">_LIBUNWIND_HIDDEN <span class="type">int</span> __unw_step(<span class="type">unw_cursor_t</span> *cursor) &#123;</span><br><span class="line">  _LIBUNWIND_TRACE_API(<span class="string">&quot;__unw_step(cursor=%p)&quot;</span>, <span class="built_in">static_cast</span>&lt;<span class="type">void</span> *&gt;(cursor));</span><br><span class="line">  AbstractUnwindCursor *co = (AbstractUnwindCursor *)cursor;</span><br><span class="line">  <span class="keyword">return</span> co-&gt;<span class="built_in">step</span>();</span><br><span class="line">&#125;</span><br><span class="line">_LIBUNWIND_WEAK_ALIAS(__unw_step, unw_step)</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> A, <span class="keyword">typename</span> R&gt; <span class="type">int</span> UnwindCursor&lt;A, R&gt;::<span class="built_in">step</span>(<span class="type">bool</span> stage2) &#123;</span><br><span class="line">  (<span class="type">void</span>)stage2;</span><br><span class="line">  <span class="comment">// Bottom of stack is defined is when unwind info cannot be found.</span></span><br><span class="line">  <span class="keyword">if</span> (_unwindInfoMissing)</span><br><span class="line">    <span class="keyword">return</span> UNW_STEP_END;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Use unwinding info to modify register set as if function returned.</span></span><br><span class="line">  <span class="type">int</span> result;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(_LIBUNWIND_CHECK_LINUX_SIGRETURN) ||                               \</span></span><br><span class="line"><span class="meta">    defined(_LIBUNWIND_CHECK_HAIKU_SIGRETURN)</span></span><br><span class="line">  <span class="keyword">if</span> (_isSigReturn) &#123;</span><br><span class="line">    result = <span class="keyword">this</span>-&gt;<span class="built_in">stepThroughSigReturn</span>();</span><br><span class="line">  &#125; <span class="keyword">else</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">  &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(_LIBUNWIND_SUPPORT_COMPACT_UNWIND)</span></span><br><span class="line">    result = <span class="keyword">this</span>-&gt;<span class="built_in">stepWithCompactEncoding</span>(stage2);</span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> defined(_LIBUNWIND_SUPPORT_SEH_UNWIND)</span></span><br><span class="line">    result = <span class="keyword">this</span>-&gt;<span class="built_in">stepWithSEHData</span>();</span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> defined(_LIBUNWIND_SUPPORT_TBTAB_UNWIND)</span></span><br><span class="line">    result = <span class="keyword">this</span>-&gt;<span class="built_in">stepWithTBTableData</span>();</span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> defined(_LIBUNWIND_SUPPORT_DWARF_UNWIND)</span></span><br><span class="line">    result = <span class="keyword">this</span>-&gt;<span class="built_in">stepWithDwarfFDE</span>(stage2);</span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> defined(_LIBUNWIND_ARM_EHABI)</span></span><br><span class="line">    result = <span class="keyword">this</span>-&gt;<span class="built_in">stepWithEHABI</span>();</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">  <span class="meta">#<span class="keyword">error</span> Need _LIBUNWIND_SUPPORT_COMPACT_UNWIND or \</span></span><br><span class="line"><span class="meta">              _LIBUNWIND_SUPPORT_SEH_UNWIND or \</span></span><br><span class="line"><span class="meta">              _LIBUNWIND_SUPPORT_DWARF_UNWIND or \</span></span><br><span class="line"><span class="meta">              _LIBUNWIND_ARM_EHABI</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// update info based on new PC</span></span><br><span class="line">  <span class="keyword">if</span> (result == UNW_STEP_SUCCESS) &#123;</span><br><span class="line">    <span class="keyword">this</span>-&gt;<span class="built_in">setInfoBasedOnIPRegister</span>(<span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">if</span> (_unwindInfoMissing)</span><br><span class="line">      <span class="keyword">return</span> UNW_STEP_END;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// linux 标准</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(_LIBUNWIND_SUPPORT_DWARF_UNWIND)</span></span><br><span class="line">  <span class="function"><span class="type">bool</span> <span class="title">getInfoFromFdeCie</span><span class="params">(<span class="type">const</span> <span class="keyword">typename</span> CFI_Parser&lt;A&gt;::FDE_Info &amp;fdeInfo,</span></span></span><br><span class="line"><span class="params"><span class="function">                         <span class="type">const</span> <span class="keyword">typename</span> CFI_Parser&lt;A&gt;::CIE_Info &amp;cieInfo,</span></span></span><br><span class="line"><span class="params"><span class="function">                         <span class="type">pint_t</span> pc, <span class="type">uintptr_t</span> dso_base)</span></span>;</span><br><span class="line">  <span class="function"><span class="type">bool</span> <span class="title">getInfoFromDwarfSection</span><span class="params">(<span class="type">const</span> <span class="keyword">typename</span> R::<span class="type">link_reg_t</span> &amp;pc,</span></span></span><br><span class="line"><span class="params"><span class="function">                               <span class="type">const</span> UnwindInfoSections &amp;sects,</span></span></span><br><span class="line"><span class="params"><span class="function">                               <span class="type">uint32_t</span> fdeSectionOffsetHint = <span class="number">0</span>)</span></span>;</span><br><span class="line">  <span class="function"><span class="type">int</span> <span class="title">stepWithDwarfFDE</span><span class="params">(<span class="type">bool</span> stage2)</span> </span>&#123;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(_LIBUNWIND_TARGET_AARCH64_AUTHENTICATED_UNWINDING)</span></span><br><span class="line">    <span class="keyword">typename</span> R::<span class="type">reg_t</span> rawPC = <span class="keyword">this</span>-&gt;<span class="built_in">getReg</span>(UNW_REG_IP);</span><br><span class="line">    <span class="keyword">typename</span> R::<span class="type">link_reg_t</span> pc;</span><br><span class="line">    _registers.<span class="built_in">loadAndAuthenticateLinkRegister</span>(rawPC, &amp;pc);</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">    <span class="keyword">typename</span> R::<span class="type">link_reg_t</span> pc = <span class="keyword">this</span>-&gt;<span class="built_in">getReg</span>(UNW_REG_IP);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    <span class="keyword">return</span> DwarfInstructions&lt;A, R&gt;::<span class="built_in">stepWithDwarf</span>(</span><br><span class="line">        _addressSpace, pc, (<span class="type">pint_t</span>)_info.unwind_info, _registers,</span><br><span class="line">        _isSignalFrame, stage2);</span><br><span class="line">  &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<p>_unw_step 这个函数的实际逻辑最后定位到了 libunwind 的 stepWithDwarfFDE（这是 linux 上的实现）。</p>
+<ul>
+<li><p>首先会从栈帧上拿到保存的 ip (instruction pointer，即函数的返回地址)</p>
+</li>
+<li><p>然后调用 DwarfInstructions::stepWithDwarf:</p>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> A, <span class="keyword">typename</span> R&gt;</span><br><span class="line"><span class="type">int</span> DwarfInstructions&lt;A, R&gt;::<span class="built_in">stepWithDwarf</span>(A &amp;addressSpace,</span><br><span class="line">                                           <span class="type">const</span> <span class="keyword">typename</span> R::<span class="type">link_reg_t</span> &amp;pc,</span><br><span class="line">                                           <span class="type">pint_t</span> fdeStart, R &amp;registers,</span><br><span class="line">                                           <span class="type">bool</span> &amp;isSignalFrame, <span class="type">bool</span> stage2) &#123;</span><br><span class="line">  FDE_Info fdeInfo;</span><br><span class="line">  CIE_Info cieInfo;</span><br><span class="line">  <span class="keyword">if</span> (CFI_Parser&lt;A&gt;::<span class="built_in">decodeFDE</span>(addressSpace, fdeStart, &amp;fdeInfo,</span><br><span class="line">                               &amp;cieInfo) == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    PrologInfo prolog;</span><br><span class="line">    <span class="keyword">if</span> (CFI_Parser&lt;A&gt;::<span class="built_in">parseFDEInstructions</span>(addressSpace, fdeInfo, cieInfo, pc,</span><br><span class="line">                                            R::<span class="built_in">getArch</span>(), &amp;prolog)) &#123;</span><br><span class="line">      <span class="comment">// get pointer to cfa (architecture specific)</span></span><br><span class="line">      <span class="type">pint_t</span> cfa = <span class="built_in">getCFA</span>(addressSpace, prolog, registers);</span><br><span class="line"></span><br><span class="line">      (<span class="type">void</span>)stage2;</span><br><span class="line">      <span class="comment">// __unw_step_stage2 is not used for cross unwinding, so we use</span></span><br><span class="line">      <span class="comment">// __aarch64__ rather than LIBUNWIND_TARGET_AARCH64 to make sure we are</span></span><br><span class="line">      <span class="comment">// building for AArch64 natively.</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(__aarch64__)</span></span><br><span class="line">      <span class="keyword">if</span> (stage2 &amp;&amp; cieInfo.mteTaggedFrame) &#123;</span><br><span class="line">        <span class="type">pint_t</span> sp = registers.<span class="built_in">getSP</span>();</span><br><span class="line">        <span class="type">pint_t</span> p = sp;</span><br><span class="line">        <span class="comment">// AArch64 doesn&#x27;t require the value of SP to be 16-byte aligned at</span></span><br><span class="line">        <span class="comment">// all times, only at memory accesses and public interfaces [1]. Thus,</span></span><br><span class="line">        <span class="comment">// a signal could arrive at a point where SP is not aligned properly.</span></span><br><span class="line">        <span class="comment">// In that case, the kernel fixes up [2] the signal frame, but we</span></span><br><span class="line">        <span class="comment">// still have a misaligned SP in the previous frame. If that signal</span></span><br><span class="line">        <span class="comment">// handler caused stack unwinding, we would have an unaligned SP.</span></span><br><span class="line">        <span class="comment">// We do not need to fix up the CFA, as that is the SP at a &quot;public</span></span><br><span class="line">        <span class="comment">// interface&quot;.</span></span><br><span class="line">        <span class="comment">// [1]:</span></span><br><span class="line">        <span class="comment">// https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst#622the-stack</span></span><br><span class="line">        <span class="comment">// [2]:</span></span><br><span class="line">        <span class="comment">// https://github.com/torvalds/linux/blob/1930a6e739c4b4a654a69164dbe39e554d228915/arch/arm64/kernel/signal.c#L718</span></span><br><span class="line">        p &amp;= ~<span class="number">0xf</span>ULL;</span><br><span class="line">        <span class="comment">// CFA is the bottom of the current stack frame.</span></span><br><span class="line">        <span class="keyword">for</span> (; p &lt; cfa; p += <span class="number">16</span>) &#123;</span><br><span class="line">          __asm__ __volatile__(<span class="string">&quot;.arch armv8.5-a\n&quot;</span></span><br><span class="line">                               <span class="string">&quot;.arch_extension memtag\n&quot;</span></span><br><span class="line">                               <span class="string">&quot;stg %[Ptr], [%[Ptr]]\n&quot;</span></span><br><span class="line">                               :</span><br><span class="line">                               : [Ptr] <span class="string">&quot;r&quot;</span>(p)</span><br><span class="line">                               : <span class="string">&quot;memory&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">      <span class="comment">// restore registers that DWARF says were saved</span></span><br><span class="line">      R newRegisters = registers;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Typically, the CFA is the stack pointer at the call site in</span></span><br><span class="line">      <span class="comment">// the previous frame. However, there are scenarios in which this is not</span></span><br><span class="line">      <span class="comment">// true. For example, if we switched to a new stack. In that case, the</span></span><br><span class="line">      <span class="comment">// value of the previous SP might be indicated by a CFI directive.</span></span><br><span class="line">      <span class="comment">//</span></span><br><span class="line">      <span class="comment">// We set the SP here to the CFA, allowing for it to be overridden</span></span><br><span class="line">      <span class="comment">// by a CFI directive later on.</span></span><br><span class="line">      newRegisters.<span class="built_in">setSP</span>(cfa);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">typename</span> R::<span class="type">reg_t</span> returnAddress = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">constexpr</span> <span class="type">int</span> lastReg = R::<span class="built_in">lastDwarfRegNum</span>();</span><br><span class="line">      <span class="built_in">static_assert</span>(<span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(CFI_Parser&lt;A&gt;::kMaxRegisterNumber) &gt;=</span><br><span class="line">                        lastReg,</span><br><span class="line">                    <span class="string">&quot;register range too large&quot;</span>);</span><br><span class="line">      <span class="built_in">assert</span>(lastReg &gt;= (<span class="type">int</span>)cieInfo.returnAddressRegister &amp;&amp;</span><br><span class="line">             <span class="string">&quot;register range does not contain return address register&quot;</span>);</span><br><span class="line">      <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;= lastReg; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (prolog.savedRegisters[i].location !=</span><br><span class="line">            CFI_Parser&lt;A&gt;::kRegisterUnused) &#123;</span><br><span class="line">          <span class="keyword">if</span> (registers.<span class="built_in">validFloatRegister</span>(i))</span><br><span class="line">            newRegisters.<span class="built_in">setFloatRegister</span>(</span><br><span class="line">                i, <span class="built_in">getSavedFloatRegister</span>(addressSpace, registers, cfa,</span><br><span class="line">                                         prolog.savedRegisters[i]));</span><br><span class="line">          <span class="keyword">else</span> <span class="keyword">if</span> (registers.<span class="built_in">validVectorRegister</span>(i))</span><br><span class="line">            newRegisters.<span class="built_in">setVectorRegister</span>(</span><br><span class="line">                i, <span class="built_in">getSavedVectorRegister</span>(addressSpace, registers, cfa,</span><br><span class="line">                                          prolog.savedRegisters[i]));</span><br><span class="line">          <span class="keyword">else</span> <span class="keyword">if</span> (i == (<span class="type">int</span>)cieInfo.returnAddressRegister)</span><br><span class="line">            returnAddress = <span class="built_in">getSavedRegister</span>(addressSpace, registers, cfa,</span><br><span class="line">                                             prolog.savedRegisters[i]);</span><br><span class="line">          <span class="keyword">else</span> <span class="keyword">if</span> (registers.<span class="built_in">validRegister</span>(i))</span><br><span class="line">            newRegisters.<span class="built_in">setRegister</span>(</span><br><span class="line">                i, <span class="built_in">getSavedRegister</span>(addressSpace, registers, cfa,</span><br><span class="line">                                    prolog.savedRegisters[i]));</span><br><span class="line">          <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">return</span> UNW_EBADREG;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (i == (<span class="type">int</span>)cieInfo.returnAddressRegister) &#123;</span><br><span class="line">            <span class="comment">// Leaf function keeps the return address in register and there is no</span></span><br><span class="line">            <span class="comment">// explicit instructions how to restore it.</span></span><br><span class="line">            returnAddress = registers.<span class="built_in">getRegister</span>(cieInfo.returnAddressRegister);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      isSignalFrame = cieInfo.isSignalFrame;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(_LIBUNWIND_TARGET_AARCH64) &amp;&amp;                                      \</span></span><br><span class="line"><span class="meta">    !defined(_LIBUNWIND_TARGET_AARCH64_AUTHENTICATED_UNWINDING)</span></span><br><span class="line">      <span class="comment">// There are two ways of return address signing: pac-ret (enabled via</span></span><br><span class="line">      <span class="comment">// -mbranch-protection=pac-ret) and ptrauth-returns (enabled as part of</span></span><br><span class="line">      <span class="comment">// Apple&#x27;s arm64e or experimental pauthtest ABI on Linux). The code</span></span><br><span class="line">      <span class="comment">// below handles signed RA for pac-ret, while ptrauth-returns uses</span></span><br><span class="line">      <span class="comment">// different logic.</span></span><br><span class="line">      <span class="comment">// <span class="doctag">TODO:</span> unify logic for both cases, see</span></span><br><span class="line">      <span class="comment">// https://github.com/llvm/llvm-project/issues/160110</span></span><br><span class="line">      <span class="comment">//</span></span><br><span class="line">      <span class="comment">// If the target is aarch64 then the return address may have been signed</span></span><br><span class="line">      <span class="comment">// using the v8.3 pointer authentication extensions. The original</span></span><br><span class="line">      <span class="comment">// return address needs to be authenticated before the return address is</span></span><br><span class="line">      <span class="comment">// restored. autia1716 is used instead of autia as autia1716 assembles</span></span><br><span class="line">      <span class="comment">// to a NOP on pre-v8.3a architectures.</span></span><br><span class="line">      <span class="keyword">if</span> ((R::<span class="built_in">getArch</span>() == REGISTERS_ARM64) &amp;&amp;</span><br><span class="line">          <span class="built_in">isReturnAddressSigned</span>(addressSpace, registers, cfa, prolog) &amp;&amp;</span><br><span class="line">          returnAddress != <span class="number">0</span>) &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> !defined(_LIBUNWIND_IS_NATIVE_ONLY)</span></span><br><span class="line">        <span class="keyword">return</span> UNW_ECROSSRASIGNING;</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">        <span class="keyword">register</span> <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> x17 __asm(<span class="string">&quot;x17&quot;</span>) = returnAddress;</span><br><span class="line">        <span class="keyword">register</span> <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> x16 __asm(<span class="string">&quot;x16&quot;</span>) = cfa;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// We use the hint versions of the authentication instructions below to</span></span><br><span class="line">        <span class="comment">// ensure they&#x27;re assembled by the compiler even for targets with no</span></span><br><span class="line">        <span class="comment">// FEAT_PAuth/FEAT_PAuth_LR support.</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">isReturnAddressSignedWithPC</span>(addressSpace, registers, cfa, prolog)) &#123;</span><br><span class="line">          <span class="keyword">register</span> <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> x15 __asm(<span class="string">&quot;x15&quot;</span>) =</span><br><span class="line">              prolog.ptrAuthDiversifier;</span><br><span class="line">          <span class="keyword">if</span> (cieInfo.addressesSignedWithBKey) &#123;</span><br><span class="line">            <span class="built_in">asm</span>(<span class="string">&quot;hint 0x27\n\t&quot;</span> <span class="comment">// pacm</span></span><br><span class="line">                <span class="string">&quot;hint 0xe&quot;</span></span><br><span class="line">                : <span class="string">&quot;+r&quot;</span>(x17)</span><br><span class="line">                : <span class="string">&quot;r&quot;</span>(x16), <span class="string">&quot;r&quot;</span>(x15)); <span class="comment">// autib1716</span></span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">asm</span>(<span class="string">&quot;hint 0x27\n\t&quot;</span> <span class="comment">// pacm</span></span><br><span class="line">                <span class="string">&quot;hint 0xc&quot;</span></span><br><span class="line">                : <span class="string">&quot;+r&quot;</span>(x17)</span><br><span class="line">                : <span class="string">&quot;r&quot;</span>(x16), <span class="string">&quot;r&quot;</span>(x15)); <span class="comment">// autia1716</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="keyword">if</span> (cieInfo.addressesSignedWithBKey)</span><br><span class="line">            <span class="built_in">asm</span>(<span class="string">&quot;hint 0xe&quot;</span> : <span class="string">&quot;+r&quot;</span>(x17) : <span class="string">&quot;r&quot;</span>(x16)); <span class="comment">// autib1716</span></span><br><span class="line">          <span class="keyword">else</span></span><br><span class="line">            <span class="built_in">asm</span>(<span class="string">&quot;hint 0xc&quot;</span> : <span class="string">&quot;+r&quot;</span>(x17) : <span class="string">&quot;r&quot;</span>(x16)); <span class="comment">// autia1716</span></span><br><span class="line">        &#125;</span><br><span class="line">        returnAddress = x17;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">      &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(_LIBUNWIND_IS_NATIVE_ONLY) &amp;&amp; defined(_LIBUNWIND_TARGET_ARM) &amp;&amp;    \</span></span><br><span class="line"><span class="meta">    defined(__ARM_FEATURE_PAUTH)</span></span><br><span class="line">      <span class="keyword">if</span> ((R::<span class="built_in">getArch</span>() == REGISTERS_ARM) &amp;&amp;</span><br><span class="line">          prolog.savedRegisters[UNW_ARM_RA_AUTH_CODE].value) &#123;</span><br><span class="line">        <span class="type">pint_t</span> pac =</span><br><span class="line">            <span class="built_in">getSavedRegister</span>(addressSpace, registers, cfa,</span><br><span class="line">                             prolog.savedRegisters[UNW_ARM_RA_AUTH_CODE]);</span><br><span class="line">        __asm__ __volatile__(<span class="string">&quot;autg %0, %1, %2&quot;</span></span><br><span class="line">                             :</span><br><span class="line">                             : <span class="string">&quot;r&quot;</span>(pac), <span class="string">&quot;r&quot;</span>(returnAddress), <span class="string">&quot;r&quot;</span>(cfa)</span><br><span class="line">                             :);</span><br><span class="line">      &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(_LIBUNWIND_TARGET_SPARC)</span></span><br><span class="line">      <span class="keyword">if</span> (R::<span class="built_in">getArch</span>() == REGISTERS_SPARC) &#123;</span><br><span class="line">        <span class="comment">// Skip call site instruction and delay slot</span></span><br><span class="line">        returnAddress += <span class="number">8</span>;</span><br><span class="line">        <span class="comment">// Skip unimp instruction if function returns a struct</span></span><br><span class="line">        <span class="keyword">if</span> ((addressSpace.<span class="built_in">get32</span>(returnAddress) &amp; <span class="number">0xC1C00000</span>) == <span class="number">0</span>)</span><br><span class="line">          returnAddress += <span class="number">4</span>;</span><br><span class="line">      &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(_LIBUNWIND_TARGET_SPARC64)</span></span><br><span class="line">      <span class="comment">// Skip call site instruction and delay slot.</span></span><br><span class="line">      <span class="keyword">if</span> (R::<span class="built_in">getArch</span>() == REGISTERS_SPARC64)</span><br><span class="line">        returnAddress += <span class="number">8</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(_LIBUNWIND_TARGET_PPC64)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PPC64_ELFV1_R2_LOAD_INST_ENCODING 0xe8410028u <span class="comment">// ld r2,40(r1)</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PPC64_ELFV1_R2_OFFSET 40</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PPC64_ELFV2_R2_LOAD_INST_ENCODING 0xe8410018u <span class="comment">// ld r2,24(r1)</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PPC64_ELFV2_R2_OFFSET 24</span></span><br><span class="line">      <span class="comment">// If the instruction at return address is a TOC (r2) restore,</span></span><br><span class="line">      <span class="comment">// then r2 was saved and needs to be restored.</span></span><br><span class="line">      <span class="comment">// ELFv2 ABI specifies that the TOC Pointer must be saved at SP + 24,</span></span><br><span class="line">      <span class="comment">// while in ELFv1 ABI it is saved at SP + 40.</span></span><br><span class="line">      <span class="keyword">if</span> (R::<span class="built_in">getArch</span>() == REGISTERS_PPC64 &amp;&amp; returnAddress != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="type">pint_t</span> sp = newRegisters.<span class="built_in">getRegister</span>(UNW_REG_SP);</span><br><span class="line">        <span class="type">pint_t</span> r2 = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">switch</span> (addressSpace.<span class="built_in">get32</span>(returnAddress)) &#123;</span><br><span class="line">        <span class="keyword">case</span> PPC64_ELFV1_R2_LOAD_INST_ENCODING:</span><br><span class="line">          r2 = addressSpace.<span class="built_in">get64</span>(sp + PPC64_ELFV1_R2_OFFSET);</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> PPC64_ELFV2_R2_LOAD_INST_ENCODING:</span><br><span class="line">          r2 = addressSpace.<span class="built_in">get64</span>(sp + PPC64_ELFV2_R2_OFFSET);</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (r2)</span><br><span class="line">          newRegisters.<span class="built_in">setRegister</span>(UNW_PPC64_R2, r2);</span><br><span class="line">      &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">      <span class="comment">// Return address is address after call site instruction, so setting IP to</span></span><br><span class="line">      <span class="comment">// that does simulates a return.</span></span><br><span class="line">      newRegisters.<span class="built_in">setIP</span>(returnAddress);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Simulate the step by replacing the register set with the new ones.</span></span><br><span class="line">      registers = newRegisters;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> UNW_STEP_SUCCESS;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> UNW_EBADFRAME;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看着虽然长，但有很多是在抹平指令集的平台差异，实际的逻辑还算比较清晰：</p>
+<ul>
+<li><p><code>decodeFDE / parseFDEInstructions</code> 读 FDE （Frame Description Entry），解释执行 FDE 中的 DWARF 字节码，得到指定 PC 位置对应栈上保存的值的位置偏移量表<br>  <img src="/images/FHd2bbkXiot74ux7xVrcjHpAnGf.png" class="lazyload" data-srcset="/images/FHd2bbkXiot74ux7xVrcjHpAnGf.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"></p>
+</li>
+<li><p>拿到栈底基准地址</p>
+</li>
+<li><p>根据位置偏移量表获取到栈上保存的寄存器的所有值，恢复到拷贝的寄存器状态中</p>
+</li>
+<li><p>设置 IP 为 returnAddress（跳到上一层函数）</p>
+</li>
+<li><p>切换寄存器状态 register 为 newRegisters</p>
+</li>
+</ul>
+<h4 id="unw-get-proc-info"><a href="#unw-get-proc-info" class="headerlink" title="__unw_get_proc_info"></a>__unw_get_proc_info</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// Get unwind info at cursor position in stack frame.</span></span><br><span class="line">_LIBUNWIND_HIDDEN <span class="type">int</span> __unw_get_proc_info(<span class="type">unw_cursor_t</span> *cursor,</span><br><span class="line">                                          <span class="type">unw_proc_info_t</span> *info) &#123;</span><br><span class="line">  _LIBUNWIND_TRACE_API(<span class="string">&quot;__unw_get_proc_info(cursor=%p, &amp;info=%p)&quot;</span>,</span><br><span class="line">                       <span class="built_in">static_cast</span>&lt;<span class="type">void</span> *&gt;(cursor), <span class="built_in">static_cast</span>&lt;<span class="type">void</span> *&gt;(info));</span><br><span class="line">  AbstractUnwindCursor *co = (AbstractUnwindCursor *)cursor;</span><br><span class="line">  co-&gt;<span class="built_in">getInfo</span>(info);</span><br><span class="line">  <span class="keyword">if</span> (info-&gt;end_ip == <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> UNW_ENOINFO;</span><br><span class="line">  <span class="keyword">return</span> UNW_ESUCCESS;</span><br><span class="line">&#125;</span><br><span class="line">_LIBUNWIND_WEAK_ALIAS(__unw_get_proc_info, unw_get_proc_info)</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> A, <span class="keyword">typename</span> R&gt;</span><br><span class="line"><span class="type">bool</span> UnwindCursor&lt;A, R&gt;::<span class="built_in">getInfoFromDwarfSection</span>(</span><br><span class="line">    <span class="type">const</span> <span class="keyword">typename</span> R::<span class="type">link_reg_t</span> &amp;pc, <span class="type">const</span> UnwindInfoSections &amp;sects,</span><br><span class="line">    <span class="type">uint32_t</span> fdeSectionOffsetHint) &#123;</span><br><span class="line">  <span class="keyword">typename</span> CFI_Parser&lt;A&gt;::FDE_Info fdeInfo;</span><br><span class="line">  <span class="keyword">typename</span> CFI_Parser&lt;A&gt;::CIE_Info cieInfo;</span><br><span class="line">  <span class="type">bool</span> foundFDE = <span class="literal">false</span>;</span><br><span class="line">  <span class="type">bool</span> foundInCache = <span class="literal">false</span>;</span><br><span class="line">  <span class="comment">// If compact encoding table gave offset into dwarf section, go directly there</span></span><br><span class="line">  <span class="keyword">if</span> (fdeSectionOffsetHint != <span class="number">0</span>) &#123;</span><br><span class="line">    foundFDE = CFI_Parser&lt;A&gt;::<span class="built_in">findFDE</span>(_addressSpace, pc, sects.dwarf_section,</span><br><span class="line">                                    sects.dwarf_section_length,</span><br><span class="line">                                    sects.dwarf_section + fdeSectionOffsetHint,</span><br><span class="line">                                    &amp;fdeInfo, &amp;cieInfo);</span><br><span class="line">  &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(_LIBUNWIND_SUPPORT_DWARF_INDEX)</span></span><br><span class="line">  <span class="keyword">if</span> (!foundFDE &amp;&amp; (sects.dwarf_index_section != <span class="number">0</span>)) &#123;</span><br><span class="line">    foundFDE = EHHeaderParser&lt;A&gt;::<span class="built_in">findFDE</span>(</span><br><span class="line">        _addressSpace, pc, sects.dwarf_index_section,</span><br><span class="line">        (<span class="type">uint32_t</span>)sects.dwarf_index_section_length, &amp;fdeInfo, &amp;cieInfo);</span><br><span class="line">  &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">  <span class="keyword">if</span> (!foundFDE) &#123;</span><br><span class="line">    <span class="comment">// otherwise, search cache of previously found FDEs.</span></span><br><span class="line">    <span class="type">pint_t</span> cachedFDE = DwarfFDECache&lt;A&gt;::<span class="built_in">findFDE</span>(sects.dso_base, pc);</span><br><span class="line">    <span class="keyword">if</span> (cachedFDE != <span class="number">0</span>) &#123;</span><br><span class="line">      foundFDE =</span><br><span class="line">          CFI_Parser&lt;A&gt;::<span class="built_in">findFDE</span>(_addressSpace, pc, sects.dwarf_section,</span><br><span class="line">                                 sects.dwarf_section_length,</span><br><span class="line">                                 cachedFDE, &amp;fdeInfo, &amp;cieInfo);</span><br><span class="line">      foundInCache = foundFDE;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (!foundFDE) &#123;</span><br><span class="line">    <span class="comment">// Still not found, do full scan of __eh_frame section.</span></span><br><span class="line">    foundFDE = CFI_Parser&lt;A&gt;::<span class="built_in">findFDE</span>(_addressSpace, pc, sects.dwarf_section,</span><br><span class="line">                                      sects.dwarf_section_length, <span class="number">0</span>,</span><br><span class="line">                                      &amp;fdeInfo, &amp;cieInfo);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (foundFDE) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">getInfoFromFdeCie</span>(fdeInfo, cieInfo, pc, sects.dso_base)) &#123;</span><br><span class="line">      <span class="comment">// Add to cache (to make next lookup faster) if we had no hint</span></span><br><span class="line">      <span class="comment">// and there was no index.</span></span><br><span class="line">      <span class="keyword">if</span> (!foundInCache &amp;&amp; (fdeSectionOffsetHint == <span class="number">0</span>)) &#123;</span><br><span class="line">  <span class="meta">#<span class="keyword">if</span> defined(_LIBUNWIND_SUPPORT_DWARF_INDEX)</span></span><br><span class="line">        <span class="keyword">if</span> (sects.dwarf_index_section == <span class="number">0</span>)</span><br><span class="line">  <span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">        DwarfFDECache&lt;A&gt;::<span class="built_in">add</span>(sects.dso_base, fdeInfo.pcStart, fdeInfo.pcEnd,</span><br><span class="line">                              fdeInfo.fdeStart);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//_LIBUNWIND_DEBUG_LOG(&quot;can&#x27;t find/use FDE for pc=0x%llX&quot;, (uint64_t)pc);</span></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码主要是在查找 FDE 头：</p>
+<ul>
+<li><p>如果有 <code>fdeSectionOffsetHint</code>，直接根据 <code>fdeSectionOffsetHint</code> 查找</p>
+</li>
+<li><p>如果没有，利用 <code>.eh_frame_hdr</code> 查找</p>
+</li>
+<li><p>如果没有，则从缓存中查找，如果这个函数之前 unwind 过，则会被 libunwind 在内存中记录下来</p>
+</li>
+<li><p>如果缓存中仍然找不到，则全量扫描一遍 <code>.eh_frame</code></p>
+</li>
+<li><p>拿到后解析信息并将结果设置到缓存</p>
+</li>
+</ul>
+<h4 id="get-handler-function"><a href="#get-handler-function" class="headerlink" title="get_handler_function"></a>get_handler_function</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">unw_proc_info_t</span> &#123;</span></span><br><span class="line">  <span class="type">unw_word_t</span> __ptrauth_unwind_upi_startip start_ip; <span class="comment">/* start address of function */</span></span><br><span class="line">  <span class="type">unw_word_t</span> __ptrauth_unwind_upi_endip end_ip;     <span class="comment">/* address after end of function */</span></span><br><span class="line">  <span class="type">unw_word_t</span> __ptrauth_unwind_upi_lsda lsda;        <span class="comment">/* address of language specific data area, */</span></span><br><span class="line">                                                    <span class="comment">/* or zero if not used */</span></span><br><span class="line"></span><br><span class="line">  <span class="type">unw_word_t</span> __ptrauth_unwind_upi_handler_intptr handler;</span><br><span class="line">  <span class="type">unw_word_t</span>  gp;                                   <span class="comment">/* not used */</span></span><br><span class="line">  <span class="type">unw_word_t</span> __ptrauth_unwind_upi_flags flags;      <span class="comment">/* not used */</span></span><br><span class="line">  <span class="type">uint32_t</span>   format;                                <span class="comment">/* compact unwind encoding, or zero if none */</span></span><br><span class="line">  <span class="type">uint32_t</span>   unwind_info_size;                      <span class="comment">/* size of DWARF unwind info, or zero if none */</span></span><br><span class="line">  <span class="type">unw_word_t</span> __ptrauth_unwind_upi_info unwind_info; <span class="comment">/* address of DWARF unwind info, or zero */</span></span><br><span class="line">  <span class="type">unw_word_t</span> __ptrauth_unwind_upi_extra extra;      <span class="comment">/* mach_header of mach-o image containing func */</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> _Unwind_Personality_Fn <span class="title function_">get_handler_function</span><span class="params">(<span class="type">unw_proc_info_t</span> *frameInfo)</span> &#123;</span><br><span class="line">  <span class="type">uintptr_t</span> __unwind_ptrauth_restricted_intptr(ptrauth_key_function_pointer,</span><br><span class="line">                                               <span class="number">0</span>,</span><br><span class="line">                                               ptrauth_function_pointer_type_discriminator(_Unwind_Personality_Fn))</span><br><span class="line">    reauthenticatedIntegerHandler = frameInfo-&gt;handler;</span><br><span class="line">  _Unwind_Personality_Fn handler;</span><br><span class="line">  memmove(&amp;handler, (<span class="type">void</span> *)&amp;reauthenticatedIntegerHandler,</span><br><span class="line">          <span class="keyword">sizeof</span>(_Unwind_Personality_Fn));</span><br><span class="line">  <span class="keyword">return</span> handler;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从 FDE 头中拿到 handler 代码段，将其拷贝并返回，看起来 handler 代码段应该是固定长度，可以 alloc 在栈上。</p>
+<h3 id="clean-up-phase"><a href="#clean-up-phase" class="headerlink" title="clean up phase"></a>clean up phase</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> _Unwind_Reason_Code</span></span><br><span class="line"><span class="function"><span class="title">unwind_phase2</span><span class="params">(<span class="type">unw_context_t</span> *uc, <span class="type">unw_cursor_t</span> *cursor,</span></span></span><br><span class="line"><span class="params"><span class="function">              _Unwind_Exception *exception_object)</span> </span>&#123;</span><br><span class="line">  __unw_init_local(cursor, uc);</span><br><span class="line"></span><br><span class="line">  _LIBUNWIND_TRACE_UNWINDING(<span class="string">&quot;unwind_phase2(ex_obj=%p)&quot;</span>,</span><br><span class="line">                             (<span class="type">void</span> *)exception_object);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// uc is initialized by __unw_getcontext in the parent frame. The first stack</span></span><br><span class="line">  <span class="comment">// frame walked is unwind_phase2.</span></span><br><span class="line">  <span class="type">unsigned</span> framesWalked = <span class="number">1</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(_LIBUNWIND_USE_CET)</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">long</span> shadowStackTop = _get_ssp();</span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> defined(_LIBUNWIND_USE_GCS)</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">long</span> shadowStackTop = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">if</span> (__chkfeat(_CHKFEAT_GCS))</span><br><span class="line">    shadowStackTop = (<span class="type">unsigned</span> <span class="type">long</span>)__gcspr();</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">  <span class="comment">// Walk each frame until we reach where search phase said to stop.</span></span><br><span class="line">  <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Ask libunwind to get next frame (skip over first which is</span></span><br><span class="line">    <span class="comment">// _Unwind_RaiseException).</span></span><br><span class="line">    <span class="type">int</span> stepResult = __unw_step_stage2(cursor);</span><br><span class="line">    <span class="keyword">if</span> (stepResult == <span class="number">0</span>) &#123;</span><br><span class="line">      _LIBUNWIND_TRACE_UNWINDING(</span><br><span class="line">          <span class="string">&quot;unwind_phase2(ex_obj=%p): __unw_step_stage2() reached &quot;</span></span><br><span class="line">          <span class="string">&quot;bottom =&gt; _URC_END_OF_STACK&quot;</span>,</span><br><span class="line">          (<span class="type">void</span> *)exception_object);</span><br><span class="line">      <span class="keyword">return</span> _URC_END_OF_STACK;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (stepResult &lt; <span class="number">0</span>) &#123;</span><br><span class="line">      _LIBUNWIND_TRACE_UNWINDING(</span><br><span class="line">          <span class="string">&quot;unwind_phase2(ex_obj=%p): __unw_step_stage2 failed =&gt; &quot;</span></span><br><span class="line">          <span class="string">&quot;_URC_FATAL_PHASE1_ERROR&quot;</span>,</span><br><span class="line">          (<span class="type">void</span> *)exception_object);</span><br><span class="line">      <span class="keyword">return</span> _URC_FATAL_PHASE2_ERROR;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get info about this frame.</span></span><br><span class="line">    <span class="type">unw_word_t</span> sp;</span><br><span class="line">    <span class="type">unw_proc_info_t</span> frameInfo;</span><br><span class="line">    __unw_get_reg(cursor, UNW_REG_SP, &amp;sp);</span><br><span class="line">    <span class="keyword">if</span> (__unw_get_proc_info(cursor, &amp;frameInfo) != UNW_ESUCCESS) &#123;</span><br><span class="line">      _LIBUNWIND_TRACE_UNWINDING(</span><br><span class="line">          <span class="string">&quot;unwind_phase2(ex_obj=%p): __unw_get_proc_info &quot;</span></span><br><span class="line">          <span class="string">&quot;failed =&gt; _URC_FATAL_PHASE1_ERROR&quot;</span>,</span><br><span class="line">          (<span class="type">void</span> *)exception_object);</span><br><span class="line">      <span class="keyword">return</span> _URC_FATAL_PHASE2_ERROR;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> NDEBUG</span></span><br><span class="line">    <span class="comment">// When tracing, print state information.</span></span><br><span class="line">    <span class="keyword">if</span> (_LIBUNWIND_TRACING_UNWINDING) &#123;</span><br><span class="line">      <span class="type">char</span> functionBuf[<span class="number">512</span>];</span><br><span class="line">      <span class="type">const</span> <span class="type">char</span> *functionName = functionBuf;</span><br><span class="line">      <span class="type">unw_word_t</span> offset;</span><br><span class="line">      <span class="keyword">if</span> ((__unw_get_proc_name(cursor, functionBuf, <span class="built_in">sizeof</span>(functionBuf),</span><br><span class="line">                               &amp;offset) != UNW_ESUCCESS) ||</span><br><span class="line">          (frameInfo.start_ip + offset &gt; frameInfo.end_ip))</span><br><span class="line">        functionName = <span class="string">&quot;.anonymous.&quot;</span>;</span><br><span class="line">      _LIBUNWIND_TRACE_UNWINDING(<span class="string">&quot;unwind_phase2(ex_obj=%p): start_ip=0x%&quot;</span> PRIxPTR</span><br><span class="line">                                 <span class="string">&quot;, func=%s, sp=0x%&quot;</span> PRIxPTR <span class="string">&quot;, lsda=0x%&quot;</span> PRIxPTR</span><br><span class="line">                                 <span class="string">&quot;, personality=0x%&quot;</span> PRIxPTR,</span><br><span class="line">                                 (<span class="type">void</span> *)exception_object, frameInfo.start_ip,</span><br><span class="line">                                 functionName, sp, frameInfo.lsda,</span><br><span class="line">                                 frameInfo.handler);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// In shadow stack enabled environment, we check return address stored in normal</span></span><br><span class="line"><span class="comment">// stack against return address stored in shadow stack, if the 2 addresses don&#x27;t</span></span><br><span class="line"><span class="comment">// match, it means return address in normal stack has been corrupted, we return</span></span><br><span class="line"><span class="comment">// _URC_FATAL_PHASE2_ERROR.</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(_LIBUNWIND_USE_CET) || defined(_LIBUNWIND_USE_GCS)</span></span><br><span class="line">    <span class="keyword">if</span> (shadowStackTop != <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="type">unw_word_t</span> retInNormalStack;</span><br><span class="line">      __unw_get_reg(cursor, UNW_REG_IP, &amp;retInNormalStack);</span><br><span class="line">      <span class="type">unsigned</span> <span class="type">long</span> retInShadowStack =</span><br><span class="line">          *(<span class="type">unsigned</span> <span class="type">long</span> *)(shadowStackTop + __shstk_step_size * framesWalked);</span><br><span class="line">      <span class="keyword">if</span> (retInNormalStack != retInShadowStack)</span><br><span class="line">        <span class="keyword">return</span> _URC_FATAL_PHASE2_ERROR;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    ++framesWalked;</span><br><span class="line">    <span class="comment">// If there is a personality routine, tell it we are unwinding.</span></span><br><span class="line">    <span class="keyword">if</span> (frameInfo.handler != <span class="number">0</span>) &#123;</span><br><span class="line">      _Unwind_Personality_Fn p = <span class="built_in">get_handler_function</span>(&amp;frameInfo);</span><br><span class="line">      _Unwind_Action action = _UA_CLEANUP_PHASE;</span><br><span class="line">      <span class="keyword">if</span> (sp == exception_object-&gt;private_2) &#123;</span><br><span class="line">        <span class="comment">// Tell personality this was the frame it marked in phase 1.</span></span><br><span class="line">        action = (_Unwind_Action)(_UA_CLEANUP_PHASE | _UA_HANDLER_FRAME);</span><br><span class="line">      &#125;</span><br><span class="line">       _Unwind_Reason_Code personalityResult =</span><br><span class="line">          (*p)(<span class="number">1</span>, action, exception_object-&gt;exception_class, exception_object,</span><br><span class="line">               (<span class="keyword">struct</span> _Unwind_Context *)(cursor));</span><br><span class="line">      <span class="keyword">switch</span> (personalityResult) &#123;</span><br><span class="line">      <span class="keyword">case</span> _URC_CONTINUE_UNWIND:</span><br><span class="line">        <span class="comment">// Continue unwinding</span></span><br><span class="line">        _LIBUNWIND_TRACE_UNWINDING(</span><br><span class="line">            <span class="string">&quot;unwind_phase2(ex_obj=%p): _URC_CONTINUE_UNWIND&quot;</span>,</span><br><span class="line">            (<span class="type">void</span> *)exception_object);</span><br><span class="line">        <span class="keyword">if</span> (sp == exception_object-&gt;private_2) &#123;</span><br><span class="line">          <span class="comment">// Phase 1 said we would stop at this frame, but we did not...</span></span><br><span class="line">          _LIBUNWIND_ABORT(<span class="string">&quot;during phase1 personality function said it would &quot;</span></span><br><span class="line">                           <span class="string">&quot;stop here, but now in phase2 it did not stop here&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> _URC_INSTALL_CONTEXT:</span><br><span class="line">        _LIBUNWIND_TRACE_UNWINDING(</span><br><span class="line">            <span class="string">&quot;unwind_phase2(ex_obj=%p): _URC_INSTALL_CONTEXT&quot;</span>,</span><br><span class="line">            (<span class="type">void</span> *)exception_object);</span><br><span class="line">        <span class="comment">// Personality routine says to transfer control to landing pad.</span></span><br><span class="line">        <span class="comment">// We may get control back if landing pad calls _Unwind_Resume().</span></span><br><span class="line">        <span class="keyword">if</span> (_LIBUNWIND_TRACING_UNWINDING) &#123;</span><br><span class="line">          <span class="type">unw_word_t</span> pc;</span><br><span class="line">          __unw_get_reg(cursor, UNW_REG_IP, &amp;pc);</span><br><span class="line">          __unw_get_reg(cursor, UNW_REG_SP, &amp;sp);</span><br><span class="line">          _LIBUNWIND_TRACE_UNWINDING(<span class="string">&quot;unwind_phase2(ex_obj=%p): re-entering &quot;</span></span><br><span class="line">                                     <span class="string">&quot;user code with ip=0x%&quot;</span> PRIxPTR</span><br><span class="line">                                     <span class="string">&quot;, sp=0x%&quot;</span> PRIxPTR,</span><br><span class="line">                                     (<span class="type">void</span> *)exception_object, pc, sp);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        __unw_phase2_resume(cursor, framesWalked);</span><br><span class="line">        <span class="comment">// __unw_phase2_resume() only returns if there was an error.</span></span><br><span class="line">        <span class="keyword">return</span> _URC_FATAL_PHASE2_ERROR;</span><br><span class="line">      <span class="keyword">default</span>:</span><br><span class="line">        <span class="comment">// Personality routine returned an unknown result code.</span></span><br><span class="line">        _LIBUNWIND_DEBUG_LOG(<span class="string">&quot;personality function returned unknown result %d&quot;</span>,</span><br><span class="line">                             personalityResult);</span><br><span class="line">        <span class="keyword">return</span> _URC_FATAL_PHASE2_ERROR;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Clean up phase did not resume at the frame that the search phase</span></span><br><span class="line">  <span class="comment">// said it would...</span></span><br><span class="line">  <span class="keyword">return</span> _URC_FATAL_PHASE2_ERROR;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>向下遍历栈帧</p>
+</li>
+<li><p>获取当前栈帧信息 (<code>__unw_get_proc_info</code>)</p>
+</li>
+<li><p>如果当前栈帧有 handler（即有 catch clause 或需要析构的 RAII 对象），则执行这个 handler</p>
+</li>
+<li><p>如果是 catch 代码块，会直接通过修改 IP 跳转到 catch 块，所以函数不会返回。</p>
+</li>
+<li><p>如果是析构 RAII object，也会通过 <code>__unw_phase2_resume</code> 跳转到 landing pad，执行析构函数后调用 <code>_Unwind_Resume</code> 跳回 Unwinder。</p>
+</li>
+</ul>
+<h4 id="unw-step-stage2"><a href="#unw-step-stage2" class="headerlink" title="__unw_step_stage2"></a>__unw_step_stage2</h4><p>跟前面 <code>_unw_step</code> 其实是一样的，只是 arm64 架构会有特殊处理。</p>
+<h4 id="unw-phase2-resume"><a href="#unw-phase2-resume" class="headerlink" title="__unw_phase2_resume"></a>__unw_phase2_resume</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#define <span class="title function_">__unw_phase2_resume</span><span class="params">(cursor, payload)</span>                                   \</span><br><span class="line">  <span class="keyword">do</span> &#123;                                                                         \</span><br><span class="line">    _LIBUNWIND_POP_SHSTK_SSP((payload));                                       \</span><br><span class="line">    <span class="keyword">void</span> *shstkRegContext = __libunwind_shstk_get_registers((cursor));         \</span><br><span class="line">    <span class="keyword">void</span> *shstkJumpAddress = __libunwind_shstk_get_jump_target();              \</span><br><span class="line">    __asm__ <span class="title function_">volatile</span><span class="params">(<span class="string">&quot;mov x0, %0\n\t&quot;</span>                                          \</span></span><br><span class="line"><span class="params">                     <span class="string">&quot;mov x1, #0\n\t&quot;</span>                                         \</span></span><br><span class="line"><span class="params">                     <span class="string">&quot;br %1\n\t&quot;</span>                                               \</span></span><br><span class="line"><span class="params">                     :                                                         \</span></span><br><span class="line"><span class="params">                     : <span class="string">&quot;r&quot;</span>(shstkRegContext)</span>, <span class="string">&quot;r&quot;</span>(shstkJumpAddress)             \</span><br><span class="line">                     : <span class="string">&quot;x0&quot;</span>, <span class="string">&quot;x1&quot;</span>);                                            \</span><br><span class="line">  &#125; <span class="keyword">while</span> (<span class="number">0</span>)</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p><code>__unw_phase2_resume</code> 是一个宏，会跳到一个 trampoline，trampoline 会把 x0 中保存的寄存器状态（即 shstkRegContext）恢复到寄存器（包括 ip），此时就算成功跳转到 Landing Pad 了。</p>
+<h2 id="Landing-pad"><a href="#Landing-pad" class="headerlink" title="Landing pad"></a>Landing pad</h2><p>Landing pad 中执行完析构函数后，会调用 <code>_Unwind_Resume</code> 跳转回 unwind 逻辑。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">_LIBUNWIND_EXPORT <span class="type">void</span></span><br><span class="line">_Unwind_Resume(_Unwind_Exception *exception_object) &#123;</span><br><span class="line">  _LIBUNWIND_TRACE_API(<span class="string">&quot;_Unwind_Resume(ex_obj=%p)&quot;</span>, (<span class="type">void</span> *)exception_object);</span><br><span class="line">  <span class="type">unw_context_t</span> uc;</span><br><span class="line">  <span class="type">unw_cursor_t</span> cursor;</span><br><span class="line">  __unw_getcontext(&amp;uc);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (exception_object-&gt;private_1 != <span class="number">0</span>)</span><br><span class="line">    <span class="built_in">unwind_phase2_forced</span>(&amp;uc, &amp;cursor, exception_object,</span><br><span class="line">                         (_Unwind_Stop_Fn) exception_object-&gt;private_1,</span><br><span class="line">                         (<span class="type">void</span> *)exception_object-&gt;private_2);</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="built_in">unwind_phase2</span>(&amp;uc, &amp;cursor, exception_object);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Clients assume _Unwind_Resume() does not return, so all we can do is abort.</span></span><br><span class="line">  _LIBUNWIND_ABORT(<span class="string">&quot;_Unwind_Resume() can&#x27;t return&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其实就是重新调用了一下 <code>unwind_phase2</code> ，因为 <code>unwind_phase2</code> 里面是一个死循环的结构，所以恢复只需要再次调用就可以了，<del><em>想到了 Kotlin 协程，思路挺像的。</em></del></p>
+<p>至于参数就获取当前的寄存器快照就可以了，当前的sp其实就在当前 Landing pad 对应栈帧的下面一个栈帧，是 Landing pad 这个函数自己开辟的。</p>
+<p>将这个寄存器快照传给 <code>unwind_phase2</code>，它所做的第一件事就是往上找一层，就找到了当前 Landing pad 对应的栈帧。</p>
+<p><code>unwind_phase2</code> 是通过 IP 来查找对应的 handler 的，当从 Landing pad 调用 <code>unwind_phase2</code> 时，IP 已经位于函数的末尾（Landing pad 就位于函数的末尾），所以会直接放行，不会查到第一次进入时 handler。</p>
+<h2 id="AI-生成的流程图"><a href="#AI-生成的流程图" class="headerlink" title="AI 生成的流程图"></a>AI 生成的流程图</h2>
+  </div>
+  
+  
+    
+    <div class='footer'>
+       <!-- 参考资料、相关资料等 -->
+      
+       <!-- 相关文章 -->
+      
+      <!-- 版权声明组件 -->
+      
+      <!-- 打赏组件 -->
+      
+    </div>
+  
+  
+    
+
+
+  <div class='article-meta' id="bottom">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateModified" datetime="2025-12-03T09:01:26+00:00">
+  <a class='notlink'>
+    <i class="fa-solid fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：2025年12月3日</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+  
+  
+  
+  <div class="new-meta-item meta-tags"><a class="tag" href="/tags/RTFSC/" rel="nofollow"><i class="fa-solid fa-hashtag fa-fw" aria-hidden="true"></i><p>RTFSC</p></a></div> <div class="new-meta-item meta-tags"><a class="tag" href="/tags/C/" rel="nofollow"><i class="fa-solid fa-hashtag fa-fw" aria-hidden="true"></i><p>C++</p></a></div>
+  <span hidden itemprop="keywords">RTFSC C++</span>
+  
+
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://blog.coldrain.ink/2025/12/03/JGovdEiMao12nKx50rlclssinGb/&title=C++ stack unwinding - Hiyasame&summary="
+          
+          >
+          
+            <img src="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qq.png" class="lazyload" data-srcset="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qq.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://blog.coldrain.ink/2025/12/03/JGovdEiMao12nKx50rlclssinGb/&title=C++ stack unwinding - Hiyasame&summary="
+          
+          >
+          
+            <img src="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qzone.png" class="lazyload" data-srcset="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qzone.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://service.weibo.com/share/share.php?url=http://blog.coldrain.ink/2025/12/03/JGovdEiMao12nKx50rlclssinGb/&title=C++ stack unwinding - Hiyasame&summary="
+          
+          >
+          
+            <img src="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/weibo.png" class="lazyload" data-srcset="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/weibo.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+          
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+    <!-- Custom Files bottomMeta begin -->
+    
+    <!-- Custom Files bottomMeta end -->
+  </div>
+
+
+  
+  
+
+  
+    <div class="prev-next">
+      
+      
+        <a class='next' href='/2025/11/30/Y8zQdAX1Poif9Xxib1JcmQBEn0f/'>
+          <p class='title'>Linux epoll 实现原理 <i class="fa-solid fa-chevron-right" aria-hidden="true"></i></p>
+          <p class='content'>
+本文参考的内核源码版本为 5.15
+
+在 linux 内核项目中，epoll 机制的实现只用了一个文件 fs/eventpull.c 不过这一个文件就有 2000+ 行代码
+先从我们熟知的 e...</p>
+        </a>
+      
+    </div>
+  
+  <!-- 文章推荐 -->
+  
+  
+  <!-- Custom Files postEnd begin-->
+  
+  <!-- Custom Files postEnd end-->
+</article>
+
+
+  
+
+
+  <article class="post white-box shadow floatable blur" id="comments">
+    <span hidden>
+      <meta itemprop="discussionUrl" content="/2025/12/03/JGovdEiMao12nKx50rlclssinGb/index.html#comments">
+    </span>
+    <p ct><i class='fa-solid fa-comments'></i> 评论</p>
+    
+
+    <div id="layoutHelper-comments"></div>
+
+  </article>
+
+
+
+
+
+
+</div>
+<aside id='l_side' itemscope itemtype="https://schema.org.cn/WPSideBar">
+  
+
+  
+    
+    
+      
+    
+  
+
+
+<div class="widget-sticky">
+
+  
+  
+
+
+<section class="widget toc-wrapper desktop mobile" id="toc-div" >
+  
+  <header>
+    
+      <i class="fa-solid fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+  <div class='content'>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#cxa-throw"><span class="toc-text">__cxa_throw</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Unwind-RaiseException"><span class="toc-text">_Unwind_RaiseException</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#search-phase"><span class="toc-text">search phase</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#unw-step"><span class="toc-text">__unw_step</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#unw-get-proc-info"><span class="toc-text">__unw_get_proc_info</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#get-handler-function"><span class="toc-text">get_handler_function</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#clean-up-phase"><span class="toc-text">clean up phase</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#unw-step-stage2"><span class="toc-text">__unw_step_stage2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#unw-phase2-resume"><span class="toc-text">__unw_phase2_resume</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Landing-pad"><span class="toc-text">Landing pad</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AI-%E7%94%9F%E6%88%90%E7%9A%84%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-text">AI 生成的流程图</span></a></li></ol>
+  </div>
+</section>
+
+  
+
+</div>
+
+  <!-- Custom Files side begin -->
+  
+  <!-- Custom Files side end -->
+</aside>
+
+
+
+        </div>
+        
+  
+  <footer class="footer clearfix"  itemscope itemtype="https://schema.org.cn/WPFooter">
+    <br><br>
+    
+      
+        <div class="aplayer-container">
+          
+
+
+        </div>
+      
+    
+      
+        <br>
+        <div class="social-wrapper" itemprop="about" itemscope itemtype="https://schema.org.cn/Thing">
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      
+    
+      
+        <div><p>博客内容遵循 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</a></p>
+</div>
+      
+    
+      
+        本站使用
+        <a href="https://github.com/volantis-x/hexo-theme-volantis/#6.0.0-alpha.1" target="_blank" class="codename">Volantis</a>
+        作为主题
+      
+    
+      
+        <div class='copyright'>
+        <p><a href="/">Copyright © since 2017 XXX</a></p>
+
+        </div>
+      
+    
+    <!-- Custom Files footer begin-->
+    
+    <!-- Custom Files footer end-->
+  </footer>
+
+
+        <a id="s-top" class="fa-solid fa-arrow-up fa-fw" title="top"></a>
+      </div>
+    </div>
+    <div>
+      <script>
+  /******************** volantis.dom ********************************/
+  // 页面选择器 将dom对象缓存起来 see: /source/js/app.js etc.
+  volantis.dom.bodyAnchor = volantis.dom.$(document.getElementById("safearea")); // 页面主体
+  volantis.dom.topBtn = volantis.dom.$(document.getElementById('s-top')); // 向上
+  volantis.dom.wrapper = volantis.dom.$(document.getElementById('wrapper')); // 整个导航栏
+  volantis.dom.coverAnchor = volantis.dom.$(document.querySelector('#l_cover .cover-wrapper')); // 1个
+  volantis.dom.switcher = volantis.dom.$(document.querySelector('#l_header .switcher .s-search')); // 搜索按钮   移动端 1个
+  volantis.dom.header = volantis.dom.$(document.getElementById('l_header')); // 移动端导航栏
+  volantis.dom.search = volantis.dom.$(document.querySelector('#l_header .m_search')); // 搜索框 桌面端 移动端 1个
+  volantis.dom.mPhoneList = volantis.dom.$(document.querySelectorAll('#l_header .m-phone .list-v')); //  手机端 子菜单 多个
+</script>
+
+<script>
+  
+  volantis.css("https://unpkg.com/@fortawesome/fontawesome-free@6.6.0/css/all.min.css");
+  
+  
+  
+</script>
+
+<!-- required -->
+
+
+<!-- internal -->
+
+<script src="/js/app.js"></script>
+
+
+
+
+<!-- rightmenu要在darkmode之前（ToggleButton） darkmode要在comments之前（volantis.dark.push）-->
+
+
+
+<script>
+  function loadIssuesJS() {
+    
+      const sites_api = document.getElementById('sites-api');
+      if (sites_api != undefined && typeof SitesJS === 'undefined') {
+        volantis.js("/js/plugins/tags/sites.js")
+      }
+    
+    
+      const friends_api = document.getElementById('friends-api');
+      if (friends_api != undefined && typeof FriendsJS === 'undefined') {
+        volantis.js("/js/plugins/tags/friends.js")
+      }
+    
+    
+      const fpostsjs = document.getElementById('fposts-api');
+      if (fpostsjs != undefined && typeof FpostsJS === 'undefined') {
+        volantis.js("/js/plugins/tags/fposts.js")
+      }
+    
+    
+      const contributors_api = document.getElementById('contributors-api');
+      if (contributors_api != undefined && typeof ContributorsJS === 'undefined') {
+        volantis.js("/js/plugins/tags/contributors.js")
+      }
+    
+  };
+  loadIssuesJS()
+</script>
+
+
+
+
+  <script defer src="https://unpkg.com/vanilla-lazyload@19.1.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 0
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    lazyLoadInstance.update();
+  });
+</script>
+
+
+
+
+  
+
+<script>
+  window.FPConfig = {
+	delay: 0,
+	ignoreKeywords: ["#"],
+	maxRPS: 6,
+	hoverDelay: 0
+  };
+</script>
+<script defer src="https://unpkg.com/volantis-static@0.0.1660614606622/libs/flying-pages/flying-pages.min.js"></script>
+
+
+
+
+
+
+
+
+
+      <script>
+  volantis.layoutHelper("comments",`<div id="giscus_container"></div>`)
+
+  volantis.giscus = {};
+
+  function check_giscus() {
+    if (volantis.dark.mode === "dark") {
+      volantis.giscus.Theme = 'dark';
+    } else {
+      volantis.giscus.Theme = 'light';
+    }
+
+    return document.getElementById("giscus_container");
+  }
+
+  function p_giscus() {
+    const HEAD = check_giscus();
+    if (!HEAD) return;
+    let cfg = Object.assign({"theme":{"light":"light","dark":"dark"},"repo":"hiyasame/blog","repo-id":"R_kgDOJ0zR2Q","category":"Announcements","category-id":"DIC_kwDOJ0zR2c4CuQGx","mapping":"title","reactions-enabled":"1","emit-metadata":"0","lang":"zh-CN"},pdata.commentConfig)
+    const script = document.createElement('script');
+    script.setAttribute('src', 'https://giscus.app/client.js');
+    Object.keys(cfg).forEach(k=>{
+      if (k != "theme") {
+        script.setAttribute('data-'+k, cfg[k]);
+      }
+    })
+    script.setAttribute('data-theme', volantis.giscus.Theme);
+    script.setAttribute('crossorigin', "anonymous");
+    HEAD.appendChild(script);
+  }
+
+  function dark_giscus() {
+    const HEAD = check_giscus();
+    if (!HEAD) return;
+
+    const message = {
+      setConfig: {
+        theme: volantis.giscus.Theme
+      }
+    };
+    const giscusIframe = document.querySelector('iframe.giscus-frame');
+    giscusIframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+  }
+  p_giscus();
+  volantis.dark.push(dark_giscus);
+</script>
+
+    
+
+
+
+
+
+<!-- optional -->
+
+  <script>
+  async function loadSearchScript() {
+    
+        
+    
+    return volantis.js("/js/search/hexo.js");
+  }
+
+  function loadSearchService() {
+    loadSearchScript();
+    document.querySelectorAll(".input.u-search-input").forEach((e) => {
+      e.removeEventListener("focus", loadSearchService, false);
+    });
+
+    document.querySelectorAll(".u-search-form").forEach((e) => {
+      e.addEventListener("submit", (event) => {
+        event.preventDefault();
+      }, false);
+    });
+  }
+
+  // 打开并搜索 字符串 s
+  function OpenSearch(s) {
+    if (typeof SearchService === 'undefined')
+      loadSearchScript().then(() => {
+        SearchService.setQueryText(s);
+        SearchService.search();
+      });
+    else {
+      SearchService.setQueryText(s);
+      SearchService.search();
+    }
+  }
+
+  // 访问含有 ?s=xxx  的链接时打开搜索 // 与搜索引擎 structured data 相关: /scripts/helpers/structured-data/lib/config.js
+  if (window.location.search && /^\?s=/g.test(window.location.search)) {
+    let queryText = decodeURI(window.location.search)
+      .replace(/\ /g, "-")
+      .replace(/^\?s=/g, "");
+    OpenSearch(queryText);
+  }
+
+  // 搜索输入框获取焦点时加载搜索
+  document.querySelectorAll(".input.u-search-input").forEach((e) => {
+    e.addEventListener("focus", loadSearchService, false);
+  });
+</script>
+
+
+
+
+
+
+
+  <script>
+
+
+
+  function p_highlightjs_copyCode(){
+    if (!(document.querySelector(".highlight .code pre") ||
+      document.querySelector(".article pre code"))) {
+      return;
+    }
+    VolantisApp.utilCopyCode(".highlight .code pre, .article pre code")
+  }
+  volantis.requestAnimationFrame(p_highlightjs_copyCode)
+
+</script>
+
+
+
+
+
+
+
+
+
+
+  <script>
+  function load_swiper() {
+    if (!document.querySelectorAll(".swiper-container")[0]) return;
+    volantis.css("https://unpkg.com/swiper@11.1.14/swiper-bundle.min.css");
+    volantis.js("https://unpkg.com/swiper@11.1.14/swiper-bundle.min.js").then(() => {
+      p_swiper();
+    });
+  }
+
+  load_swiper();
+
+  function p_swiper() {
+    volantis.swiper = new Swiper('.swiper-container', {
+      slidesPerView: 'auto',
+      spaceBetween: 8,
+      centeredSlides: true,
+      loop: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    });
+  }
+
+</script>
+
+
+
+  <script>
+  volantis.css("https://unpkg.com/pace-js@1.2.4/themes/blue/pace-theme-minimal.css");
+  volantis.js("https://unpkg.com/pace-js@1.2.4/pace.min.js").then(() => {
+    Pace.options.restartOnPushState = false;
+    // 阅读进度
+    volantis.scroll.push(() => {
+      Pace.stop();
+      Pace.trigger('start');
+      Pace.bar.update(volantis.scroll.progress() * 100);
+      document.body.className = document.body.className.replaceAll("pace-running ","");
+    },"阅读进度")
+    // todo：配置项开关, 哪些页面添加阅读进度
+  })
+</script>
+
+
+
+
+<script>
+  function listenSidebarTOC() {
+    const navItems = document.querySelectorAll(".toc li");
+    if (!navItems.length) return;
+    const targets = []
+    const sections = Array.from(navItems).forEach((element) => {
+      const link = element.querySelector(".toc-link");
+      const target = document.getElementById(
+        link.getAttribute("href") ? decodeURI(link.getAttribute("href")).replace("#", "") : link.getAttribute("toc-action").split("toc-")[1] // 兼容 hexo-blog-encrypt
+      );
+      targets.push(target)
+      // 解除 a 标签 href 的 锚点定位, a 标签 href 的 锚点定位 会随机启用?? 产生错位???
+      if (link.getAttribute("href")) {
+        link.setAttribute("toc-action", "toc-" + decodeURI(link.getAttribute("href")).replace("#", ""))
+        link.removeAttribute("href")
+      }
+      // 配置 点击 触发新的锚点定位
+      if (target && target.id) {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          // 这里的 addTop 是通过错位使得 toc 自动展开.
+          volantis.scroll.to(target, { addTop: 5, observer: true })
+          // Anchor id
+          history.pushState(null, document.title, "#" + target.id);
+        });
+      }
+      return target;
+    });
+
+    function activateNavByIndex(target) {
+      if (target.classList.contains("active-current")) return;
+
+      document.querySelectorAll(".toc .active").forEach((element) => {
+        element.classList.remove("active", "active-current");
+      });
+      target.classList.add("active", "active-current");
+      let parent = target.parentNode;
+      while (!parent.matches(".toc")) {
+        if (parent.matches("li")) parent.classList.add("active");
+        parent = parent.parentNode;
+      }
+    }
+
+    // 方案一：
+    volantis.activateNavIndex = 0
+    activateNavByIndex(navItems[volantis.activateNavIndex])
+    if (targets[0]) {
+      volantis.scroll.push(() => {
+        if (targets[0].getBoundingClientRect().top >= 0) {
+          volantis.activateNavIndex = 0
+        } else if (targets[targets.length - 1].getBoundingClientRect().top < 0) {
+          volantis.activateNavIndex = targets.length - 1
+        } else {
+          for (let index = 0; index < targets.length; index++) {
+            const target0 = targets[index];
+            const target1 = targets[(index + 1) % targets.length];
+            if (target0.getBoundingClientRect().top < 0 && target1.getBoundingClientRect().top >= 0) {
+              volantis.activateNavIndex = index
+              break;
+            }
+          }
+        }
+        activateNavByIndex(navItems[volantis.activateNavIndex])
+      })
+    }
+
+    // 方案二：
+    // IntersectionObserver 不是完美精确到像素级别 也不是低延时性的
+    // function findIndex(entries) {
+    //   let index = 0;
+    //   let entry = entries[index];
+    //   if (entry.boundingClientRect.top > 0) {
+    //     index = sections.indexOf(entry.target);
+    //     return index === 0 ? 0 : index - 1;
+    //   }
+    //   for (; index < entries.length; index++) {
+    //     if (entries[index].boundingClientRect.top <= 0) {
+    //       entry = entries[index];
+    //     } else {
+    //       return sections.indexOf(entry.target);
+    //     }
+    //   }
+    //   return sections.indexOf(entry.target);
+    // }
+    // function createIntersectionObserver(marginTop) {
+    //   marginTop = Math.floor(marginTop + 10000);
+    //   let intersectionObserver = new IntersectionObserver(
+    //     (entries, observe) => {
+    //       let scrollHeight = document.documentElement.scrollHeight;
+    //       if (scrollHeight > marginTop) {
+    //         observe.disconnect();
+    //         createIntersectionObserver(scrollHeight);
+    //         return;
+    //       }
+    //       let index = findIndex(entries);
+    //       activateNavByIndex(navItems[index]);
+    //     }, {
+    //       rootMargin: marginTop + "px 0px -100% 0px",
+    //       threshold: 0,
+    //     }
+    //   );
+    //   sections.forEach((element) => {
+    //     element && intersectionObserver.observe(element);
+    //   });
+    // }
+    // createIntersectionObserver(document.documentElement.scrollHeight);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    volantis.requestAnimationFrame(listenSidebarTOC)
+  });
+</script>
+
+
+
+
+
+<script>
+  document.onreadystatechange = function () {
+    if (document.readyState == 'complete') {
+      // 页面加载完毕 样式加载失败，或是当前网速慢，或是开启了省流模式
+      const { saveData, effectiveType } = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {}
+      if (getComputedStyle(document.querySelector("#safearea"), null)["display"] == "none" || saveData || /2g/.test(effectiveType)) {
+        document.querySelectorAll(".reveal").forEach(function (e) {
+          e.style["opacity"] = "1";
+        });
+        document.querySelector("#safearea").style["display"] = "block";
+      }
+    }
+  }
+</script>
+
+
+  <script type="application/ld+json">[{"@context":"https://schema.org.cn","@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},{"@context":"https://schema.org.cn","@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","sameAs":["https://github.com/volantis-x"],"description":"道阻且长，行则将至"},{"@context":"https://schema.org.cn","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"http://blog.coldrain.ink/","name":"Hiyasame"}},{"@type":"ListItem","position":3,"item":{"@id":"http://blog.coldrain.ink/2025/12/03/JGovdEiMao12nKx50rlclssinGb/","name":"C++ stack unwinding"}}]},{"@context":"https://schema.org.cn","@type":"WebSite","name":"Hiyasame","url":"http://blog.coldrain.ink/","keywords":null,"description":"道阻且长，行则将至","author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","description":"道阻且长，行则将至"},"publisher":{"@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"potentialAction":{"@type":"SearchAction","name":"Site Search","target":{"@type":"EntryPoint","urlTemplate":"http://blog.coldrain.ink?s={search_term_string}"},"query-input":"required name=search_term_string"}},{"@context":"https://schema.org.cn","@type":"BlogPosting","headline":"C++ stack unwinding","description":"道阻且长，行则将至","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http://blog.coldrain.ink/2025/12/03/JGovdEiMao12nKx50rlclssinGb/"},"author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/"},"publisher":{"@type":"Organization","name":"Hiyasame","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"url":"http://blog.coldrain.ink/2025/12/03/JGovdEiMao12nKx50rlclssinGb/","wordCount":0,"datePublished":"2025-12-03T09:00:54.000Z","dateModified":"2025-12-03T09:01:26.000Z","keywords":"RTFSC,C++","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}}]</script>
+
+
+
+
+    </div>
+    <!-- import body_end begin-->
+    <!-- import body_end end-->
+    <!-- Custom Files bodyEnd begin-->
+    
+    <!-- Custom Files bodyEnd end-->
+  </body>
+</html>
