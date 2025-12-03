@@ -466,12 +466,12 @@
     {
       "id": "JGovdEiMao12nKx50rlclssinGb",
       "doc_id": "JGovdEiMao12nKx50rlclssinGb",
-      "updated": 1764723686000,
+      "updated": 1764755772000,
       "properties": {
         "title": "C++ stack unwinding",
         "urlname": "JGovdEiMao12nKx50rlclssinGb",
         "date": "2025-12-03 09:00:54",
-        "updated": "2025-12-03 09:01:26",
+        "updated": "2025-12-03 17:56:12",
         "tags": [
           "RTFSC",
           "C++"
@@ -480,6 +480,25 @@
       "catalog": [],
       "realName": "C++ stack unwinding",
       "relativePath": "/C++ stack unwinding.md",
+      "docPath": "./source/_posts"
+    },
+    {
+      "id": "MWEdduYzeoflbWxVqSkcz5IjnId",
+      "doc_id": "MWEdduYzeoflbWxVqSkcz5IjnId",
+      "updated": 1764783614000,
+      "properties": {
+        "title": "SwiftPaxos",
+        "urlname": "MWEdduYzeoflbWxVqSkcz5IjnId",
+        "date": "2025-12-04 01:38:27",
+        "updated": "2025-12-04 01:40:14",
+        "tags": [
+          "分布式系统",
+          "论文阅读"
+        ]
+      },
+      "catalog": [],
+      "realName": "SwiftPaxos",
+      "relativePath": "/SwiftPaxos.md",
       "docPath": "./source/_posts"
     }
   ],
@@ -777,11 +796,23 @@
       "id": "JGovdEiMao12nKx50rlclssinGb",
       "title": "C++ stack unwinding",
       "createdAt": 1764723654000,
-      "updated": 1764723686000,
-      "updatedAt": 1764723686000,
+      "updated": 1764755772000,
+      "updatedAt": 1764755772000,
       "catalog": [],
       "has_child": false,
       "node_token": "OyFCwbcAQiygQZkJGd1cdcFennd",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "MWEdduYzeoflbWxVqSkcz5IjnId",
+      "id": "MWEdduYzeoflbWxVqSkcz5IjnId",
+      "title": "SwiftPaxos",
+      "createdAt": 1764783507000,
+      "updated": 1764783614000,
+      "updatedAt": 1764783614000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "DotYweaHRiTM16kNmtccclSOnIc",
       "parent_node_token": ""
     }
   ]

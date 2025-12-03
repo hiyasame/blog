@@ -2,7 +2,7 @@
 title: C++ stack unwinding
 urlname: JGovdEiMao12nKx50rlclssinGb
 date: '2025-12-03 09:00:54'
-updated: '2025-12-03 09:01:26'
+updated: '2025-12-03 17:56:12'
 tags:
   - RTFSC
   - C++
@@ -827,4 +827,4 @@ _Unwind_Resume(_Unwind_Exception *exception_object) {
 
 `unwind_phase2` 是通过 IP 来查找对应的 handler 的，当从 Landing pad 调用 `unwind_phase2` 时，IP 已经位于函数的末尾（Landing pad 就位于函数的末尾），所以会直接放行，不会查到第一次进入时 handler。
 ## AI 生成的流程图
-
+![image](images/S711blWa9ol9ZlxmmlhcgUUJnvV.png)
