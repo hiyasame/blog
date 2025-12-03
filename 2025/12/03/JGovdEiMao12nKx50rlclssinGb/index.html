@@ -46,7 +46,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
 <meta property="article:published_time" content="2025-12-03T09:00:54.000Z">
-<meta property="article:modified_time" content="2025-12-03T09:01:26.000Z">
+<meta property="article:modified_time" content="2025-12-03T17:56:12.000Z">
 <meta property="article:author" content="寒雨">
 <meta property="article:tag" content="RTFSC">
 <meta property="article:tag" content="C++">
@@ -1999,7 +1999,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     root: '/',
     debug: "env",
     default: {"avatar":"/img/avatar.jpg","link":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/link/8f277b4ee0ecd.svg","cover":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/cover/76b86c0226ffd.svg","image":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/image/2659360.svg"},
-    lastupdate: new Date(1764723766396),
+    lastupdate: new Date(1764783658323),
     cdn: {
       izitoast_css: 'https://unpkg.com/izitoast@1.4.0/dist/css/iziToast.min.css',
       izitoast_js: 'https://unpkg.com/izitoast@1.4.0/dist/js/iziToast.min.js',
@@ -2478,7 +2478,8 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <p>至于参数就获取当前的寄存器快照就可以了，当前的sp其实就在当前 Landing pad 对应栈帧的下面一个栈帧，是 Landing pad 这个函数自己开辟的。</p>
 <p>将这个寄存器快照传给 <code>unwind_phase2</code>，它所做的第一件事就是往上找一层，就找到了当前 Landing pad 对应的栈帧。</p>
 <p><code>unwind_phase2</code> 是通过 IP 来查找对应的 handler 的，当从 Landing pad 调用 <code>unwind_phase2</code> 时，IP 已经位于函数的末尾（Landing pad 就位于函数的末尾），所以会直接放行，不会查到第一次进入时 handler。</p>
-<h2 id="AI-生成的流程图"><a href="#AI-生成的流程图" class="headerlink" title="AI 生成的流程图"></a>AI 生成的流程图</h2>
+<h2 id="AI-生成的流程图"><a href="#AI-生成的流程图" class="headerlink" title="AI 生成的流程图"></a>AI 生成的流程图</h2><p><img src="/images/S711blWa9ol9ZlxmmlhcgUUJnvV.png" class="lazyload" data-srcset="/images/S711blWa9ol9ZlxmmlhcgUUJnvV.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"></p>
+
   </div>
   
   
@@ -2502,7 +2503,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateModified" datetime="2025-12-03T09:01:26+00:00">
+          <div class="new-meta-item date" itemprop="dateModified" datetime="2025-12-03T17:56:12+00:00">
   <a class='notlink'>
     <i class="fa-solid fa-edit fa-fw" aria-hidden="true"></i>
     <p>更新于：2025年12月3日</p>
@@ -2587,6 +2588,16 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 
   
     <div class="prev-next">
+      
+        <a class='prev' href='/2025/12/04/MWEdduYzeoflbWxVqSkcz5IjnId/'>
+          <p class='title'><i class="fa-solid fa-chevron-left" aria-hidden="true"></i>SwiftPaxos</p>
+          <p class='content'>SwiftPaxos Fast Geo-Replicated State Machines
+算法细节
+
+Client 向所有节点广播 Cmd，这里注意，Client 本身也是一个节点
+
+单个节点...</p>
+        </a>
       
       
         <a class='next' href='/2025/11/30/Y8zQdAX1Poif9Xxib1JcmQBEn0f/'>
@@ -3156,7 +3167,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </script>
 
 
-  <script type="application/ld+json">[{"@context":"https://schema.org.cn","@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},{"@context":"https://schema.org.cn","@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","sameAs":["https://github.com/volantis-x"],"description":"道阻且长，行则将至"},{"@context":"https://schema.org.cn","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"http://blog.coldrain.ink/","name":"Hiyasame"}},{"@type":"ListItem","position":3,"item":{"@id":"http://blog.coldrain.ink/2025/12/03/JGovdEiMao12nKx50rlclssinGb/","name":"C++ stack unwinding"}}]},{"@context":"https://schema.org.cn","@type":"WebSite","name":"Hiyasame","url":"http://blog.coldrain.ink/","keywords":null,"description":"道阻且长，行则将至","author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","description":"道阻且长，行则将至"},"publisher":{"@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"potentialAction":{"@type":"SearchAction","name":"Site Search","target":{"@type":"EntryPoint","urlTemplate":"http://blog.coldrain.ink?s={search_term_string}"},"query-input":"required name=search_term_string"}},{"@context":"https://schema.org.cn","@type":"BlogPosting","headline":"C++ stack unwinding","description":"道阻且长，行则将至","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http://blog.coldrain.ink/2025/12/03/JGovdEiMao12nKx50rlclssinGb/"},"author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/"},"publisher":{"@type":"Organization","name":"Hiyasame","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"url":"http://blog.coldrain.ink/2025/12/03/JGovdEiMao12nKx50rlclssinGb/","wordCount":0,"datePublished":"2025-12-03T09:00:54.000Z","dateModified":"2025-12-03T09:01:26.000Z","keywords":"RTFSC,C++","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}}]</script>
+  <script type="application/ld+json">[{"@context":"https://schema.org.cn","@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},{"@context":"https://schema.org.cn","@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","sameAs":["https://github.com/volantis-x"],"description":"道阻且长，行则将至"},{"@context":"https://schema.org.cn","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"http://blog.coldrain.ink/","name":"Hiyasame"}},{"@type":"ListItem","position":3,"item":{"@id":"http://blog.coldrain.ink/2025/12/03/JGovdEiMao12nKx50rlclssinGb/","name":"C++ stack unwinding"}}]},{"@context":"https://schema.org.cn","@type":"WebSite","name":"Hiyasame","url":"http://blog.coldrain.ink/","keywords":null,"description":"道阻且长，行则将至","author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","description":"道阻且长，行则将至"},"publisher":{"@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"potentialAction":{"@type":"SearchAction","name":"Site Search","target":{"@type":"EntryPoint","urlTemplate":"http://blog.coldrain.ink?s={search_term_string}"},"query-input":"required name=search_term_string"}},{"@context":"https://schema.org.cn","@type":"BlogPosting","headline":"C++ stack unwinding","description":"道阻且长，行则将至","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http://blog.coldrain.ink/2025/12/03/JGovdEiMao12nKx50rlclssinGb/"},"author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/"},"publisher":{"@type":"Organization","name":"Hiyasame","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"url":"http://blog.coldrain.ink/2025/12/03/JGovdEiMao12nKx50rlclssinGb/","wordCount":0,"datePublished":"2025-12-03T09:00:54.000Z","dateModified":"2025-12-03T17:56:12.000Z","keywords":"RTFSC,C++","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}}]</script>
 
 
 

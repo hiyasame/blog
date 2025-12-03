@@ -5,8 +5,8 @@
   <meta name="Volantis" content="6.0.0-alpha.1">
   <meta charset="utf-8">
   <!-- SEO相关 -->
-  <meta name="robots" content="noindex,follow">
-  <link rel="canonical" href="http://blog.coldrain.ink/categories/"/>
+  
+  <link rel="canonical" href="http://blog.coldrain.ink/2025/12/04/mwedduyzeoflbwxvqskcz5ijnid/"/>
   <!-- 渲染优化 -->
     <meta http-equiv='x-dns-prefetch-control' content='on' />
       <link rel='dns-prefetch' href='https://unpkg.com'>
@@ -34,20 +34,22 @@
   <!-- feed -->
       <link rel="alternate" href="/atom.xml" title="Hiyasame" type="application/atom+xml">
   <!-- 页面元数据 -->
-  <title>所有分类 - Hiyasame</title>
-  <meta name="keywords" content="null">
+  <title>SwiftPaxos - Hiyasame</title>
+  <meta name="keywords" content="论文阅读,分布式系统,null">
   <meta desc name="description" content="道阻且长，行则将至 - 寒雨 - Hiyasame">
   
-<meta property="og:type" content="website">
-<meta property="og:title" content="所有分类">
-<meta property="og:url" content="http://blog.coldrain.ink/categories/index.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SwiftPaxos">
+<meta property="og:url" content="http://blog.coldrain.ink/2025/12/04/MWEdduYzeoflbWxVqSkcz5IjnId/index.html">
 <meta property="og:site_name" content="Hiyasame">
-<meta property="og:description" content="道阻且长，行则将至">
+<meta property="og:description" content="SwiftPaxos Fast Geo-Replicated State Machines 算法细节  Client 向所有节点广播 Cmd，这里注意，Client 本身也是一个节点  单个节点收到 Cmd 后会向其他节点广播 FastAck，其中包含自己收到 Cmd 的依赖路径  比如图一，我发送了一条指令 z，对于节点 p1，p2 ，xy 都在 z 的前面，所以 p1，p2 中 z 的依赖路径">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
-<meta property="article:published_time" content="2025-08-16T20:39:07.488Z">
-<meta property="article:modified_time" content="2025-08-16T20:39:07.488Z">
+<meta property="article:published_time" content="2025-12-04T01:38:27.000Z">
+<meta property="article:modified_time" content="2025-12-04T01:40:14.000Z">
 <meta property="article:author" content="寒雨">
+<meta property="article:tag" content="论文阅读">
+<meta property="article:tag" content="分布式系统">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
   <style>
@@ -1989,7 +1991,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 
 <script>
   window.pdata={}
-  pdata.ispage=false;
+  pdata.ispage=true;
   pdata.commentPath="";
   pdata.commentPlaceholder="";
   pdata.commentConfig={};
@@ -2326,31 +2328,251 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       <div id="safearea">
         <div class="body-wrapper">
           
-
 <div id="l_main" class=''>
+  <article itemscope itemtype="https://schema.org.cn/Article" class="article post white-box reveal md shadow floatable blur article-type-post" id="post" itemscope itemprop="blogPost">
+  <link itemprop="mainEntityOfPage" href="http://blog.coldrain.ink/2025/12/04/MWEdduYzeoflbWxVqSkcz5IjnId/">
+  <span hidden itemprop="publisher" itemscope itemtype="https://schema.org.cn/Organization">
+    <meta itemprop="name" content="Hiyasame">
+  </span>
+  <span hidden itemprop="post" itemscope itemtype="https://schema.org.cn/Post">
+    <meta itemprop="name" content="Hiyasame">
+    <meta itemprop="description" content="道阻且长，行则将至">
+  </span>
   
+
+
+  
+    <span hidden>
+      <meta itemprop="image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
+    </span>
+  
+  <div class="article-meta" id="top">
     
-      <div class='post-wrapper'>
-        <article id="cat" class="post article white-box reveal shadow floatable blur">
-          <h2>所有分类</h2>
-          <div class="all-cats">
-            
-              
-                <a class="" href="/categories/%E7%AC%94%E8%AE%B0/">
-                  <span><i class='fa-solid fa-folder-open fa-fw' aria-hidden="true"></i>&nbsp;&nbsp;笔记</span>
-                  <span class="title">
-                    (3)
-                  </span>
-                </a>
-              
-            
-          </div>
-          <br>
+    
+    
+      <h1 class="title" itemprop="name headline">
+        SwiftPaxos
+      </h1>
+      <div class='new-meta-box'>
+        
           
-        </article>
+            
+<div class='new-meta-item author' itemprop="author" itemscope itemtype="https://schema.org.cn/Person">
+  <a itemprop="url" class='author' href="/" rel="nofollow">
+    <img itemprop="image" src="/img/avatar.jpg" class="lazyload" data-srcset="/img/avatar.jpg" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+    <p itemprop="name">寒雨</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+
+
+          
+        
+          
+            <div class="new-meta-item date" itemprop="dateCreated datePublished" datetime="2025-12-04T01:38:27+00:00">
+  <a class='notlink'>
+    <i class="fa-solid fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：2025年12月4日</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+
+
+
+          
+        
+        <!-- Custom Files topMeta begin-->
+        
+        <!-- Custom Files topMeta end-->
       </div>
     
+  </div>
+
+
+  <div id="layoutHelper-page-plugins"></div>
+  <div id="post-body" itemprop="articleBody">
+    <p><a target="_blank" rel="noopener" href="https://octochords.com/posts/swiftpaxos/">SwiftPaxos Fast Geo-Replicated State Machines</a></p>
+<h2 id="算法细节"><a href="#算法细节" class="headerlink" title="算法细节"></a>算法细节</h2><p><img src="/images/Ekrcb5oG9oYBNax1gKpcXdEanch.png" class="lazyload" data-srcset="/images/Ekrcb5oG9oYBNax1gKpcXdEanch.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"></p>
+<ul>
+<li><p>Client 向所有节点广播 Cmd，这里注意，Client 本身也是一个节点</p>
+</li>
+<li><p>单个节点收到 Cmd 后会向其他节点广播 FastAck，其中包含自己收到 Cmd 的依赖路径</p>
+<ul>
+<li>比如图一，我发送了一条指令 z，对于节点 p1，p2 ，xy 都在 z 的前面，所以 p1，p2 中 z 的依赖路径都是 <code>&#123;x, z&#125;, &#123;y, z&#125;</code>。但是对于 p3 节点来说依赖路径只有 <code>&#123;y, z&#125;</code>，所以在 fast path 节点 client3 并不难达成共识，因为没有达到 Fast Quorum (2&#x2F;3 &lt; 3&#x2F;4)<ul>
+<li>在 SwiftPaxos 中，依赖关系保证不成环</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Leader 节点收到 Cmd 后也会向其他节点广播 FastAck，这条 FastAck 同时也是 Leader 的 SlowAck，收到这条消息的节点会跟从 Leader 广播跟 Leader 相同的 SlowAck</p>
+</li>
+<li><p>客户端如果收到了 Fast Quorum （3&#x2F;4）个相同的 FastAck，且其中包含来自 Leader 的 FastAck，则可以提交这条消息（Fast Path，只需 Cmd FastAck 两条消息的延迟即可达成共识）</p>
+</li>
+<li><p>如果客户端收到了 Slow Quorum（1&#x2F;2）个相同的 SlowAck，则可以提交这条消息（Slow Path，需要 Cmd FastAck SlowAck 三条消息的延迟才能达成共识）</p>
+</li>
+<li><p>Slow path 不一定比 Fast path 慢，因为 Slow path 要求的 Quorum 数量更小，这样在部分节点通信延迟很高的情况下有可能比 Fast path 更快</p>
+</li>
+</ul>
+<h2 id="Addition"><a href="#Addition" class="headerlink" title="Addition"></a>Addition</h2><ul>
+<li><p>Slow path 需要 3 次 RPC 的延迟，而经典 Paxos 算法需要 4 次，这保证了 SwiftPaxos 的下限——至少比经典 Paxos 快，事实上如果只看 Slow path 这就是 Paxos 的一种广为人知的变种。</p>
+</li>
+<li><p>论文原文也介绍了各种 Paxos 的衍生算法和它们的实现思路，比如 EPaxos，FastPaxos。可以通过阅读这篇论文来了解改进 Paxos 算法的历史沿革，非常值得一看。</p>
+</li>
+</ul>
+
+  </div>
   
+  
+    
+    <div class='footer'>
+       <!-- 参考资料、相关资料等 -->
+      
+       <!-- 相关文章 -->
+      
+      <!-- 版权声明组件 -->
+      
+      <!-- 打赏组件 -->
+      
+    </div>
+  
+  
+    
+
+
+  <div class='article-meta' id="bottom">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateModified" datetime="2025-12-04T01:40:14+00:00">
+  <a class='notlink'>
+    <i class="fa-solid fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：2025年12月4日</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+  
+  
+  
+  <div class="new-meta-item meta-tags"><a class="tag" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" rel="nofollow"><i class="fa-solid fa-hashtag fa-fw" aria-hidden="true"></i><p>论文阅读</p></a></div> <div class="new-meta-item meta-tags"><a class="tag" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" rel="nofollow"><i class="fa-solid fa-hashtag fa-fw" aria-hidden="true"></i><p>分布式系统</p></a></div>
+  <span hidden itemprop="keywords">论文阅读 分布式系统</span>
+  
+
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://blog.coldrain.ink/2025/12/04/MWEdduYzeoflbWxVqSkcz5IjnId/&title=SwiftPaxos - Hiyasame&summary="
+          
+          >
+          
+            <img src="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qq.png" class="lazyload" data-srcset="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qq.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://blog.coldrain.ink/2025/12/04/MWEdduYzeoflbWxVqSkcz5IjnId/&title=SwiftPaxos - Hiyasame&summary="
+          
+          >
+          
+            <img src="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qzone.png" class="lazyload" data-srcset="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qzone.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://service.weibo.com/share/share.php?url=http://blog.coldrain.ink/2025/12/04/MWEdduYzeoflbWxVqSkcz5IjnId/&title=SwiftPaxos - Hiyasame&summary="
+          
+          >
+          
+            <img src="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/weibo.png" class="lazyload" data-srcset="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/weibo.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+          
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+    <!-- Custom Files bottomMeta begin -->
+    
+    <!-- Custom Files bottomMeta end -->
+  </div>
+
+
+  
+  
+
+  
+    <div class="prev-next">
+      
+      
+        <a class='next' href='/2025/12/03/JGovdEiMao12nKx50rlclssinGb/'>
+          <p class='title'>C++ stack unwinding<i class="fa-solid fa-chevron-right" aria-hidden="true"></i></p>
+          <p class='content'>其实在此之前我就大概知道，stack unwinding 是反向回溯栈的一种机制，在 throw 了什么东西后一层层回溯栈，一层层析构掉这些栈上的 RAII 对象，直到找到 try catch ...</p>
+        </a>
+      
+    </div>
+  
+  <!-- 文章推荐 -->
+  
+  
+  <!-- Custom Files postEnd begin-->
+  
+  <!-- Custom Files postEnd end-->
+</article>
+
+
+  
+
+
+  <article class="post white-box shadow floatable blur" id="comments">
+    <span hidden>
+      <meta itemprop="discussionUrl" content="/2025/12/04/MWEdduYzeoflbWxVqSkcz5IjnId/index.html#comments">
+    </span>
+    <p ct><i class='fa-solid fa-comments'></i> 评论</p>
+    
+
+    <div id="layoutHelper-comments"></div>
+
+  </article>
+
+
+
+
+
+
 </div>
 <aside id='l_side' itemscope itemtype="https://schema.org.cn/WPSideBar">
   
@@ -2369,6 +2591,20 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   
 
 
+<section class="widget toc-wrapper desktop mobile" id="toc-div" >
+  
+  <header>
+    
+      <i class="fa-solid fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+  <div class='content'>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E7%BB%86%E8%8A%82"><span class="toc-text">算法细节</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Addition"><span class="toc-text">Addition</span></a></li></ol>
+  </div>
+</section>
+
   
 
 </div>
@@ -2377,6 +2613,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   
   <!-- Custom Files side end -->
 </aside>
+
 
 
         </div>
@@ -2864,7 +3101,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </script>
 
 
-  <script type="application/ld+json">[{"@context":"https://schema.org.cn","@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},{"@context":"https://schema.org.cn","@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","sameAs":["https://github.com/volantis-x"],"description":"道阻且长，行则将至"},{"@context":"https://schema.org.cn","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"http://blog.coldrain.ink/","name":"Hiyasame"}}]},{"@context":"https://schema.org.cn","@type":"WebSite","name":"Hiyasame","url":"http://blog.coldrain.ink/","keywords":null,"description":"道阻且长，行则将至","author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","description":"道阻且长，行则将至"},"publisher":{"@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"potentialAction":{"@type":"SearchAction","name":"Site Search","target":{"@type":"EntryPoint","urlTemplate":"http://blog.coldrain.ink?s={search_term_string}"},"query-input":"required name=search_term_string"}},{"@context":"https://schema.org.cn","@type":"BlogPosting","headline":"所有分类","description":"道阻且长，行则将至","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http://blog.coldrain.ink/categories/index.html"},"author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/"},"publisher":{"@type":"Organization","name":"Hiyasame","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"url":"http://blog.coldrain.ink/categories/index.html","wordCount":0,"datePublished":"2025-08-16T20:39:07.488Z","dateModified":"2025-08-16T20:39:07.488Z","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}}]</script>
+  <script type="application/ld+json">[{"@context":"https://schema.org.cn","@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},{"@context":"https://schema.org.cn","@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","sameAs":["https://github.com/volantis-x"],"description":"道阻且长，行则将至"},{"@context":"https://schema.org.cn","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"http://blog.coldrain.ink/","name":"Hiyasame"}},{"@type":"ListItem","position":3,"item":{"@id":"http://blog.coldrain.ink/2025/12/04/MWEdduYzeoflbWxVqSkcz5IjnId/","name":"SwiftPaxos"}}]},{"@context":"https://schema.org.cn","@type":"WebSite","name":"Hiyasame","url":"http://blog.coldrain.ink/","keywords":null,"description":"道阻且长，行则将至","author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","description":"道阻且长，行则将至"},"publisher":{"@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"potentialAction":{"@type":"SearchAction","name":"Site Search","target":{"@type":"EntryPoint","urlTemplate":"http://blog.coldrain.ink?s={search_term_string}"},"query-input":"required name=search_term_string"}},{"@context":"https://schema.org.cn","@type":"BlogPosting","headline":"SwiftPaxos","description":"道阻且长，行则将至","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http://blog.coldrain.ink/2025/12/04/MWEdduYzeoflbWxVqSkcz5IjnId/"},"author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/"},"publisher":{"@type":"Organization","name":"Hiyasame","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"url":"http://blog.coldrain.ink/2025/12/04/MWEdduYzeoflbWxVqSkcz5IjnId/","wordCount":0,"datePublished":"2025-12-04T01:38:27.000Z","dateModified":"2025-12-04T01:40:14.000Z","keywords":"论文阅读,分布式系统","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}}]</script>
 
 
 
