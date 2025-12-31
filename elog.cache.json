@@ -500,6 +500,26 @@
       "realName": "SwiftPaxos",
       "relativePath": "/SwiftPaxos.md",
       "docPath": "./source/_posts"
+    },
+    {
+      "id": "FFhAdgtJEoTOuEx8keqcXUjOn5c",
+      "doc_id": "FFhAdgtJEoTOuEx8keqcXUjOn5c",
+      "updated": 1767172775000,
+      "properties": {
+        "title": "2025 年度总结",
+        "urlname": "FFhAdgtJEoTOuEx8keqcXUjOn5c",
+        "date": "2025-12-31 17:18:59",
+        "updated": "2025-12-31 17:19:35",
+        "tags": [
+          "年度总结",
+          "总结",
+          "随笔"
+        ]
+      },
+      "catalog": [],
+      "realName": "2025 年度总结",
+      "relativePath": "/2025 年度总结.md",
+      "docPath": "./source/_posts"
     }
   ],
   "catalog": [
@@ -813,6 +833,18 @@
       "catalog": [],
       "has_child": false,
       "node_token": "DotYweaHRiTM16kNmtccclSOnIc",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "FFhAdgtJEoTOuEx8keqcXUjOn5c",
+      "id": "FFhAdgtJEoTOuEx8keqcXUjOn5c",
+      "title": "2025 年度总结",
+      "createdAt": 1767172739000,
+      "updated": 1767172775000,
+      "updatedAt": 1767172775000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "CQwdwmR6SirUxSkfcsbcyQDYn6g",
       "parent_node_token": ""
     }
   ]
