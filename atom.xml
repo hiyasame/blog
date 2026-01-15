@@ -6,7 +6,7 @@
   <link href="http://blog.coldrain.ink/atom.xml" rel="self"/>
   
   <link href="http://blog.coldrain.ink/"/>
-  <updated>2025-12-31T17:19:35.000Z</updated>
+  <updated>2026-01-15T23:02:46.000Z</updated>
   <id>http://blog.coldrain.ink/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Transaction 二三事</title>
+    <link href="http://blog.coldrain.ink/2026/01/15/KUrOdvZRdonBnSx1fjucOVH0nlf/"/>
+    <id>http://blog.coldrain.ink/2026/01/15/KUrOdvZRdonBnSx1fjucOVH0nlf/</id>
+    <published>2026-01-15T23:01:05.000Z</published>
+    <updated>2026-01-15T23:02:46.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>DDIA 第八章读书笔记，也算复习一下之前 CMU 15-445 学到的内容</p></blockquote><h2 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h2><p><em>Atomic</em>, <em>Consistency</em>, <em>Isolation</em>, <em>Durability</em></p><p>Atomic：事务原子性，指的是事务中的内容要么全部发生，要么全部不发生。可以通过回滚实现这一点，异常发生时直接回滚所有更改，只需要保证 commit 操作原子即可。</p><p>Consistency：一致性，这里的一致性跟 Raft 提供的所谓分布式一致性保证的含义不同，指的是需要保证数据库中所有状态都是合法的。</p><p>比如 A 账户（余额 500 元）向 B 账户（余额 500 元）转账了 100 元，A 账户扣了 100 元（400 元），但是因为某些原因 B 账户没有收到这笔钱，此时整个系统的总价值只剩下了 900 元，凭空消失了 100 元，破坏了系统中总价值不变的 invariant，所以此时状态是不一致的。</p><p>这里可以看出，其实系统本身是否保证一致性并不完全由 DBMS 来决定，更多在应用代码层面。</p><p>Isolation：隔离性，这里的隔离是指并发事务之间数据访问的隔离，最理想的隔离就是事务假设整个 dbms 同一时刻只有自身一个事务在运行，即 Serializable。然而实现 Serializable 级别的隔离需要支付较高的代价，所以又有了若干更弱的隔离级别，它们允许并发事务之间存在有限程度的干扰。</p><p>Durability：持久性是一个承诺，即一旦事务成功提交，它写入的任何数据都不会被遗忘，即使发生硬件故障或数据库崩溃。最常见的保证就是数据已经被持久化到了硬盘或 SSD 等非易失性存储介质中，不过在有 replication 的系统中，写入其他机器的内存中也可以作为 Durability 的保证。</p><h2 id="弱隔离级别"><a href="#弱隔离级别" class="headerlink" title="弱隔离级别"></a>弱隔离级别</h2><h3 id="Read-Committed"><a href="#Read-Committed" class="headerlink" title="Read Committed"></a>Read Committed</h3><ul><li><p>不允许脏读</p></li><li><p>不允许脏写</p></li></ul><p>顾名思义，Read Committed 就是保证了读操作只能读到已经 Commit 的更改，这解决了脏读（Dirty read）的问题。既然不允许脏读，脏写肯定也是不允许的，脏写的含义是写入操作覆盖掉其他事务中未 Commit 的更改。Read Committed 是很多 RDB （PostgreSQL, Oracle, SQL Server）的默认隔离级别。</p><p>还有一个更弱的隔离级别 Read Uncommitted，它只防止脏写，不防止脏读。在允许脏读的情况下，事务 abort 就需要考虑级联终止：一个事务 abort 掉，读了这个事务的写入的其他事务也需要一同 abort 掉；并且如果事务更新多行，其他事务就有可能观测到部分行更新，部分行不更新的状态。</p><p>如何实现 Read Committed？一个想法是使用针对行级别的读写锁，在有事务拿写锁的情况下其他事务拿不到读锁，这样就可以防止脏读，同样写锁也只能同时一个事务获取，也可以防止脏写。</p><p>但根据两阶段锁协议（2PL）（注意：Read Committed 级别的 2PL 只针对写锁，读锁读完立刻释放），事务在真正执行读写操作之前会尝试获取所有的写锁，在操作完成后才会释放。这也就意味着可能会存在一个长事务，长时间占用某个热点行的锁，哪怕它并没有一直写这一行的数据，这样便会导致其他需要读这一行的事务堵塞。</p><p>所以一个更好的做法是在事务中维护一个写入集（Write set），在事务 commit 时再将写入集 apply 到实际的场景，这样其他事务就可以读到这个事务修改前的数据，就不会堵塞其他事务的读操作。</p><h3 id="Snapshot-Isolation-amp-Repeatable-Read"><a href="#Snapshot-Isolation-amp-Repeatable-Read" class="headerlink" title="Snapshot Isolation &amp; Repeatable Read"></a>Snapshot Isolation &amp; Repeatable Read</h3><blockquote><p>Snapshot Isolation 就是 Repeatable Read</p></blockquote><ul><li>解决了 read skew</li></ul><p>试想这样一种情况：一个事务读一行数据，隔一段时间后再读，发现两次读到的数据不一样，这是因为这期间有其他事务提交了，修改了这行数据，这就是所谓的 read skew（读偏移），也可以是 Unrepeatable read 的一种表现形式。</p><p>Snapshot Isolation 隔离级别解决了这个问题。一般来说快照隔离的实现方式就是 MVCC，即保存多个版本的行数据，在事务中只读取一个固定的版本，这样就可以始终看到一个 consistent 的状态。表中的每一行都有一个 <code>inserted_by</code> 字段，包含将此行插入表中的事务的 ID。此外，每行都有一个 <code>deleted_by</code> 字段，最初为空。如果事务删除一行，该行实际上不会从数据库中删除，而是通过将 <code>deleted_by</code> 字段设置为请求删除的事务的 ID 来标记为删除。在稍后的某个时间，当确定没有事务可以再访问已删除的数据时，数据库中的垃圾收集过程会删除任何标记为删除的行并释放它们的空间。</p><p>在 MVCC 中，B+ 树索引也可以是 CopyOnWrite 的，每个版本都有一棵独立的 B+ 树索引。</p><p>快照隔离对于长时间的查询（备份&#x2F;数据分析）是很有用的，这可以保证它们看到的数据都是 Repeatable Read 的，不违反约束的。</p><blockquote><p>快照隔离是一个流行的功能：它的变体受到 PostgreSQL、使用 InnoDB 存储引擎的 MySQL、Oracle、SQL Server 等的支持，尽管详细行为因系统而异。某些数据库，如 Oracle、TiDB 和 Aurora DSQL，甚至选择快照隔离作为它们的最高隔离级别。</p></blockquote><h3 id="Write-Skew-amp-Phantom-Read"><a href="#Write-Skew-amp-Phantom-Read" class="headerlink" title="Write Skew &amp; Phantom Read"></a>Write Skew &amp; Phantom Read</h3><p>write skew 其实就是多个事务基于之前读的条件进行了一波插入&#x2F;写入，由于快照隔离的特性，读和写不会冲突，而两者写入&#x2F;插入的数据又不互斥（比如可能改了不同的行，或者单纯就是插入数据），导致约束被破坏。</p><p>可以看下下面几个例子</p><blockquote><p>1<br>首先，想象这个例子：你正在为医生编写一个应用程序来管理他们在医院的值班班次。医院通常试图在任何时候都有几位医生值班，但绝对必须至少有一位医生值班。医生可以放弃他们的班次（例如，如果他们自己生病了），前提是该班次中至少有一位同事留在值班。<br>现在想象 Aaliyah 和 Bryce 是特定班次的两位值班医生。两人都感觉不舒服，所以他们都决定请假。不幸的是，他们碰巧大约在同一时间点击了下班的按钮。<br>在每个事务中，你的应用程序首先检查当前是否有两个或更多医生在值班；如果是，它假设一个医生下班是安全的。由于数据库使用快照隔离，两个检查都返回 <code>2</code>，因此两个事务都继续到下一阶段。Aaliyah 更新她自己的记录让自己下班，Bryce 同样更新他自己的记录。两个事务都提交，现在没有医生值班。你至少有一个医生值班的要求被违反了。<br>2<br>假设你想强制同一会议室在同一时间不能有两个预订(55)。当有人想要预订时，你首先检查是否有任何冲突的预订（即，具有重叠时间范围的同一房间的预订），如果没有找到，你就创建会议。  </p><pre><code class="sql">BEGIN TRANSACTION;      -- 检查是否有任何现有预订与中午 12 点到 1 点的时间段重叠  SELECT COUNT(*) FROM bookings  WHERE room_id = 123 ANDend_time &gt; &#39;2025-01-01 12:00&#39; AND start_time &lt; &#39;2025-01-01 13:00&#39;;      -- 如果前一个查询返回零：  INSERT INTO bookings (room_id, start_time, end_time, user_id)  VALUES (123, &#39;2025-01-01 12:00&#39;, &#39;2025-01-01 13:00&#39;, 666);      COMMIT;  </code></pre><p>不幸的是，快照隔离不会阻止另一个用户并发插入冲突的会议。为了保证你不会出现调度冲突，你再次需要可串行化隔离。<br>3<br>在每个用户都有唯一用户名的网站上，两个用户可能同时尝试使用相同的用户名创建账户。你可以使用事务来检查名称是否被占用，如果没有，使用该名称创建账户。但是，就像前面的例子一样，这在快照隔离下是不安全的。幸运的是，唯一约束在这里是一个简单的解决方案（尝试注册用户名的第二个事务将由于违反约束而被中止）。<br>4<br>允许用户花钱或积分的服务需要检查用户不会花费超过他们拥有的。你可以通过在用户账户中插入暂定支出项目，列出账户中的所有项目，并检查总和是否为正来实现这一点。有了写偏斜，可能会发生两个支出项目并发插入，它们一起导致余额变为负数，但没有任何事务注意到另一个。</p></blockquote><p>在医生值班示例的情况下，步骤 3 中被修改的行是步骤 1 中返回的行之一，因此我们可以通过锁定步骤 1 中的行（<code>SELECT FOR UPDATE</code>）来使事务安全并避免写偏斜。但是，其他示例是不同的：它们检查不存在匹配某些搜索条件的行，而写入添加了匹配相同条件的行。如果步骤 1 中的查询不返回任何行，<code>SELECT FOR UPDATE</code> 就无法附加锁。</p><p>这种效果，其中一个事务中的写入改变另一个事务中搜索查询的结果，称为 Phantom Read（幻读）。快照隔离避免了只读查询中的幻读，但在我们讨论的读写事务中，幻读可能导致特别棘手的写偏斜情况。ORM 生成的 SQL 也容易出现写偏斜。</p><h2 id="Serializable"><a href="#Serializable" class="headerlink" title="Serializable"></a>Serializable</h2><h3 id="串行执行"><a href="#串行执行" class="headerlink" title="串行执行"></a>串行执行</h3><p>Serializable 传统的实现方法就是真的让事务处理串行化，同一时间只执行一个事务，执行完一个事务再执行下一个。但这种方式使得系统的吞吐量很难拓展：毕竟所谓的吞吐量就是要同一时间执行批量任务。</p><h3 id="2PL"><a href="#2PL" class="headerlink" title="2PL"></a>2PL</h3><p>两阶段锁协议（Two Phase Locking）是过去三十年大概唯一广泛使用的可串行化算法，有时被称作 SS2PL（Strong Strict Two Phase Locking，强严格两阶段锁定），因为它跟 Read Committed 级别用到的 2PL 不同，强制规定无论读写操作都需要按两阶段协议获取&#x2F;释放锁，并且引入了额外的机制来防止幻读（比较完美的是 Predicate Lock，但性能太差，工业上主要采用 Index Range Lock）。</p><p>相较于串行执行，2PL 好在只要没有人正在进行写入，就可以并发读。两阶段锁定的主要缺点是性能：在两阶段锁定下，事务吞吐量和查询响应时间明显比弱隔离下差。并且只要有一个包含大量读（比如备份&#x2F;分析）的长事务就有可能导致整个系统很长一段时间无法写入。</p><blockquote><p>因此，运行 2PL 的数据库可能具有相当不稳定的延迟，如果工作负载中存在争用，它们在高百分位数可能非常慢。可能只需要一个缓慢的事务，或者一个访问大量数据并获取许多锁的事务，就会导致系统的其余部分停滞不前。</p></blockquote><h3 id="Serializable-Snapshot-Isolation（SSI）"><a href="#Serializable-Snapshot-Isolation（SSI）" class="headerlink" title="Serializable Snapshot Isolation（SSI）"></a>Serializable Snapshot Isolation（SSI）</h3><blockquote><p>一种称为_可串行化快照隔离_（SSI）的算法提供完全可串行化，与快照隔离相比只有很小的性能损失。SSI 相对较新：它于 2008 年首次描述。<br>今天，SSI 和类似算法用于单节点数据库（PostgreSQL 中的可串行化隔离级别、SQL Server 的内存 OLTP&#x2F;Hekaton 和 HyPer）、分布式数据库（CockroachDB 和 FoundationDB）以及嵌入式存储引擎（如 BadgerDB）。</p></blockquote><p>2PL 是一种悲观的并发控制协议，它在所有可能出错的地方堵塞。但是 SSI 顾名思义是基于 Snapshot Isolation 的，在事务 commit 时增加了一层检查来检测读写之间的串行化冲突，并确定要中止哪些事务，本质上是一种乐观并发控制协议。</p><p>第一种情况：在开始读取时尚未提交的写操作在事务提交时已经提交<br><img src="/images/RTG9b7ztZoOkTlxfXDKcNiPRnhz.png" class="lazyload" data-srcset="/images/RTG9b7ztZoOkTlxfXDKcNiPRnhz.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"><br>快照隔离通常由 MVCC 实现，MVCC 在读取时只会读取一开始获取的版本号对应的数据，会忽略后面发生的写入，最后导致发生幻读。于是 SSI 在事务提交时添加了一层检查：当事务想要提交时，数据库会检查是否有任何被忽略的写入现在已经提交。如果是，事务必须被中止。<br><img src="/images/OmGtbC1rOoajDoxGIokcKRLIn4e.png" class="lazyload" data-srcset="/images/OmGtbC1rOoajDoxGIokcKRLIn4e.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"><br>第二种情况：另一个事务在数据被读取后修改数据并提交。</p><p>可以采用类似 2PL index range lock 的技术，在读取操作后记录某个区间，在其他事务更新这个区间时通知原读取事务 abort，事务完成或事务回滚时可以将表中的数据清除掉。</p><blockquote><p>与两阶段锁定相比，可串行化快照隔离的主要优点是一个事务不需要阻塞等待另一个事务持有的锁。与快照隔离一样，写入者不会阻塞读者，反之亦然。这种设计原则使查询延迟更可预测且变化更少。特别是，只读查询可以在一致快照上运行而无需任何锁，这对于读取密集型工作负载非常有吸引力。</p></blockquote><h2 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h2><h3 id="2PC"><a href="#2PC" class="headerlink" title="2PC"></a>2PC</h3><p>2PC（Two Phase Commit） 跟 2PL 完全不是一回事，2PC 本身只提供 commit 这一操作的原子性，即要么全部提交，要么全部回滚。至于分布式事务的隔离性，还需要借助分布式锁之类的东西实现（思路跟单机差不多）。</p><p>2PC 的思路很简单，将一个大的分布式事务拆解成小的单机事务，其中只包含要针对节点中数据的读写操作即可。并且每个节点 begin 了事务之后不着急 commit，先询问各节点是否已经完成执行（prepare），如果其中有节点回滚了，那么命令其他节点的事务也回滚。如果各节点的事务都已经完成，节点会回复 ack 给协调者，表示该节点已经准备好 commit 了，不会再回滚了。协调者在收到所有节点的 ack 之后便会向所有节点下发 commit 命令，此时所有节点的单机事务才提交。<br><img src="/images/IG09bDWAloSjH0x0QyocSQvansd.png" class="lazyload" data-srcset="/images/IG09bDWAloSjH0x0QyocSQvansd.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"><br>如果协调器在事务过程中产生故障了怎么办？根据标准 2PC，所有节点必须拿着事务需要的锁一直等到协调者恢复。协调者执行的任意一步操作都应该是使用了 WAL 持久化日志到磁盘上的，这样恢复了便能继续进行分布式事务的执行。如果节点擅自释放锁，就有破坏事务原子性的风险。</p><h3 id="XA事务"><a href="#XA事务" class="headerlink" title="XA事务"></a>XA事务</h3><p><em>X&#x2F;Open XA_（_eXtended Architecture</em> 的缩写）是跨异构技术实现两阶段提交的标准。XA 受到许多传统关系数据库（包括 PostgreSQL、MySQL、Db2、SQL Server 和 Oracle）和消息代理（包括 ActiveMQ、HornetQ、MSMQ 和 IBM MQ）的支持。</p><p>分片中间件一般使用 XA 事务。</p><h3 id="数据库内部提供的分布式事务"><a href="#数据库内部提供的分布式事务" class="headerlink" title="数据库内部提供的分布式事务"></a>数据库内部提供的分布式事务</h3><blockquote><p>跨多个异构存储技术的分布式事务与系统内部的分布式事务之间存在很大差异——即，参与节点都是运行相同软件的同一数据库的分片。此类内部分布式事务是”NewSQL”数据库的定义特征，例如 CockroachDB、TiDB、Spanner、FoundationDB 和 YugabyteDB。某些消息代理（如 Kafka）也支持内部分布式事务。</p></blockquote><blockquote><p>这些系统中的许多系统使用两阶段提交来确保写入多个分片的事务的原子性，但它们不会遇到与 XA 事务相同的问题。原因是，由于它们的分布式事务不需要与任何其他技术接口，它们避免了最低公分母陷阱——这些系统的设计者可以自由使用更可靠、更快的更好协议。</p></blockquote>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;DDIA 第八章读书笔记，也算复习一下之前 CMU 15-445 学到的内容&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;ACID&quot;&gt;&lt;a href=&quot;#ACID&quot; class=&quot;headerlink&quot; title=&quot;ACID&quot;&gt;&lt;/a&gt;A</summary>
+      
+    
+    
+    
+    
+    <category term="读书笔记" scheme="http://blog.coldrain.ink/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    <category term="数据库" scheme="http://blog.coldrain.ink/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
   
   <entry>
     <title>2025 年度总结</title>
@@ -502,33 +529,6 @@
     
     
     
-    
-    <category term="随笔" scheme="http://blog.coldrain.ink/tags/%E9%9A%8F%E7%AC%94/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>2023年度总结</title>
-    <link href="http://blog.coldrain.ink/2023/12/30/Ehapd5iqkom3e3xScJUcxPB7nfe/"/>
-    <id>http://blog.coldrain.ink/2023/12/30/Ehapd5iqkom3e3xScJUcxPB7nfe/</id>
-    <published>2023-12-30T18:22:00.000Z</published>
-    <updated>2024-01-18T09:11:31.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="CS-公开课"><a href="#CS-公开课" class="headerlink" title="CS 公开课"></a><strong>CS 公开课</strong></h2><ul><li><p>北大编译实践</p><ul><li>算是编译器方面的一个启蒙，不过感觉连入门都算不上</li></ul></li><li><p>CMU 15-213 CSAPP</p><ul><li>其实课刷得有点马虎，不过把 lab 过完了<ul><li>这课早晚得再过一遍</li></ul></li></ul></li><li><p>MIT 6.S081</p><ul><li>对系统内核理解 0 的突破，也学着读了一些英文论文</li></ul></li><li><p>参加了清华组织的 rcore 开源操作系统训练营，混了个结营证书</p><ul><li>因为是实习期间做的，所以其实有点水，不过实验都做完了，也学了一些工程项目中内核的调试方法，也不算毫无收获<ul><li>复习了一下 Rust</li></ul></li></ul></li><li><p>CS106X （正在学习）</p><ul><li>本意是想过一遍 cpp，后来发现其实基础的算法和数据结构讲得更多。<ul><li>不过听着感觉也不错，巩固下基础，对以后做力扣题也很有帮助。</li></ul></li></ul></li><li><p>参加了达坦科技的 MIT 体系结构公开课开源学习社区，现在在看 MIT 6.004</p><ul><li><p>会学 Bluespec，lab 是做 MIT 6.175 的，内容是用 bluespec 搓颗 RISC-V CPU</p></li><li><p>真搓出来了想在上面跑 rcore（_我的天，还有比在自己写的 CPU 上跑自己写的系统内核更酷的事情吗_）</p></li></ul></li></ul><p>猛然发现 2023 是我的 CS 启蒙一年，2022 的我在通过红岩网校的考核后便陷入了迷茫。一边维持着摆烂状态，一边漫无目的的倒腾着自己感兴趣的小东西。这期间第一次系统学了 Rust，然后发现了北大的编译实践 lab。做完以后对编译器相关的知识产生了兴趣，想要系统的学习，于是我第一次了解到国外的公开课 （Stanford CS143）。</p><p>其实年初是想系统的学下编译原理（Stanford CS143）的，不过半途而废了。不过在求学的途中听人劝告去学了 CSAPP，之后便一发不可收拾。</p><p>当然我对今年的学习进度并不满意，实在太慢太摸了。接下来计划要学的公开课已经堆积如山了：</p><ul><li><p>CS106L 现代cpp</p></li><li><p>CMU 15-445 数据库系统</p></li><li><p>MIT 6.824 分布式系统</p></li><li><p>CS162 操作系统内核</p></li><li><p>CS144 计算机网络</p></li><li><p>CS143 编译原理</p></li></ul><p>任重而道远啊</p><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a><strong>其他</strong></h2><ul><li><p>去了快手实习</p><ul><li>嗯，虽然做的都是一些像搬砖一样的业务开发，技术上学不到什么东西。不过至少了解了互联网大厂项目的开发流程，并且在解决具体问题的能力（定位问题，debug，开发业务功能）上有了长足的进步。<ul><li>有了这一段实习经历，之后 Android 开发方向的转正实习应该就不难找了，算是给自己留了条后路</li><li>第一次前往异乡租房住，见识了北京浮夸的房价</li></ul></li></ul></li><li><p>思想上发生了转变</p><ul><li>经过今年发生的事情和我自己的一些思考：<ul><li>更愿意相信自由市场<ul><li>更加忧虑自己的未来，想要轻松的活着，做自己想做的事情</li></ul></li></ul></li></ul></li><li><p>因为 MyGo 入坑了邦邦，并且在看完后的数个月内念念不忘</p><ul><li>你能看看 MyGo 吗，我什么都会做的😭</li></ul></li></ul><p>最后说说我目前的目标吧，尽可能多的学习 CS 知识，找一个做基础软件研发的实习，以此为契机确定未来的职业发展方向。当然要是做不到也能滚回去做 Android 开发，至少还有条后路。</p><p>那么，就这样吧，希望 2024 结束时能给自己一个满意的答复。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;CS-公开课&quot;&gt;&lt;a href=&quot;#CS-公开课&quot; class=&quot;headerlink&quot; title=&quot;CS 公开课&quot;&gt;&lt;/a&gt;&lt;strong&gt;CS 公开课&lt;/strong&gt;&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;北大编译实践&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;算是编译器方面的</summary>
-      
-    
-    
-    
-    
-    <category term="年度总结" scheme="http://blog.coldrain.ink/tags/%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/"/>
     
     <category term="随笔" scheme="http://blog.coldrain.ink/tags/%E9%9A%8F%E7%AC%94/"/>
     

@@ -1995,7 +1995,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     root: '/',
     debug: "env",
     default: {"avatar":"/img/avatar.jpg","link":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/link/8f277b4ee0ecd.svg","cover":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/cover/76b86c0226ffd.svg","image":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/image/2659360.svg"},
-    lastupdate: new Date(1767172863582),
+    lastupdate: new Date(1768489425311),
     cdn: {
       izitoast_css: 'https://unpkg.com/izitoast@1.4.0/dist/css/iziToast.min.css',
       izitoast_js: 'https://unpkg.com/izitoast@1.4.0/dist/js/iziToast.min.js',
@@ -2395,9 +2395,71 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
         
           
         
+          
+        
       
     
     
+      
+        
+          <div class='post-wrapper'>
+            <div class="post post-v3 white-box reveal shadow floatable blur"  itemscope itemtype="https://schema.org.cn/Article" >
+  <link itemprop="mainEntityOfPage" href="http://blog.coldrain.ink/2026/01/15/KUrOdvZRdonBnSx1fjucOVH0nlf/">
+  <span hidden itemprop="publisher" itemscope itemtype="https://schema.org.cn/Organization">
+    <meta itemprop="name" content="Hiyasame">
+  </span>
+  <span hidden itemprop="post" itemscope itemtype="https://schema.org.cn/Post">
+    <meta itemprop="name" content="Hiyasame">
+    <meta itemprop="description" content="道阻且长，行则将至">
+  </span>
+  
+  
+  
+    <span hidden>
+      <meta itemprop="image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
+    </span>
+  
+  
+    
+    <h2 class="article-title"  itemprop="name headline">
+      <a href="/2026/01/15/KUrOdvZRdonBnSx1fjucOVH0nlf/"  itemprop="url">
+        Transaction 二三事
+      </a>
+    </h2>
+  
+  <div class='md article-desc' itemprop="articleBody">
+    
+      
+        
+DDIA 第八章读书笔记，也算复习一下之前 CMU 15-445 学到的内容
+
+ACIDAtomic, Consistency, Isolation, Durability
+Atomic：事务原子性，指的是事务中的内容要么全部发生，要么全部不发生。可以通过回滚实现这一点，异常发生时直接回滚所有更改，只需要保证 commit 操作原子即可。
+Consistency：一致性，这里的一致性跟 R...
+      
+    
+  </div>
+  
+    <div class='meta-v3' line_style='solid'>
+      <div>
+        
+        <time itemprop="dateCreated datePublished" datetime="2026-01-15T23:01:05+00:00">2026-01-15</time>
+        
+      </div>
+      
+        <div>
+          <a class='readmore' href='/2026/01/15/KUrOdvZRdonBnSx1fjucOVH0nlf/' itemprop="url">
+            阅读全文
+          </a>
+        </div>
+      
+    </div>
+  
+
+</div>
+
+          </div>
+        
       
         
           <div class='post-wrapper'>
@@ -2937,66 +2999,6 @@ CRAQ (Chain Replication with Apportioned Queries)论文原文：http://nil.csail
           </div>
         
       
-        
-          <div class='post-wrapper'>
-            <div class="post post-v3 white-box reveal shadow floatable blur"  itemscope itemtype="https://schema.org.cn/Article" >
-  <link itemprop="mainEntityOfPage" href="http://blog.coldrain.ink/2025/06/15/J9KbdhgRYoEdfsxraY4c2ln5n1e/">
-  <span hidden itemprop="publisher" itemscope itemtype="https://schema.org.cn/Organization">
-    <meta itemprop="name" content="Hiyasame">
-  </span>
-  <span hidden itemprop="post" itemscope itemtype="https://schema.org.cn/Post">
-    <meta itemprop="name" content="Hiyasame">
-    <meta itemprop="description" content="道阻且长，行则将至">
-  </span>
-  
-  
-  
-    <span hidden>
-      <meta itemprop="image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
-    </span>
-  
-  
-    
-    <h2 class="article-title"  itemprop="name headline">
-      <a href="/2025/06/15/J9KbdhgRYoEdfsxraY4c2ln5n1e/"  itemprop="url">
-        GFS
-      </a>
-    </h2>
-  
-  <div class='md article-desc' itemprop="articleBody">
-    
-      
-        http://nil.csail.mit.edu/6.5840/2024/papers/gfs.pdf
-定义GFS (Google File System) 是谷歌的分布式文件系统，主要面向其他分布式系统提供存储服务。
-Assumptions
-跑节点的都是便宜机器，很容易 fail，因此需要 fault tolerance
-
-系统存储的文件大部分都是大文件（原文中提到 &gt; 100MB ...
-      
-    
-  </div>
-  
-    <div class='meta-v3' line_style='solid'>
-      <div>
-        
-        <time itemprop="dateCreated datePublished" datetime="2025-06-15T08:16:39+00:00">2025-06-15</time>
-        
-      </div>
-      
-        <div>
-          <a class='readmore' href='/2025/06/15/J9KbdhgRYoEdfsxraY4c2ln5n1e/' itemprop="url">
-            阅读全文
-          </a>
-        </div>
-      
-    </div>
-  
-
-</div>
-
-          </div>
-        
-      
     
   </section>
   
@@ -3133,7 +3135,7 @@ Assumptions
 
 
     <div class='content'>
-      <a href="/tags/ART/" style="font-size: 14px; color: #999">ART</a> <a href="/tags/C/" style="font-size: 14px; color: #999">C++</a> <a href="/tags/File-System/" style="font-size: 14px; color: #999">File System</a> <a href="/tags/MIT6-s081/" style="font-size: 16px; color: #8b8b8b">MIT6.s081</a> <a href="/tags/RTFSC/" style="font-size: 16px; color: #8b8b8b">RTFSC</a> <a href="/tags/android/" style="font-size: 18px; color: #7e7e7e">android</a> <a href="/tags/fp/" style="font-size: 14px; color: #999">fp</a> <a href="/tags/jyy/" style="font-size: 14px; color: #999">jyy</a> <a href="/tags/lab/" style="font-size: 14px; color: #999">lab</a> <a href="/tags/lambda-calculus/" style="font-size: 14px; color: #999">lambda calculus</a> <a href="/tags/libc/" style="font-size: 14px; color: #999">libc</a> <a href="/tags/linux/" style="font-size: 16px; color: #8b8b8b">linux</a> <a href="/tags/lisp/" style="font-size: 14px; color: #999">lisp</a> <a href="/tags/os/" style="font-size: 14px; color: #999">os</a> <a href="/tags/xv6/" style="font-size: 20px; color: #707070">xv6</a> <a href="/tags/%E5%85%AB%E8%82%A1/" style="font-size: 16px; color: #8b8b8b">八股</a> <a href="/tags/%E5%85%AC%E5%BC%80%E8%AF%BE/" style="font-size: 16px; color: #8b8b8b">公开课</a> <a href="/tags/%E5%88%86%E4%BA%AB/" style="font-size: 14px; color: #999">分享</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size: 24px; color: #555">分布式系统</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 14px; color: #999">区块链</a> <a href="/tags/%E5%91%A8%E6%8A%A5/" style="font-size: 14px; color: #999">周报</a> <a href="/tags/%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/" style="font-size: 18px; color: #7e7e7e">年度总结</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 14px; color: #999">并发</a> <a href="/tags/%E6%80%BB%E7%BB%93/" style="font-size: 18px; color: #7e7e7e">总结</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 14px; color: #999">操作系统</a> <a href="/tags/%E6%97%85%E8%A1%8C/" style="font-size: 14px; color: #999">旅行</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 14px; color: #999">机器学习</a> <a href="/tags/%E7%BC%96%E8%AF%91/" style="font-size: 14px; color: #999">编译</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98/" style="font-size: 14px; color: #999">虚拟内存</a> <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" style="font-size: 22px; color: #636363">论文阅读</a> <a href="/tags/%E9%80%86%E5%90%91/" style="font-size: 14px; color: #999">逆向</a> <a href="/tags/%E9%97%B2%E8%81%8A/" style="font-size: 14px; color: #999">闲聊</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 20px; color: #707070">随笔</a>
+      <a href="/tags/ART/" style="font-size: 14px; color: #999">ART</a> <a href="/tags/C/" style="font-size: 14px; color: #999">C++</a> <a href="/tags/File-System/" style="font-size: 14px; color: #999">File System</a> <a href="/tags/MIT6-s081/" style="font-size: 16px; color: #8b8b8b">MIT6.s081</a> <a href="/tags/RTFSC/" style="font-size: 16px; color: #8b8b8b">RTFSC</a> <a href="/tags/android/" style="font-size: 18px; color: #7e7e7e">android</a> <a href="/tags/fp/" style="font-size: 14px; color: #999">fp</a> <a href="/tags/jyy/" style="font-size: 14px; color: #999">jyy</a> <a href="/tags/lab/" style="font-size: 14px; color: #999">lab</a> <a href="/tags/lambda-calculus/" style="font-size: 14px; color: #999">lambda calculus</a> <a href="/tags/libc/" style="font-size: 14px; color: #999">libc</a> <a href="/tags/linux/" style="font-size: 16px; color: #8b8b8b">linux</a> <a href="/tags/lisp/" style="font-size: 14px; color: #999">lisp</a> <a href="/tags/os/" style="font-size: 14px; color: #999">os</a> <a href="/tags/xv6/" style="font-size: 20px; color: #707070">xv6</a> <a href="/tags/%E5%85%AB%E8%82%A1/" style="font-size: 16px; color: #8b8b8b">八股</a> <a href="/tags/%E5%85%AC%E5%BC%80%E8%AF%BE/" style="font-size: 16px; color: #8b8b8b">公开课</a> <a href="/tags/%E5%88%86%E4%BA%AB/" style="font-size: 14px; color: #999">分享</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size: 24px; color: #555">分布式系统</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 14px; color: #999">区块链</a> <a href="/tags/%E5%91%A8%E6%8A%A5/" style="font-size: 14px; color: #999">周报</a> <a href="/tags/%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/" style="font-size: 18px; color: #7e7e7e">年度总结</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 14px; color: #999">并发</a> <a href="/tags/%E6%80%BB%E7%BB%93/" style="font-size: 18px; color: #7e7e7e">总结</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 14px; color: #999">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 14px; color: #999">数据库</a> <a href="/tags/%E6%97%85%E8%A1%8C/" style="font-size: 14px; color: #999">旅行</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 14px; color: #999">机器学习</a> <a href="/tags/%E7%BC%96%E8%AF%91/" style="font-size: 14px; color: #999">编译</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98/" style="font-size: 14px; color: #999">虚拟内存</a> <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" style="font-size: 22px; color: #636363">论文阅读</a> <a href="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" style="font-size: 14px; color: #999">读书笔记</a> <a href="/tags/%E9%80%86%E5%90%91/" style="font-size: 14px; color: #999">逆向</a> <a href="/tags/%E9%97%B2%E8%81%8A/" style="font-size: 14px; color: #999">闲聊</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 20px; color: #707070">随笔</a>
     </div>
   </section>
 
