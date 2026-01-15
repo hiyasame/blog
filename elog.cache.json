@@ -520,6 +520,25 @@
       "realName": "2025 年度总结",
       "relativePath": "/2025 年度总结.md",
       "docPath": "./source/_posts"
+    },
+    {
+      "id": "KUrOdvZRdonBnSx1fjucOVH0nlf",
+      "doc_id": "KUrOdvZRdonBnSx1fjucOVH0nlf",
+      "updated": 1768489366000,
+      "properties": {
+        "title": "Transaction 二三事",
+        "urlname": "KUrOdvZRdonBnSx1fjucOVH0nlf",
+        "date": "2026-01-15 23:01:05",
+        "updated": "2026-01-15 23:02:46",
+        "tags": [
+          "读书笔记",
+          "数据库"
+        ]
+      },
+      "catalog": [],
+      "realName": "Transaction 二三事",
+      "relativePath": "/Transaction 二三事.md",
+      "docPath": "./source/_posts"
     }
   ],
   "catalog": [
@@ -845,6 +864,18 @@
       "catalog": [],
       "has_child": false,
       "node_token": "CQwdwmR6SirUxSkfcsbcyQDYn6g",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "KUrOdvZRdonBnSx1fjucOVH0nlf",
+      "id": "KUrOdvZRdonBnSx1fjucOVH0nlf",
+      "title": "Transaction 二三事",
+      "createdAt": 1768489265000,
+      "updated": 1768489366000,
+      "updatedAt": 1768489366000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "AWeIwaEFfi4R78kg5XQccdutnTg",
       "parent_node_token": ""
     }
   ]
