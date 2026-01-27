@@ -539,6 +539,29 @@
       "realName": "Transaction 二三事",
       "relativePath": "/Transaction 二三事.md",
       "docPath": "./source/_posts"
+    },
+    {
+      "id": "AXWndCl5UoLMFmxCZkZcdfIqngg",
+      "doc_id": "AXWndCl5UoLMFmxCZkZcdfIqngg",
+      "updated": 1769522146000,
+      "properties": {
+        "title": "Android 搞机常用工具原理",
+        "urlname": "AXWndCl5UoLMFmxCZkZcdfIqngg",
+        "date": "2026-01-27 21:54:26",
+        "updated": "2026-01-27 21:55:46",
+        "tags": [
+          "Magisk",
+          "KernelSU",
+          "Zygisk",
+          "Lsposed",
+          "Android",
+          "搞机"
+        ]
+      },
+      "catalog": [],
+      "realName": "Android 搞机常用工具原理",
+      "relativePath": "/Android 搞机常用工具原理.md",
+      "docPath": "./source/_posts"
     }
   ],
   "catalog": [
@@ -876,6 +899,18 @@
       "catalog": [],
       "has_child": false,
       "node_token": "AWeIwaEFfi4R78kg5XQccdutnTg",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "AXWndCl5UoLMFmxCZkZcdfIqngg",
+      "id": "AXWndCl5UoLMFmxCZkZcdfIqngg",
+      "title": "Android 搞机常用工具原理",
+      "createdAt": 1769522066000,
+      "updated": 1769522146000,
+      "updatedAt": 1769522146000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "M1EDwjHBFiXrSvkHQzjcM7ninQb",
       "parent_node_token": ""
     }
   ]
