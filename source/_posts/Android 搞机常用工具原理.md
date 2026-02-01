@@ -2,7 +2,7 @@
 title: Android 搞机常用工具原理
 urlname: AXWndCl5UoLMFmxCZkZcdfIqngg
 date: '2026-01-27 21:54:26'
-updated: '2026-01-27 21:55:46'
+updated: '2026-02-01 23:21:03'
 tags:
   - Magisk
   - KernelSU
@@ -34,7 +34,7 @@ KernelSU 客户端跟内核通信的方式是挟持 reboot 系统调用，然后
 
 由于核心流程都在内核中完成，所以 KernelSU 的特征相较于 Magisk 较少。如果只装 KernelSU 的话，白名单以外的app 几乎没什么办法检测到 KernelSU 的特征，这也是 KernelSU 相较于 Magisk 的先进之处。
 ## Zygisk
-
+![image](images/HZCTb0GUsoOvjTx3xUScnf4fnEd.png)
 不同于前面两个 root 框架，Zygisk 是 Magisk 内置的 hook 框架，提供 Zygote fork 操作的回调，使得开发者可以在 app 开始执行之前做一些事情（比如前面提到的对在黑名单中的应用 unmount su）。
 
 Magisk 官方内置的 Zygisk 版本中，Zygisk 是通过 magiskd 修改 `ro.dalvik.vm.native.bridge` 为 `libzygisk.so` 然后在 Zygote 进程启动时被加载的。（通过修改 init.rc，使其监听自定义 property 变化，发生变化时重启 zygote，来保证 zygote 一定在 magiskd 之后加载，也保证了 zygisk 一定被加载）。
