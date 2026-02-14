@@ -3,6 +3,9 @@ title: Dataflow Analysis Note
 urlname: Rp26dyKhfo2nzNxSOCjcMDI4nlb
 date: '2026-02-14 13:58:04'
 updated: '2026-02-14 14:02:20'
+mathjax: true
+plugins:
+- mathjax
 tags:
   - 笔记
   - 静态分析
