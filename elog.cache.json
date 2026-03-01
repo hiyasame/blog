@@ -581,6 +581,24 @@
       "realName": "Dataflow Analysis Note",
       "relativePath": "/Dataflow Analysis Note.md",
       "docPath": "./source/_posts"
+    },
+    {
+      "id": "EhFDdaJZco2TWwx2FI0cYmennHh",
+      "doc_id": "EhFDdaJZco2TWwx2FI0cYmennHh",
+      "updated": 1772368250000,
+      "properties": {
+        "title": "关于 AI 时代计算机技术学习的一些思考",
+        "urlname": "EhFDdaJZco2TWwx2FI0cYmennHh",
+        "date": "2026-03-01 18:20:44",
+        "updated": "2026-03-01 20:30:50",
+        "tags": [
+          "感悟"
+        ]
+      },
+      "catalog": [],
+      "realName": "关于 AI 时代计算机技术学习的一些思考",
+      "relativePath": "/关于 AI 时代计算机技术学习的一些思考.md",
+      "docPath": "./source/_posts"
     }
   ],
   "catalog": [
@@ -942,6 +960,18 @@
       "catalog": [],
       "has_child": false,
       "node_token": "A0U8wGIfLivOyRkkeJYc0WB7nKc",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "EhFDdaJZco2TWwx2FI0cYmennHh",
+      "id": "EhFDdaJZco2TWwx2FI0cYmennHh",
+      "title": "关于 AI 时代计算机技术学习的一些思考",
+      "createdAt": 1772360444000,
+      "updated": 1772368250000,
+      "updatedAt": 1772368250000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "FAcTwDEEwipYvHkMnnzcE6Cpnmc",
       "parent_node_token": ""
     }
   ]
