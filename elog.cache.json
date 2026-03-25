@@ -599,6 +599,26 @@
       "realName": "关于 AI 时代计算机技术学习的一些思考",
       "relativePath": "/关于 AI 时代计算机技术学习的一些思考.md",
       "docPath": "./source/_posts"
+    },
+    {
+      "id": "VyNkdGHIGoz3F9xwtAYcaAiBnHb",
+      "doc_id": "VyNkdGHIGoz3F9xwtAYcaAiBnHb",
+      "updated": 1774439819000,
+      "properties": {
+        "title": "LevelDB 源码阅读 ",
+        "urlname": "VyNkdGHIGoz3F9xwtAYcaAiBnHb",
+        "date": "2026-03-25 19:55:39",
+        "updated": "2026-03-25 19:56:59",
+        "tags": [
+          "源码阅读",
+          "LevelDB",
+          "存储"
+        ]
+      },
+      "catalog": [],
+      "realName": "LevelDB 源码阅读 ",
+      "relativePath": "/LevelDB 源码阅读 .md",
+      "docPath": "./source/_posts"
     }
   ],
   "catalog": [
@@ -972,6 +992,18 @@
       "catalog": [],
       "has_child": false,
       "node_token": "FAcTwDEEwipYvHkMnnzcE6Cpnmc",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "VyNkdGHIGoz3F9xwtAYcaAiBnHb",
+      "id": "VyNkdGHIGoz3F9xwtAYcaAiBnHb",
+      "title": "LevelDB 源码阅读 ",
+      "createdAt": 1774439739000,
+      "updated": 1774439819000,
+      "updatedAt": 1774439819000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "GUV1wmfrMizQ3pkJ91dcmOOonqc",
       "parent_node_token": ""
     }
   ]
