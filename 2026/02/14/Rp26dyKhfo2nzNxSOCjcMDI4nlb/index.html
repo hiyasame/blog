@@ -1999,7 +1999,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     root: '/',
     debug: "env",
     default: {"avatar":"/img/avatar.jpg","link":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/link/8f277b4ee0ecd.svg","cover":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/cover/76b86c0226ffd.svg","image":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/image/2659360.svg"},
-    lastupdate: new Date(1774451713128),
+    lastupdate: new Date(1776652038668),
     cdn: {
       izitoast_css: 'https://unpkg.com/izitoast@1.4.0/dist/css/iziToast.min.css',
       izitoast_js: 'https://unpkg.com/izitoast@1.4.0/dist/js/iziToast.min.js',
@@ -2404,7 +2404,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </blockquote>
 <h2 id="Soundness-amp-Completeness"><a href="#Soundness-amp-Completeness" class="headerlink" title="Soundness &amp; Completeness"></a>Soundness &amp; Completeness</h2><p><img src="/images/QXlabqP9sowGbSxkKcFcfWd1nsE.png" class="lazyload" data-srcset="/images/QXlabqP9sowGbSxkKcFcfWd1nsE.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"><br>术语 Soundness（可靠性） 来自于形式逻辑和数理逻辑，如果一个证明系统 𝐿 所能证明的语句在该模型中确实为真，那么它就是可靠的。</p>
 <p>相对的，如果关于模型为真的任意语句，都能被 𝐿 所证明，那么它就是完备的 (complete) 的。</p>
-<p>听起来有点绕，用通俗的说法来说：Soundness 意味着系统“宁错杀不放过”，宁错报不漏报（under-approximate）。而 Completeness 则相反，意味着系统保证报的都是正确的，但会漏报(over-approximate)。</p>
+<p>听起来有点绕，用通俗的说法来说：Soundness 意味着系统“宁错杀不放过”，宁错报不漏报（over-approximate）。而 Completeness 则相反，意味着系统保证报的都是正确的，但会漏报(under-approximate)。</p>
 <p>这个世界上不存在既 sound 又 complete 的系统，所以一般优先保证 sound，再在准确性和速度间做取舍。</p>
 <h2 id="Data-Flow-Analysis-Applications"><a href="#Data-Flow-Analysis-Applications" class="headerlink" title="Data Flow Analysis - Applications"></a>Data Flow Analysis - Applications</h2><h3 id="May-x2F-Must-Analysis"><a href="#May-x2F-Must-Analysis" class="headerlink" title="May&#x2F;Must Analysis"></a>May&#x2F;Must Analysis</h3><p>may analysis: outputs information that may be true (over-approximation)</p>
 <p>must analysis: outputs information that must be true (under-approximation)</p>
