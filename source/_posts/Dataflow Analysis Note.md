@@ -17,7 +17,7 @@ tags:
 
 相对的，如果关于模型为真的任意语句，都能被 𝐿 所证明，那么它就是完备的 (complete) 的。
 
-听起来有点绕，用通俗的说法来说：Soundness 意味着系统“宁错杀不放过”，宁错报不漏报（under-approximate）。而 Completeness 则相反，意味着系统保证报的都是正确的，但会漏报(over-approximate)。
+听起来有点绕，用通俗的说法来说：Soundness 意味着系统“宁错杀不放过”，宁错报不漏报（over-approximate）。而 Completeness 则相反，意味着系统保证报的都是正确的，但会漏报(under-approximate)。
 
 这个世界上不存在既 sound 又 complete 的系统，所以一般优先保证 sound，再在准确性和速度间做取舍。
 ## Data Flow Analysis - Applications
