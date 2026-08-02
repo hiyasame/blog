@@ -2,11 +2,12 @@
 title: GFS
 urlname: J9KbdhgRYoEdfsxraY4c2ln5n1e
 date: '2025-06-15 16:16:39'
-updated: '2025-06-15 16:17:30'
+updated: '2026-08-03 00:13:17'
 mathjax: true
 tags:
   - 分布式系统
   - 论文阅读
+  - 笔记
 ---
 http://nil.csail.mit.edu/6.5840/2024/papers/gfs.pdf
 ## 定义

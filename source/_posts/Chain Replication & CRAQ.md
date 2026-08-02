@@ -2,11 +2,12 @@
 title: Chain Replication & CRAQ
 urlname: Y8eRda3eJocn3TxUGMIcCz4unXb
 date: '2025-07-26 23:10:31'
-updated: '2025-07-26 23:11:39'
+updated: '2026-08-03 00:13:06'
 mathjax: true
 tags:
   - 分布式系统
   - 论文阅读
+  - 笔记
 ---
 ## Chain Replication
 论文原文：https://pdos.csail.mit.edu/6.824/papers/cr-osdi04.pdf

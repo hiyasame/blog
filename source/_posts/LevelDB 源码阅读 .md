@@ -2,11 +2,12 @@
 title: 'LevelDB 源码阅读 '
 urlname: VyNkdGHIGoz3F9xwtAYcaAiBnHb
 date: '2026-03-25 19:55:39'
-updated: '2026-03-25 23:14:15'
+updated: '2026-08-03 00:13:59'
 tags:
   - RTFSC
   - LevelDB
   - 存储
+  - 笔记
 ---
 LevelDB 是 google 开源的 LSM Tree 键值数据库引擎，是大概十五年前的工业级实现，从 Bigtable 中抽离而来。在保持精简的实现的同时也支撑了开源世界许多重要的项目，阅读 LevelDB 代码可以在了解工业级的 LSM Tree 实现的同时学习高性能 C++ 编程。
 ## 整体架构

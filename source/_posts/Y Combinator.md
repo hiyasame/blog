@@ -2,14 +2,12 @@
 title: Y Combinator
 urlname: YL0xd3o8NoQWRpxm7aNcKzocn8b
 date: '2024-09-18 13:34:32'
-updated: '2024-09-18 13:39:21'
-mathjax: true
-plugins:
-- mathjax
+updated: '2026-08-03 00:13:26'
 tags:
   - fp
   - lisp
   - lambda calculus
+  - PL
 ---
 **TL;DR**
 - combinator 函数必须不含自由变量，combinator 之间可以组合

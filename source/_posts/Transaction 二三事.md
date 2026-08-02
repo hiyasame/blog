@@ -2,9 +2,9 @@
 title: Transaction 二三事
 urlname: KUrOdvZRdonBnSx1fjucOVH0nlf
 date: '2026-01-15 23:01:05'
-updated: '2026-01-15 23:02:46'
+updated: '2026-08-03 00:12:41'
 tags:
-  - 读书笔记
+  - 笔记
   - 数据库
 ---
 > DDIA 第八章读书笔记，也算复习一下之前 CMU 15-445 学到的内容

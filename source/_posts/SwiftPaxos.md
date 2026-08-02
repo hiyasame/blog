@@ -2,10 +2,11 @@
 title: SwiftPaxos
 urlname: MWEdduYzeoflbWxVqSkcz5IjnId
 date: '2025-12-04 01:38:27'
-updated: '2025-12-04 01:40:14'
+updated: '2026-08-03 00:13:44'
 tags:
   - 分布式系统
   - 论文阅读
+  - 笔记
 ---
 [SwiftPaxos Fast Geo-Replicated State Machines](https://octochords.com/posts/swiftpaxos/)
 ## 算法细节

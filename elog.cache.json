@@ -215,16 +215,17 @@
     {
       "id": "YL0xd3o8NoQWRpxm7aNcKzocn8b",
       "doc_id": "YL0xd3o8NoQWRpxm7aNcKzocn8b",
-      "updated": 1726637961000,
+      "updated": 1785687206000,
       "properties": {
         "title": "Y Combinator",
         "urlname": "YL0xd3o8NoQWRpxm7aNcKzocn8b",
         "date": "2024-09-18 13:34:32",
-        "updated": "2024-09-18 13:39:21",
+        "updated": "2026-08-03 00:13:26",
         "tags": [
           "fp",
           "lisp",
-          "lambda calculus"
+          "lambda calculus",
+          "PL"
         ]
       },
       "catalog": [],
@@ -332,16 +333,17 @@
     {
       "id": "J9KbdhgRYoEdfsxraY4c2ln5n1e",
       "doc_id": "J9KbdhgRYoEdfsxraY4c2ln5n1e",
-      "updated": 1749975450000,
+      "updated": 1785687197000,
       "properties": {
         "title": "GFS",
         "urlname": "J9KbdhgRYoEdfsxraY4c2ln5n1e",
         "date": "2025-06-15 16:16:39",
-        "updated": "2025-06-15 16:17:30",
+        "updated": "2026-08-03 00:13:17",
         "mathjax": true,
         "tags": [
           "分布式系统",
-          "论文阅读"
+          "论文阅读",
+          "笔记"
         ]
       },
       "catalog": [],
@@ -352,16 +354,17 @@
     {
       "id": "CDy1dIrQMoG0ARxGYWpcBDXynTg",
       "doc_id": "CDy1dIrQMoG0ARxGYWpcBDXynTg",
-      "updated": 1752853200000,
+      "updated": 1785687192000,
       "properties": {
         "title": "ZooKeeper",
         "urlname": "CDy1dIrQMoG0ARxGYWpcBDXynTg",
         "date": "2025-07-18 23:37:31",
-        "updated": "2025-07-18 23:40:00",
+        "updated": "2026-08-03 00:13:12",
         "mathjax": true,
         "tags": [
           "分布式系统",
-          "论文阅读"
+          "论文阅读",
+          "笔记"
         ]
       },
       "catalog": [],
@@ -372,16 +375,17 @@
     {
       "id": "Y8eRda3eJocn3TxUGMIcCz4unXb",
       "doc_id": "Y8eRda3eJocn3TxUGMIcCz4unXb",
-      "updated": 1753542699000,
+      "updated": 1785687186000,
       "properties": {
         "title": "Chain Replication & CRAQ",
         "urlname": "Y8eRda3eJocn3TxUGMIcCz4unXb",
         "date": "2025-07-26 23:10:31",
-        "updated": "2025-07-26 23:11:39",
+        "updated": "2026-08-03 00:13:06",
         "mathjax": true,
         "tags": [
           "分布式系统",
-          "论文阅读"
+          "论文阅读",
+          "笔记"
         ]
       },
       "catalog": [],
@@ -410,14 +414,15 @@
     {
       "id": "AzRSdNDzcooDvpxY46RcDjSHnyd",
       "doc_id": "AzRSdNDzcooDvpxY46RcDjSHnyd",
-      "updated": 1755711566000,
+      "updated": 1785687177000,
       "properties": {
         "title": "Amazon Aurora",
         "urlname": "AzRSdNDzcooDvpxY46RcDjSHnyd",
         "date": "2025-08-21 01:37:41",
-        "updated": "2025-08-21 01:39:26",
+        "updated": "2026-08-03 00:12:57",
         "tags": [
           "论文阅读",
+          "笔记",
           "分布式系统"
         ]
       },
@@ -485,15 +490,16 @@
     {
       "id": "MWEdduYzeoflbWxVqSkcz5IjnId",
       "doc_id": "MWEdduYzeoflbWxVqSkcz5IjnId",
-      "updated": 1764783614000,
+      "updated": 1785687224000,
       "properties": {
         "title": "SwiftPaxos",
         "urlname": "MWEdduYzeoflbWxVqSkcz5IjnId",
         "date": "2025-12-04 01:38:27",
-        "updated": "2025-12-04 01:40:14",
+        "updated": "2026-08-03 00:13:44",
         "tags": [
           "分布式系统",
-          "论文阅读"
+          "论文阅读",
+          "笔记"
         ]
       },
       "catalog": [],
@@ -524,14 +530,14 @@
     {
       "id": "KUrOdvZRdonBnSx1fjucOVH0nlf",
       "doc_id": "KUrOdvZRdonBnSx1fjucOVH0nlf",
-      "updated": 1768489366000,
+      "updated": 1785687161000,
       "properties": {
         "title": "Transaction 二三事",
         "urlname": "KUrOdvZRdonBnSx1fjucOVH0nlf",
         "date": "2026-01-15 23:01:05",
-        "updated": "2026-01-15 23:02:46",
+        "updated": "2026-08-03 00:12:41",
         "tags": [
-          "读书笔记",
+          "笔记",
           "数据库"
         ]
       },
@@ -603,21 +609,60 @@
     {
       "id": "VyNkdGHIGoz3F9xwtAYcaAiBnHb",
       "doc_id": "VyNkdGHIGoz3F9xwtAYcaAiBnHb",
-      "updated": 1774451655000,
+      "updated": 1785687239000,
       "properties": {
         "title": "LevelDB 源码阅读 ",
         "urlname": "VyNkdGHIGoz3F9xwtAYcaAiBnHb",
         "date": "2026-03-25 19:55:39",
-        "updated": "2026-03-25 23:14:15",
+        "updated": "2026-08-03 00:13:59",
         "tags": [
           "RTFSC",
           "LevelDB",
-          "存储"
+          "存储",
+          "笔记"
         ]
       },
       "catalog": [],
       "realName": "LevelDB 源码阅读 ",
       "relativePath": "/LevelDB 源码阅读 .md",
+      "docPath": "./source/_posts"
+    },
+    {
+      "id": "XIsZdSA4Sosxe6xutoLc9Jdknqc",
+      "doc_id": "XIsZdSA4Sosxe6xutoLc9Jdknqc",
+      "updated": 1785687121000,
+      "properties": {
+        "title": "CS242笔记 - Lambda Calculus, Type Systems",
+        "urlname": "XIsZdSA4Sosxe6xutoLc9Jdknqc",
+        "date": "2026-08-03 00:09:49",
+        "updated": "2026-08-03 00:12:01",
+        "tags": [
+          "笔记",
+          "PL"
+        ]
+      },
+      "catalog": [],
+      "realName": "CS242笔记 - Lambda Calculus, Type Systems",
+      "relativePath": "/CS242笔记 - Lambda Calculus, Type Systems.md",
+      "docPath": "./source/_posts"
+    },
+    {
+      "id": "SgTTdZLKIoPYfVxfp3tc11BLnsb",
+      "doc_id": "SgTTdZLKIoPYfVxfp3tc11BLnsb",
+      "updated": 1785687147000,
+      "properties": {
+        "title": "CS242笔记 - Algebraic data types",
+        "urlname": "SgTTdZLKIoPYfVxfp3tc11BLnsb",
+        "date": "2026-08-03 00:10:06",
+        "updated": "2026-08-03 00:12:27",
+        "tags": [
+          "笔记",
+          "PL"
+        ]
+      },
+      "catalog": [],
+      "realName": "CS242笔记 - Algebraic data types",
+      "relativePath": "/CS242笔记 - Algebraic data types.md",
       "docPath": "./source/_posts"
     }
   ],
@@ -759,8 +804,8 @@
       "id": "YL0xd3o8NoQWRpxm7aNcKzocn8b",
       "title": "Y Combinator",
       "createdAt": 1726637672000,
-      "updated": 1726637961000,
-      "updatedAt": 1726637961000,
+      "updated": 1785687206000,
+      "updatedAt": 1785687206000,
       "catalog": [],
       "has_child": false,
       "node_token": "CmabwDfEjib2umkwiCXcrNX7nkX",
@@ -831,8 +876,8 @@
       "id": "J9KbdhgRYoEdfsxraY4c2ln5n1e",
       "title": "GFS",
       "createdAt": 1749975399000,
-      "updated": 1749975450000,
-      "updatedAt": 1749975450000,
+      "updated": 1785687197000,
+      "updatedAt": 1785687197000,
       "catalog": [],
       "has_child": false,
       "node_token": "JyLCw314XiieXBklckrcDIk0npe",
@@ -843,8 +888,8 @@
       "id": "CDy1dIrQMoG0ARxGYWpcBDXynTg",
       "title": "ZooKeeper",
       "createdAt": 1752853051000,
-      "updated": 1752853200000,
-      "updatedAt": 1752853200000,
+      "updated": 1785687192000,
+      "updatedAt": 1785687192000,
       "catalog": [],
       "has_child": false,
       "node_token": "AmIXw6GEUiBKpykkTm1cNyaknnU",
@@ -855,8 +900,8 @@
       "id": "Y8eRda3eJocn3TxUGMIcCz4unXb",
       "title": "Chain Replication & CRAQ",
       "createdAt": 1753542631000,
-      "updated": 1753542699000,
-      "updatedAt": 1753542699000,
+      "updated": 1785687186000,
+      "updatedAt": 1785687186000,
       "catalog": [],
       "has_child": false,
       "node_token": "POPvwY5c6i6aunkoptbc4jZFnBb",
@@ -879,8 +924,8 @@
       "id": "AzRSdNDzcooDvpxY46RcDjSHnyd",
       "title": "Amazon Aurora",
       "createdAt": 1755711461000,
-      "updated": 1755711566000,
-      "updatedAt": 1755711566000,
+      "updated": 1785687177000,
+      "updatedAt": 1785687177000,
       "catalog": [],
       "has_child": false,
       "node_token": "RR4xw1dokiy4crkHzncc3OWmn0g",
@@ -927,8 +972,8 @@
       "id": "MWEdduYzeoflbWxVqSkcz5IjnId",
       "title": "SwiftPaxos",
       "createdAt": 1764783507000,
-      "updated": 1764783614000,
-      "updatedAt": 1764783614000,
+      "updated": 1785687224000,
+      "updatedAt": 1785687224000,
       "catalog": [],
       "has_child": false,
       "node_token": "DotYweaHRiTM16kNmtccclSOnIc",
@@ -951,8 +996,8 @@
       "id": "KUrOdvZRdonBnSx1fjucOVH0nlf",
       "title": "Transaction 二三事",
       "createdAt": 1768489265000,
-      "updated": 1768489366000,
-      "updatedAt": 1768489366000,
+      "updated": 1785687161000,
+      "updatedAt": 1785687161000,
       "catalog": [],
       "has_child": false,
       "node_token": "AWeIwaEFfi4R78kg5XQccdutnTg",
@@ -999,11 +1044,35 @@
       "id": "VyNkdGHIGoz3F9xwtAYcaAiBnHb",
       "title": "LevelDB 源码阅读 ",
       "createdAt": 1774439739000,
-      "updated": 1774451655000,
-      "updatedAt": 1774451655000,
+      "updated": 1785687239000,
+      "updatedAt": 1785687239000,
       "catalog": [],
       "has_child": false,
       "node_token": "GUV1wmfrMizQ3pkJ91dcmOOonqc",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "XIsZdSA4Sosxe6xutoLc9Jdknqc",
+      "id": "XIsZdSA4Sosxe6xutoLc9Jdknqc",
+      "title": "CS242笔记 - Lambda Calculus, Type Systems",
+      "createdAt": 1785686989000,
+      "updated": 1785687121000,
+      "updatedAt": 1785687121000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "EXhgwdmN9iudGVkP1JHcuxOknwh",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "SgTTdZLKIoPYfVxfp3tc11BLnsb",
+      "id": "SgTTdZLKIoPYfVxfp3tc11BLnsb",
+      "title": "CS242笔记 - Algebraic data types",
+      "createdAt": 1785687006000,
+      "updated": 1785687147000,
+      "updatedAt": 1785687147000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "V9Xyw5jIMiqLjfkU8Zkc5NDjnNb",
       "parent_node_token": ""
     }
   ]

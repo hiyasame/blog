@@ -2,9 +2,10 @@
 title: Amazon Aurora
 urlname: AzRSdNDzcooDvpxY46RcDjSHnyd
 date: '2025-08-21 01:37:41'
-updated: '2025-08-21 01:39:26'
+updated: '2026-08-03 00:12:57'
 tags:
   - 论文阅读
+  - 笔记
   - 分布式系统
 ---
 https://zhuanlan.zhihu.com/p/208680604

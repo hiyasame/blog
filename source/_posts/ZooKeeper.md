@@ -2,11 +2,12 @@
 title: ZooKeeper
 urlname: CDy1dIrQMoG0ARxGYWpcBDXynTg
 date: '2025-07-18 23:37:31'
-updated: '2025-07-18 23:40:00'
+updated: '2026-08-03 00:13:12'
 mathjax: true
 tags:
   - 分布式系统
   - 论文阅读
+  - 笔记
 ---
 论文原文: http://nil.csail.mit.edu/6.5840/2024/papers/zookeeper.pdf
 
