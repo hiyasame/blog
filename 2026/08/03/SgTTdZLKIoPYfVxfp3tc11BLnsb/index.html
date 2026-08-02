@@ -5,8 +5,8 @@
   <meta name="Volantis" content="6.0.0-alpha.1">
   <meta charset="utf-8">
   <!-- SEO相关 -->
-  <meta name="robots" content="noindex,follow">
-  <link rel="canonical" href="http://blog.coldrain.ink/tags/读书笔记/"/>
+  
+  <link rel="canonical" href="http://blog.coldrain.ink/2026/08/03/sgttdzlkiopyfvxfp3tc11blnsb/"/>
   <!-- 渲染优化 -->
     <meta http-equiv='x-dns-prefetch-control' content='on' />
       <link rel='dns-prefetch' href='https://unpkg.com'>
@@ -34,18 +34,22 @@
   <!-- feed -->
       <link rel="alternate" href="/atom.xml" title="Hiyasame" type="application/atom+xml">
   <!-- 页面元数据 -->
-  <title>标签：读书笔记 - Hiyasame</title>
-  <meta name="keywords" content="null">
+  <title>CS242笔记 - Algebraic data types - Hiyasame</title>
+  <meta name="keywords" content="笔记,PL,null">
   <meta desc name="description" content="道阻且长，行则将至 - 寒雨 - Hiyasame">
   
-<meta property="og:type" content="website">
-<meta property="og:title" content="Hiyasame">
-<meta property="og:url" content="http://blog.coldrain.ink/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CS242笔记 - Algebraic data types">
+<meta property="og:url" content="http://blog.coldrain.ink/2026/08/03/SgTTdZLKIoPYfVxfp3tc11BLnsb/index.html">
 <meta property="og:site_name" content="Hiyasame">
-<meta property="og:description" content="道阻且长，行则将至">
+<meta property="og:description" content="ADT theory “代数数据类型（ADT）是在简单类型 λ-演算（或系统 F）的基础上，通过引入积类型（Product）与和类型（Sum）的组合，并允许递归定义（µ），从而构造出结构化数据的一种类型系统扩展。它本质上是范畴论中的初始代数（Initial Algebra），对应逻辑学中的归纳类型。”  Product types比如 pair 类型，本质上是把两个类型做了乘积。比如类型 L 包含">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
+<meta property="article:published_time" content="2026-08-03T00:10:06.000Z">
+<meta property="article:modified_time" content="2026-08-03T00:12:27.000Z">
 <meta property="article:author" content="寒雨">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="PL">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
   <style>
@@ -1987,7 +1991,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 
 <script>
   window.pdata={}
-  pdata.ispage=false;
+  pdata.ispage=true;
   pdata.commentPath="";
   pdata.commentPlaceholder="";
   pdata.commentConfig={};
@@ -1995,7 +1999,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     root: '/',
     debug: "env",
     default: {"avatar":"/img/avatar.jpg","link":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/link/8f277b4ee0ecd.svg","cover":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/cover/76b86c0226ffd.svg","image":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/image/2659360.svg"},
-    lastupdate: new Date(1776652038668),
+    lastupdate: new Date(1785687437090),
     cdn: {
       izitoast_css: 'https://unpkg.com/izitoast@1.4.0/dist/css/iziToast.min.css',
       izitoast_js: 'https://unpkg.com/izitoast@1.4.0/dist/js/iziToast.min.js',
@@ -2324,25 +2328,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       <div id="safearea">
         <div class="body-wrapper">
           
-
 <div id="l_main" class=''>
-  
-    
-      
-  <section class="post-list">
-    
-      
-        
-          
-        
-      
-    
-    
-      
-        
-          <div class='post-wrapper'>
-            <div class="post post-v3 white-box reveal shadow floatable blur"  itemscope itemtype="https://schema.org.cn/Article" >
-  <link itemprop="mainEntityOfPage" href="http://blog.coldrain.ink/2026/01/15/KUrOdvZRdonBnSx1fjucOVH0nlf/">
+  <article itemscope itemtype="https://schema.org.cn/Article" class="article post white-box reveal md shadow floatable blur article-type-post" id="post" itemscope itemprop="blogPost">
+  <link itemprop="mainEntityOfPage" href="http://blog.coldrain.ink/2026/08/03/SgTTdZLKIoPYfVxfp3tc11BLnsb/">
   <span hidden itemprop="publisher" itemscope itemtype="https://schema.org.cn/Organization">
     <meta itemprop="name" content="Hiyasame">
   </span>
@@ -2351,63 +2339,224 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     <meta itemprop="description" content="道阻且长，行则将至">
   </span>
   
-  
+
+
   
     <span hidden>
       <meta itemprop="image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
     </span>
   
-  
+  <div class="article-meta" id="top">
     
-    <h2 class="article-title"  itemprop="name headline">
-      <a href="/2026/01/15/KUrOdvZRdonBnSx1fjucOVH0nlf/"  itemprop="url">
-        Transaction 二三事
-      </a>
-    </h2>
-  
-  <div class='md article-desc' itemprop="articleBody">
     
-      
+    
+      <h1 class="title" itemprop="name headline">
+        CS242笔记 - Algebraic data types
+      </h1>
+      <div class='new-meta-box'>
         
-DDIA 第八章读书笔记，也算复习一下之前 CMU 15-445 学到的内容
+          
+            
+<div class='new-meta-item author' itemprop="author" itemscope itemtype="https://schema.org.cn/Person">
+  <a itemprop="url" class='author' href="/" rel="nofollow">
+    <img itemprop="image" src="/img/avatar.jpg" class="lazyload" data-srcset="/img/avatar.jpg" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+    <p itemprop="name">寒雨</p>
+  </a>
+</div>
 
-ACIDAtomic, Consistency, Isolation, Durability
-Atomic：事务原子性，指的是事务中的内容要么全部发生，要么全部不发生。可以通过回滚实现这一点，异常发生时直接回滚所有更改，只需要保证 commit 操作原子即可。
-Consistency：一致性，这里的一致性跟 R...
-      
+          
+        
+          
+            
+
+
+          
+        
+          
+            <div class="new-meta-item date" itemprop="dateCreated datePublished" datetime="2026-08-03T00:10:06+00:00">
+  <a class='notlink'>
+    <i class="fa-solid fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：2026年8月3日</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+
+
+
+          
+        
+        <!-- Custom Files topMeta begin-->
+        
+        <!-- Custom Files topMeta end-->
+      </div>
     
   </div>
+
+
+  <div id="layoutHelper-page-plugins"></div>
+  <div id="post-body" itemprop="articleBody">
+    <h2 id="ADT-theory"><a href="#ADT-theory" class="headerlink" title="ADT theory"></a>ADT theory</h2><blockquote>
+<p>“代数数据类型（ADT）是在简单类型 λ-演算（或系统 F）的基础上，通过引入积类型（Product）与和类型（Sum）的组合，并允许递归定义（µ），从而构造出结构化数据的一种类型系统扩展。它本质上是范畴论中的初始代数（Initial Algebra），对应逻辑学中的归纳类型。”</p>
+</blockquote>
+<h3 id="Product-types"><a href="#Product-types" class="headerlink" title="Product types"></a>Product types</h3><p>比如 pair 类型，本质上是把两个类型做了乘积。比如类型 L 包含 n 种值，而类型 R 包含 m 种值，则 pair (L, R) 则包含 n * m 种值，所以 pair &#x2F; struct 被称作值类型。</p>
+<p>下图给出了 Pair 语法的定义，访问 pair 中元素的操作被称作 projection（投影）。<br><img src="/images/WNypb6YTNoBVCtxTeNJcpulSnjh.png" class="lazyload" data-srcset="/images/WNypb6YTNoBVCtxTeNJcpulSnjh.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"><br>比如：<br><img src="/images/Xq5qbfzMDoq8lmxrjOlcdRCTnYb.png" class="lazyload" data-srcset="/images/Xq5qbfzMDoq8lmxrjOlcdRCTnYb.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"><br>静态语义和动态语义的定义如下图：<br><img src="/images/PbDOb7ZJ9omfVIxmj4rcup92nof.png" class="lazyload" data-srcset="/images/PbDOb7ZJ9omfVIxmj4rcup92nof.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"><br><img src="/images/X8owbu7oKodMoOxKWQsci3DFnTN.png" class="lazyload" data-srcset="/images/X8owbu7oKodMoOxKWQsci3DFnTN.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"></p>
+<h3 id="Sum-types"><a href="#Sum-types" class="headerlink" title="Sum types"></a>Sum types</h3><p>比如枚举类型，既可能是类型 A，又可能是类型 B。至于为什么叫他和类型也很好理解，假如 A 类型有 A 种值，B 类型有 B 种值，则 A + B 类型有 A + B 种值。</p>
+<p>下面给出了类似 rust enum match 语法的语法定义：<br><img src="/images/B82abym1VoIr10x0RyLcJg96nIg.png" class="lazyload" data-srcset="/images/B82abym1VoIr10x0RyLcJg96nIg.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"><br>比如：<br><img src="/images/ZYZibuX4BoYbM5xFRW5cl0Mcntc.png" class="lazyload" data-srcset="/images/ZYZibuX4BoYbM5xFRW5cl0Mcntc.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"><br>静态语义和动态语义定义如下：<br><img src="/images/ABEAbU18TojUOexDE8scNLOEn3f.png" class="lazyload" data-srcset="/images/ABEAbU18TojUOexDE8scNLOEn3f.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"><br><img src="/images/Zdr9boZBxo48Iqx5j2RcNRmGnIK.png" class="lazyload" data-srcset="/images/Zdr9boZBxo48Iqx5j2RcNRmGnIK.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"></p>
+<h2 id="Algebra-of-ADTs"><a href="#Algebra-of-ADTs" class="headerlink" title="Algebra of ADTs"></a>Algebra of ADTs</h2><p>和类型和积类型具有跟普通整数类似的代数性质，即可以进行加法运算和乘法运算。</p>
+<p>那么为了充分发展这一代数体系，我们需要引入 “0” 和 “1”，即包含 0 种类型的类型 “void” 和只包含 1 种类型的类型 “unit”:<br><img src="/images/FP0KbllRioQ1GzxQNSgcwUVqncg.png" class="lazyload" data-srcset="/images/FP0KbllRioQ1GzxQNSgcwUVqncg.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"><br>所以任意类型乘以 unit 等于这个类型本身，任意类型加上 void 也等于这个类型本身：<br><img src="/images/NnEWbtMj1owzO8xslR3cJs2vn2X.png" class="lazyload" data-srcset="/images/NnEWbtMj1owzO8xslR3cJs2vn2X.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"><br>同时，和类型与积类型的运算符也跟整数运算一样，遵循交换律，结合律和分布律：<br><img src="/images/EfV0bWCzToMAeTxtkoLcK8jNnic.png" class="lazyload" data-srcset="/images/EfV0bWCzToMAeTxtkoLcK8jNnic.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"></p>
+
+  </div>
   
-    <div class='meta-v3' line_style='solid'>
-      <div>
-        
-        <time itemprop="dateCreated datePublished" datetime="2026-01-15T23:01:05+00:00">2026-01-15</time>
-        
-      </div>
+  
+    
+    <div class='footer'>
+       <!-- 参考资料、相关资料等 -->
       
-        <div>
-          <a class='readmore' href='/2026/01/15/KUrOdvZRdonBnSx1fjucOVH0nlf/' itemprop="url">
-            阅读全文
-          </a>
-        </div>
+       <!-- 相关文章 -->
+      
+      <!-- 版权声明组件 -->
+      
+      <!-- 打赏组件 -->
       
     </div>
   
+  
+    
 
+
+  <div class='article-meta' id="bottom">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateModified" datetime="2026-08-03T00:12:27+00:00">
+  <a class='notlink'>
+    <i class="fa-solid fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：2026年8月3日</p>
+  </a>
 </div>
 
-          </div>
         
       
-    
-  </section>
+        
+          
   
-    
+  
+  
+  <div class="new-meta-item meta-tags"><a class="tag" href="/tags/%E7%AC%94%E8%AE%B0/" rel="nofollow"><i class="fa-solid fa-hashtag fa-fw" aria-hidden="true"></i><p>笔记</p></a></div> <div class="new-meta-item meta-tags"><a class="tag" href="/tags/PL/" rel="nofollow"><i class="fa-solid fa-hashtag fa-fw" aria-hidden="true"></i><p>PL</p></a></div>
+  <span hidden itemprop="keywords">笔记 PL</span>
   
 
 
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
     
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://blog.coldrain.ink/2026/08/03/SgTTdZLKIoPYfVxfp3tc11BLnsb/&title=CS242笔记 - Algebraic data types - Hiyasame&summary="
+          
+          >
+          
+            <img src="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qq.png" class="lazyload" data-srcset="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qq.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://blog.coldrain.ink/2026/08/03/SgTTdZLKIoPYfVxfp3tc11BLnsb/&title=CS242笔记 - Algebraic data types - Hiyasame&summary="
+          
+          >
+          
+            <img src="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qzone.png" class="lazyload" data-srcset="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qzone.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://service.weibo.com/share/share.php?url=http://blog.coldrain.ink/2026/08/03/SgTTdZLKIoPYfVxfp3tc11BLnsb/&title=CS242笔记 - Algebraic data types - Hiyasame&summary="
+          
+          >
+          
+            <img src="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/weibo.png" class="lazyload" data-srcset="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/weibo.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+          
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+    <!-- Custom Files bottomMeta begin -->
+    
+    <!-- Custom Files bottomMeta end -->
+  </div>
+
+
   
+  
+
+  
+    <div class="prev-next">
+      
+      
+        <a class='next' href='/2026/08/03/XIsZdSA4Sosxe6xutoLc9Jdknqc/'>
+          <p class='title'>CS242笔记 - Lambda Calculus, Type Systems<i class="fa-solid fa-chevron-right" aria-hidden="true"></i></p>
+          <p class='content'>https://stanford-cs242.github.io/f19/
+Lambda Calculus
+自由变量 (Free Variables): 外层 lamdba 函数没有声明的变量
+...</p>
+        </a>
+      
+    </div>
+  
+  <!-- 文章推荐 -->
+  
+  
+  <!-- Custom Files postEnd begin-->
+  
+  <!-- Custom Files postEnd end-->
+</article>
+
+
+  
+
+
+  <article class="post white-box shadow floatable blur" id="comments">
+    <span hidden>
+      <meta itemprop="discussionUrl" content="/2026/08/03/SgTTdZLKIoPYfVxfp3tc11BLnsb/index.html#comments">
+    </span>
+    <p ct><i class='fa-solid fa-comments'></i> 评论</p>
+    
+
+    <div id="layoutHelper-comments"></div>
+
+  </article>
+
+
+
+
+
+
 </div>
 <aside id='l_side' itemscope itemtype="https://schema.org.cn/WPSideBar">
   
@@ -2416,124 +2565,31 @@ Consistency：一致性，这里的一致性跟 R...
     
     
       
-<section class="widget blur floatable shadow blogger desktop mobile ">
-  <div class='content'>
     
-      
-        <a class='avatar flat-box circle' href='/about/'>
-          <img no-lazy src='/img/avatar.jpg'/>
-        </a>
-      
-    
-    <div class="site-author-box">
-      <p class="site-author-name" itemprop="name">寒雨</p>
-      <p class="site-author-description" itemprop="description">做难而有趣的事情</p>
-    </div>
-    <!-- 
-      <div class='text'>
-        
-        
-          <p>做难而有趣的事情</p>
-
-        
-        
-      </div>
-     -->
-    
-      <div class="social-wrapper">
-        
-          
-            <a href="/atom.xml"
-              class="social fa-solid fa-rss flat-btn"
-              target="_blank"
-              rel="external nofollow noopener noreferrer">
-              
-            </a>
-          
-        
-          
-            <a href="mailto:coldrain608@gmail.com"
-              class="social fa-solid fa-envelope flat-btn"
-              target="_blank"
-              rel="external nofollow noopener noreferrer">
-              
-            </a>
-          
-        
-          
-            <a href="https://github.com/hiyasame"
-              class="social fab fa-github flat-btn"
-              target="_blank"
-              rel="external nofollow noopener noreferrer">
-              
-            </a>
-          
-        
-      </div>
-    
-  </div>
-</section>
-
-    
-  
-
-  
-    
-    
-      
-  
-  <section class="widget category ">
-    
-  <header>
-    
-      <a href='/blog/categories/'><i class="fa-solid fa-folder-open fa-fw" aria-hidden="true"></i><span class='name'>文章分类</span></a>
-    
-  </header>
-
-
-    <div class='content'>
-      <ul class="entry navigation">
-        
-          <li><a class="flat-box"
-            title="/categories/%E7%AC%94%E8%AE%B0/" href="/categories/%E7%AC%94%E8%AE%B0/"
-            active-action="action-categoriesE7AC94E8AEB0"
-            ><div class='name'>笔记</div><div class='badge'>(3)</div></a></li>
-        
-      </ul>
-    </div>
-  </section>
-
-
-    
-  
-
-  
-    
-    
-      
-  
-  <section class="widget tagcloud desktop mobile">
-    
-  <header>
-    
-      <a href='/blog/tags/'><i class="fa-solid fa-tags fa-fw" aria-hidden="true"></i><span class='name'>热门标签</span></a>
-    
-  </header>
-
-
-    <div class='content'>
-      <a href="/tags/ART/" style="font-size: 14px; color: #999">ART</a> <a href="/tags/Android/" style="font-size: 14px; color: #999">Android</a> <a href="/tags/C/" style="font-size: 14px; color: #999">C++</a> <a href="/tags/File-System/" style="font-size: 14px; color: #999">File System</a> <a href="/tags/KernelSU/" style="font-size: 14px; color: #999">KernelSU</a> <a href="/tags/LevelDB/" style="font-size: 14px; color: #999">LevelDB</a> <a href="/tags/Lsposed/" style="font-size: 14px; color: #999">Lsposed</a> <a href="/tags/MIT6-s081/" style="font-size: 16px; color: #8b8b8b">MIT6.s081</a> <a href="/tags/Magisk/" style="font-size: 14px; color: #999">Magisk</a> <a href="/tags/RTFSC/" style="font-size: 18px; color: #7e7e7e">RTFSC</a> <a href="/tags/Zygisk/" style="font-size: 14px; color: #999">Zygisk</a> <a href="/tags/android/" style="font-size: 18px; color: #7e7e7e">android</a> <a href="/tags/fp/" style="font-size: 14px; color: #999">fp</a> <a href="/tags/jyy/" style="font-size: 14px; color: #999">jyy</a> <a href="/tags/lab/" style="font-size: 14px; color: #999">lab</a> <a href="/tags/lambda-calculus/" style="font-size: 14px; color: #999">lambda calculus</a> <a href="/tags/libc/" style="font-size: 14px; color: #999">libc</a> <a href="/tags/linux/" style="font-size: 16px; color: #8b8b8b">linux</a> <a href="/tags/lisp/" style="font-size: 14px; color: #999">lisp</a> <a href="/tags/os/" style="font-size: 14px; color: #999">os</a> <a href="/tags/xv6/" style="font-size: 20px; color: #707070">xv6</a> <a href="/tags/%E5%85%AB%E8%82%A1/" style="font-size: 16px; color: #8b8b8b">八股</a> <a href="/tags/%E5%85%AC%E5%BC%80%E8%AF%BE/" style="font-size: 16px; color: #8b8b8b">公开课</a> <a href="/tags/%E5%88%86%E4%BA%AB/" style="font-size: 14px; color: #999">分享</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size: 24px; color: #555">分布式系统</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 14px; color: #999">区块链</a> <a href="/tags/%E5%91%A8%E6%8A%A5/" style="font-size: 14px; color: #999">周报</a> <a href="/tags/%E5%AD%98%E5%82%A8/" style="font-size: 14px; color: #999">存储</a> <a href="/tags/%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/" style="font-size: 18px; color: #7e7e7e">年度总结</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 14px; color: #999">并发</a> <a href="/tags/%E6%80%BB%E7%BB%93/" style="font-size: 18px; color: #7e7e7e">总结</a> <a href="/tags/%E6%84%9F%E6%82%9F/" style="font-size: 14px; color: #999">感悟</a> <a href="/tags/%E6%90%9E%E6%9C%BA/" style="font-size: 14px; color: #999">搞机</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 14px; color: #999">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 14px; color: #999">数据库</a> <a href="/tags/%E6%97%85%E8%A1%8C/" style="font-size: 14px; color: #999">旅行</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 14px; color: #999">机器学习</a> <a href="/tags/%E7%AC%94%E8%AE%B0/" style="font-size: 14px; color: #999">笔记</a> <a href="/tags/%E7%BC%96%E8%AF%91/" style="font-size: 14px; color: #999">编译</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98/" style="font-size: 14px; color: #999">虚拟内存</a> <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" style="font-size: 22px; color: #636363">论文阅读</a> <a href="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" style="font-size: 14px; color: #999">读书笔记</a> <a href="/tags/%E9%80%86%E5%90%91/" style="font-size: 14px; color: #999">逆向</a> <a href="/tags/%E9%97%B2%E8%81%8A/" style="font-size: 14px; color: #999">闲聊</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 20px; color: #707070">随笔</a> <a href="/tags/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/" style="font-size: 14px; color: #999">静态分析</a>
-    </div>
-  </section>
-
-
-    
-  
-
   
 
 
 <div class="widget-sticky">
+
+  
+  
+
+
+<section class="widget toc-wrapper desktop mobile" id="toc-div" >
+  
+  <header>
+    
+      <i class="fa-solid fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+  <div class='content'>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ADT-theory"><span class="toc-text">ADT theory</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Product-types"><span class="toc-text">Product types</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sum-types"><span class="toc-text">Sum types</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Algebra-of-ADTs"><span class="toc-text">Algebra of ADTs</span></a></li></ol>
+  </div>
+</section>
+
+  
 
 </div>
 
@@ -2541,6 +2597,7 @@ Consistency：一致性，这里的一致性跟 R...
   
   <!-- Custom Files side end -->
 </aside>
+
 
 
         </div>
@@ -3028,7 +3085,7 @@ Consistency：一致性，这里的一致性跟 R...
 </script>
 
 
-  <script type="application/ld+json">[{"@context":"https://schema.org.cn","@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},{"@context":"https://schema.org.cn","@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","sameAs":["https://github.com/volantis-x"],"description":"道阻且长，行则将至"},{"@context":"https://schema.org.cn","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"http://blog.coldrain.ink/","name":"Hiyasame"}},{"@type":"ListItem","position":2,"item":{"@id":"http://blog.coldrain.ink/tags/读书笔记/","name":"读书笔记"}}]},{"@context":"https://schema.org.cn","@type":"WebSite","name":"Hiyasame","url":"http://blog.coldrain.ink/","keywords":null,"description":"道阻且长，行则将至","author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","description":"道阻且长，行则将至"},"publisher":{"@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"potentialAction":{"@type":"SearchAction","name":"Site Search","target":{"@type":"EntryPoint","urlTemplate":"http://blog.coldrain.ink?s={search_term_string}"},"query-input":"required name=search_term_string"}},{"@context":"https://schema.org.cn","@type":"BlogPosting","description":"道阻且长，行则将至","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage"},"author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/"},"publisher":{"@type":"Organization","name":"Hiyasame","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"wordCount":0,"image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}}]</script>
+  <script type="application/ld+json">[{"@context":"https://schema.org.cn","@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},{"@context":"https://schema.org.cn","@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","sameAs":["https://github.com/volantis-x"],"description":"道阻且长，行则将至"},{"@context":"https://schema.org.cn","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"http://blog.coldrain.ink/","name":"Hiyasame"}},{"@type":"ListItem","position":3,"item":{"@id":"http://blog.coldrain.ink/2026/08/03/SgTTdZLKIoPYfVxfp3tc11BLnsb/","name":"CS242笔记 - Algebraic data types"}}]},{"@context":"https://schema.org.cn","@type":"WebSite","name":"Hiyasame","url":"http://blog.coldrain.ink/","keywords":null,"description":"道阻且长，行则将至","author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/","description":"道阻且长，行则将至"},"publisher":{"@type":"Organization","name":"Hiyasame","url":"http://blog.coldrain.ink/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"potentialAction":{"@type":"SearchAction","name":"Site Search","target":{"@type":"EntryPoint","urlTemplate":"http://blog.coldrain.ink?s={search_term_string}"},"query-input":"required name=search_term_string"}},{"@context":"https://schema.org.cn","@type":"BlogPosting","headline":"CS242笔记 - Algebraic data types","description":"道阻且长，行则将至","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http://blog.coldrain.ink/2026/08/03/SgTTdZLKIoPYfVxfp3tc11BLnsb/"},"author":{"@type":"Person","name":"寒雨","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://blog.coldrain.ink/"},"publisher":{"@type":"Organization","name":"Hiyasame","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"url":"http://blog.coldrain.ink/2026/08/03/SgTTdZLKIoPYfVxfp3tc11BLnsb/","wordCount":0,"datePublished":"2026-08-03T00:10:06.000Z","dateModified":"2026-08-03T00:12:27.000Z","keywords":"笔记,PL","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}}]</script>
 
 
 
