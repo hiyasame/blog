@@ -668,19 +668,19 @@
     {
       "id": "CebYdUSbco2DSKxGwAKced5tnfc",
       "doc_id": "CebYdUSbco2DSKxGwAKced5tnfc",
-      "updated": 1793117966000,
+      "updated": 1793118063000,
       "properties": {
-        "title": "2026日本旅行 blog",
+        "title": "2026 日本旅行",
         "urlname": "CebYdUSbco2DSKxGwAKced5tnfc",
         "date": "2026-10-26 23:37:32",
-        "updated": "2026-10-28 00:19:26",
+        "updated": "2026-10-28 00:21:03",
         "tags": [
           "旅行"
         ]
       },
       "catalog": [],
-      "realName": "2026日本旅行 blog",
-      "relativePath": "/2026日本旅行 blog.md",
+      "realName": "2026 日本旅行",
+      "relativePath": "/2026 日本旅行.md",
       "docPath": "./source/_posts"
     }
   ],
@@ -1096,10 +1096,10 @@
     {
       "doc_id": "CebYdUSbco2DSKxGwAKced5tnfc",
       "id": "CebYdUSbco2DSKxGwAKced5tnfc",
-      "title": "2026日本旅行 blog",
+      "title": "2026 日本旅行",
       "createdAt": 1793029052000,
-      "updated": 1793117966000,
-      "updatedAt": 1793117966000,
+      "updated": 1793118063000,
+      "updatedAt": 1793118063000,
       "catalog": [],
       "has_child": false,
       "node_token": "P7c1waX0OijXSfkQUPmcxUZJnad",
