@@ -664,6 +664,24 @@
       "realName": "CS242笔记 - Algebraic data types",
       "relativePath": "/CS242笔记 - Algebraic data types.md",
       "docPath": "./source/_posts"
+    },
+    {
+      "id": "CebYdUSbco2DSKxGwAKced5tnfc",
+      "doc_id": "CebYdUSbco2DSKxGwAKced5tnfc",
+      "updated": 1793117966000,
+      "properties": {
+        "title": "2026日本旅行 blog",
+        "urlname": "CebYdUSbco2DSKxGwAKced5tnfc",
+        "date": "2026-10-26 23:37:32",
+        "updated": "2026-10-28 00:19:26",
+        "tags": [
+          "旅行"
+        ]
+      },
+      "catalog": [],
+      "realName": "2026日本旅行 blog",
+      "relativePath": "/2026日本旅行 blog.md",
+      "docPath": "./source/_posts"
     }
   ],
   "catalog": [
@@ -1073,6 +1091,18 @@
       "catalog": [],
       "has_child": false,
       "node_token": "V9Xyw5jIMiqLjfkU8Zkc5NDjnNb",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "CebYdUSbco2DSKxGwAKced5tnfc",
+      "id": "CebYdUSbco2DSKxGwAKced5tnfc",
+      "title": "2026日本旅行 blog",
+      "createdAt": 1793029052000,
+      "updated": 1793117966000,
+      "updatedAt": 1793117966000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "P7c1waX0OijXSfkQUPmcxUZJnad",
       "parent_node_token": ""
     }
   ]
