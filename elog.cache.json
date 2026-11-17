@@ -682,6 +682,27 @@
       "realName": "2026 日本旅行",
       "relativePath": "/2026 日本旅行.md",
       "docPath": "./source/_posts"
+    },
+    {
+      "id": "XGkrdIdcxon2A2xfWsVcjRyfnSh",
+      "doc_id": "XGkrdIdcxon2A2xfWsVcjRyfnSh",
+      "updated": 1794936998000,
+      "properties": {
+        "title": "Attention is all you need",
+        "urlname": "XGkrdIdcxon2A2xfWsVcjRyfnSh",
+        "date": "2026-11-18 01:34:42",
+        "updated": "2026-11-18 01:36:38",
+        "tags": [
+          "LLM",
+          "机器学习",
+          "笔记",
+          "论文阅读"
+        ]
+      },
+      "catalog": [],
+      "realName": "Attention is all you need",
+      "relativePath": "/Attention is all you need.md",
+      "docPath": "./source/_posts"
     }
   ],
   "catalog": [
@@ -1103,6 +1124,18 @@
       "catalog": [],
       "has_child": false,
       "node_token": "P7c1waX0OijXSfkQUPmcxUZJnad",
+      "parent_node_token": ""
+    },
+    {
+      "doc_id": "XGkrdIdcxon2A2xfWsVcjRyfnSh",
+      "id": "XGkrdIdcxon2A2xfWsVcjRyfnSh",
+      "title": "Attention is all you need",
+      "createdAt": 1794936882000,
+      "updated": 1794936998000,
+      "updatedAt": 1794936998000,
+      "catalog": [],
+      "has_child": false,
+      "node_token": "AUMkwWT72iFDsNkFRcdcaGzEnjf",
       "parent_node_token": ""
     }
   ]
