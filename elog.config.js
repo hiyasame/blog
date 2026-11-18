@@ -40,6 +40,7 @@ module.exports = {
       outputDir: './source/_posts',
       filename: 'title',
       format: 'markdown',
+      formatExt: './elog.format.js',
       frontMatter: {
         enable: true,
         include: [],
