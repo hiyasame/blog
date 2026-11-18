@@ -687,18 +687,19 @@
     {
       "id": "XGkrdIdcxon2A2xfWsVcjRyfnSh",
       "doc_id": "XGkrdIdcxon2A2xfWsVcjRyfnSh",
-      "updated": 1794936998000,
+      "updated": 1795021072000,
       "properties": {
         "title": "Attention is all you need",
         "urlname": "XGkrdIdcxon2A2xfWsVcjRyfnSh",
         "date": "2026-11-18 01:34:42",
-        "updated": "2026-11-18 01:36:38",
+        "updated": "2026-11-19 00:57:52",
         "tags": [
           "LLM",
           "机器学习",
           "笔记",
           "论文阅读"
-        ]
+        ],
+        "mathjax": true
       },
       "catalog": [],
       "realName": "Attention is all you need",
@@ -1132,8 +1133,8 @@
       "id": "XGkrdIdcxon2A2xfWsVcjRyfnSh",
       "title": "Attention is all you need",
       "createdAt": 1794936882000,
-      "updated": 1794936998000,
-      "updatedAt": 1794936998000,
+      "updated": 1795021072000,
+      "updatedAt": 1795021072000,
       "catalog": [],
       "has_child": false,
       "node_token": "AUMkwWT72iFDsNkFRcdcaGzEnjf",

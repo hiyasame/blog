@@ -2,12 +2,13 @@
 title: Attention is all you need
 urlname: XGkrdIdcxon2A2xfWsVcjRyfnSh
 date: '2026-11-18 01:34:42'
-updated: '2026-11-18 01:36:38'
+updated: '2026-11-19 00:57:52'
 tags:
   - LLM
   - 机器学习
   - 笔记
   - 论文阅读
+mathjax: true
 ---
 > 本文是《Attention is all you need》个人阅读笔记
 
