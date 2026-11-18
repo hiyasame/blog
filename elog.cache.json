@@ -699,7 +699,10 @@
           "笔记",
           "论文阅读"
         ],
-        "mathjax": true
+        "mathjax": true,
+        "plugins": [
+          "mathjax"
+        ]
       },
       "catalog": [],
       "realName": "Attention is all you need",
