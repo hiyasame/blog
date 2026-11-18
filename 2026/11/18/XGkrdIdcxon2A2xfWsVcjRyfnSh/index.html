@@ -2001,7 +2001,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     root: '/',
     debug: "env",
     default: {"avatar":"/img/avatar.jpg","link":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/link/8f277b4ee0ecd.svg","cover":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/cover/76b86c0226ffd.svg","image":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/image/2659360.svg"},
-    lastupdate: new Date(1795021409183),
+    lastupdate: new Date(1795027837207),
     cdn: {
       izitoast_css: 'https://unpkg.com/izitoast@1.4.0/dist/css/iziToast.min.css',
       izitoast_js: 'https://unpkg.com/izitoast@1.4.0/dist/js/iziToast.min.js',
@@ -2454,7 +2454,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <li><p>最后选择概率最高的token进行输出</p>
 </li>
 </ul>
-<h2 id="Attention"><a href="#Attention" class="headerlink" title="Attention"></a>Attention</h2><h3 id="Scaled-Dot-Product-Attention"><a href="#Scaled-Dot-Product-Attention" class="headerlink" title="Scaled Dot-Product Attention"></a>Scaled Dot-Product Attention</h3><p>$$<br>Attention(Q,K,V)&#x3D;softmax(\frac{QK^T}{\sqrt{d_k}})V<br>$$</p>
+<h2 id="Attention"><a href="#Attention" class="headerlink" title="Attention"></a>Attention</h2><h3 id="Scaled-Dot-Product-Attention"><a href="#Scaled-Dot-Product-Attention" class="headerlink" title="Scaled Dot-Product Attention"></a>Scaled Dot-Product Attention</h3><p>$$
+Attention(Q,K,V)=softmax(\frac{QK^T}{\sqrt{d_k}})V
+$$</p>
 <p>最经典的一款，原教旨注意力。</p>
 <ul>
 <li><p>Q 表示所有位置的查询向量按行组成的矩阵</p>
@@ -2465,10 +2467,14 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </li>
 </ul>
 <p>Q 和 K 的点积，即 Q 乘 K 的转置，可以得到一个 Q 所有 token 对 K 所有 token 的匹配分数矩阵，把它们做softmax 就能得到一个归一化，概率化的匹配分数矩阵。</p>
-<p>不过在 softmax 之前需要先除去一个点积的标准差 $$<br>\sqrt{d_k}<br>$$<br> 进行缩放，防止点积导致分数差距很大，进而导致梯度太小，难以训练，防止梯度消失问题。</p>
+<p>不过在 softmax 之前需要先除去一个点积的标准差 $\sqrt{d_k}$ 进行缩放，防止点积导致分数差距很大，进而导致梯度太小，难以训练，防止梯度消失问题。</p>
 <p>再拿这个匹配分数矩阵乘以 V，就得到了预测集。</p>
-<h3 id="Multi-Head-Attention"><a href="#Multi-Head-Attention" class="headerlink" title="Multi-Head Attention"></a>Multi-Head Attention</h3><p>$$<br>\text{MultiHead}(Q, K, V) &#x3D; \text{Concat}(\text{head}_1, \text{head}_2, \dots, \text{head}_h) W^O<br>$$</p>
-<p>$$<br>\text{head}_i &#x3D; \text{Attention}(Q W_i^Q,; K W_i^K,; V W_i^V) &#x3D; \text{softmax}\left(\frac{(Q W_i^Q)(K W_i^K)^T}{\sqrt{d_k}}\right) V W_i^V<br>$$</p>
+<h3 id="Multi-Head-Attention"><a href="#Multi-Head-Attention" class="headerlink" title="Multi-Head Attention"></a>Multi-Head Attention</h3><p>$$
+\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \text{head}_2, \dots, \text{head}_h) W^O
+$$</p>
+<p>$$
+\text{head}_i = \text{Attention}(Q W_i^Q,\; K W_i^K,\; V W_i^V) = \text{softmax}\left(\frac{(Q W_i^Q)(K W_i^K)^T}{\sqrt{d_k}}\right) V W_i^V
+$$</p>
 <p>多头注意力就是在经典的缩放点积注意力的基础上拆分成了多个头，分头计算，分头进行合并，最后算出来在数学上跟缩放点积注意力的结果是一致。</p>
 <p>多头注意力主要解决了以下几个问题：</p>
 <ul>
@@ -2476,47 +2482,60 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </li>
 <li><p>避免注意力权重被稀释：如果只有<strong>一个注意力头</strong>，所有信息必须挤在<strong>同一套</strong> Softmax 权重分布里做加权平均——要么权重全被某一种强关系抢走，要么多种关系平均之后变得模糊不清。</p>
 <ul>
-<li>通过 $$<br>  h$$<br>   组不同的线性投影，让不同的头各自负责不同子空间，有的头专心找“指代对象”，有的头关注“主谓修饰”，有的头捕捉“局部邻近词”，互不干扰。</li>
+<li>通过 $h$ 组不同的线性投影，让不同的头各自负责不同子空间，有的头专心找“指代对象”，有的头关注“主谓修饰”，有的头捕捉“局部邻近词”，互不干扰。</li>
 </ul>
 </li>
-<li><p>避免单一特征空间匹配标准固定：缩放点积注意力本身没有可学习参数，如果只用一套投影矩阵计算 $$<br>Q、K、V$$<br>，相当于只用<strong>一种固定标准</strong>去衡量词与词之间的相关性。</p>
+<li><p>避免单一特征空间匹配标准固定：缩放点积注意力本身没有可学习参数，如果只用一套投影矩阵计算 $Q、K、V$，相当于只用<strong>一种固定标准</strong>去衡量词与词之间的相关性。</p>
 <ul>
-<li>为每个头分配独立的投影矩阵（$$<br>  W_i^Q, W_i^K, W_i^V$$<br>  ），相当于让模型学会**用 <strong>$$<br>  h$$<br>  ** 种不同的角度去“提问”和“匹配”</strong>，最后再通过 $$<br>  W^O$$<br>   把多视角的提取结果融合成一个更全面的特征向量。</li>
+<li>为每个头分配独立的投影矩阵（$W_i^Q, W_i^K, W_i^V$），相当于让模型学会<strong>用 $h$ 种不同的角度去“提问”和“匹配”</strong>，最后再通过 $W^O$ 把多视角的提取结果融合成一个更全面的特征向量。</li>
 </ul>
 </li>
 </ul>
 <h2 id="Positional-Encoding"><a href="#Positional-Encoding" class="headerlink" title="Positional Encoding"></a>Positional Encoding</h2><p>由于自注意力是全局同时计算所有词的两两相关性，模型是分不清词的顺序的。所以需要在 token embeding 的基础上对位置进行编码。</p>
-<p>$$<br>X &#x3D; E_{\text{token}} + PE<br>$$</p>
-<h3 id="正余弦位置编码"><a href="#正余弦位置编码" class="headerlink" title="正余弦位置编码"></a>正余弦位置编码</h3><p>$$<br>PE_{(pos,, 2i)} &#x3D; \sin\left(\frac{pos}{10000^{2i &#x2F; d_{\text{model}}}}\right)<br>$$</p>
-<p>$$<br>PE_{(pos,, 2i+1)} &#x3D; \cos\left(\frac{pos}{10000^{2i &#x2F; d_{\text{model}}}}\right)<br>$$</p>
+<p>$$
+X = E_{\text{token}} + PE
+$$</p>
+<h3 id="正余弦位置编码"><a href="#正余弦位置编码" class="headerlink" title="正余弦位置编码"></a>正余弦位置编码</h3><p>$$
+PE_{(pos,\, 2i)} = \sin\left(\frac{pos}{10000^{2i / d_{\text{model}}}}\right)
+$$</p>
+<p>$$
+PE_{(pos,\, 2i+1)} = \cos\left(\frac{pos}{10000^{2i / d_{\text{model}}}}\right)
+$$</p>
 <p>使用三角函数正弦余弦函数的方式进行位置编码，这样做主要有两个小巧思：</p>
 <ul>
 <li><p>将值限制在 [-1, 1] 的区间范围上，防止数值太大淹没 token embeding 中 token 本身的语义。</p>
 </li>
 <li><p>能用线性变换表示相对位置</p>
 <ul>
-<li>$$<br>  \begin{pmatrix} \sin(\omega(pos+k)) \ \cos(\omega(pos+k)) \end{pmatrix} &#x3D; \begin{pmatrix} \cos(\omega k) &amp; \sin(\omega k) \ -\sin(\omega k) &amp; \cos(\omega k) \end{pmatrix} \begin{pmatrix} \sin(\omega pos) \ \cos(\omega pos) \end{pmatrix}<br>  $$</li>
+<li>$\begin{pmatrix} \sin(\omega(pos+k)) \\ \cos(\omega(pos+k)) \end{pmatrix} = \begin{pmatrix} \cos(\omega k) &amp; \sin(\omega k) \\ -\sin(\omega k) &amp; \cos(\omega k) \end{pmatrix} \begin{pmatrix} \sin(\omega pos) \\ \cos(\omega pos) \end{pmatrix}$</li>
 </ul>
 </li>
 </ul>
 <h3 id="ROPE"><a href="#ROPE" class="headerlink" title="ROPE"></a>ROPE</h3><p>RoPE 是目前几乎所有主流大语言模型都在使用的位置编码方案。</p>
-<p>假设 Query 向量 $$<br>q$$<br> 在位置 $$<br>m$$<br>，Key 向量 $$<br>k$$<br> 在位置 $$<br>n$$<br>。RoPE 做的事情就是把它们各自乘以一个二维旋转矩阵 $$<br>R(m\theta)$$<br> 和 $$<br>R(n\theta)$$<br>：</p>
-<p>$$<br>R(m\theta) &#x3D; \begin{pmatrix} \cos m\theta &amp; -\sin m\theta \ \sin m\theta &amp; \cos m\theta \end{pmatrix}<br>$$</p>
+<p>假设 Query 向量 $q$ 在位置 $m$，Key 向量 $k$ 在位置 $n$。RoPE 做的事情就是把它们各自乘以一个二维旋转矩阵 $R(m\theta)$ 和 $R(n\theta)$：</p>
+<p>$$
+R(m\theta) = \begin{pmatrix} \cos m\theta &amp; -\sin m\theta \\ \sin m\theta &amp; \cos m\theta \end{pmatrix}
+$$</p>
 <p>旋转之后，当自注意力计算它们俩的点积时，神奇的几何性质就出现了：</p>
-<p>$$<br>(R(m\theta)q)^T \big(R(n\theta)k\big) &#x3D; q^T R(m\theta)^T R(n\theta) k &#x3D; q^T R\big((n - m)\theta\big) k<br>$$</p>
-<p>原本的绝对位置 $$<br>m$$<br> 和 $$<br>n$$<br> 在乘法里直接抵消成了**相对距离 <strong>$$<br>(n - m)$$<br><strong>，</strong>也就是说：</strong>每个词只需要知道自己的绝对位置 <strong>$$<br>m$$<br>** 并旋转一次，算出来的注意力分数就天然只取决于两个词之间隔了多远。</strong></p>
-<h2 id="Residual-Connection"><a href="#Residual-Connection" class="headerlink" title="Residual Connection"></a>Residual Connection</h2><p>即架构图中的 Add：<br><img src="/images/CkVrbIdZMo9DNoxTvsScDZTfnrg.png" class="lazyload" data-srcset="/images/CkVrbIdZMo9DNoxTvsScDZTfnrg.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"><br>$$<br>\text{Output} &#x3D; \text{LayerNorm}\big(x + \text{Sublayer}(x)\big)<br>$$</p>
+<p>$$
+(R(m\theta)q)^T \big(R(n\theta)k\big) = q^T R(m\theta)^T R(n\theta) k = q^T R\big((n - m)\theta\big) k
+$$</p>
+<p>原本的绝对位置 $m$ 和 $n$ 在乘法里直接抵消成了<strong>相对距离 $(n - m)$，</strong>也就是说：<strong>每个词只需要知道自己的绝对位置 $m$ 并旋转一次，算出来的注意力分数就天然只取决于两个词之间隔了多远。</strong></p>
+<h2 id="Residual-Connection"><a href="#Residual-Connection" class="headerlink" title="Residual Connection"></a>Residual Connection</h2><p>即架构图中的 Add：<br><img src="/images/CkVrbIdZMo9DNoxTvsScDZTfnrg.png" class="lazyload" data-srcset="/images/CkVrbIdZMo9DNoxTvsScDZTfnrg.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"></p>
+<p>$$
+\text{Output} = \text{LayerNorm}\big(x + \text{Sublayer}(x)\big)
+$$</p>
 <p>这个设计的巧思是：</p>
 <ul>
-<li><p>没有残差连接的情况，神经网络每层做一次变换，根据链式法则，顶层的误差传回第一层时，必须把中间每一层的导数连乘起来：$$<br>\frac{\partial \text{Loss}}{\partial x_1} &#x3D; \frac{\partial \text{Loss}}{\partial x_{20}} \cdot \frac{\partial F_{19}}{\partial x_{19}} \cdots \frac{\partial F_2}{\partial x_2} \cdot \frac{\partial F_1}{\partial x_1}<br>$$<br>。如果每一层的导数都小于1，连续乘几十次后，这个信号可能就已经消失了。</p>
+<li><p>没有残差连接的情况，神经网络每层做一次变换，根据链式法则，顶层的误差传回第一层时，必须把中间每一层的导数连乘起来：$\frac{\partial \text{Loss}}{\partial x_1} = \frac{\partial \text{Loss}}{\partial x_{20}} \cdot \frac{\partial F_{19}}{\partial x_{19}} \cdots \frac{\partial F_2}{\partial x_2} \cdot \frac{\partial F_1}{\partial x_1}$。如果每一层的导数都小于1，连续乘几十次后，这个信号可能就已经消失了。</p>
 <ul>
-<li>如果引入残差连接，对$$<br>  y &#x3D; x + F(x)$$<br>  求导，会得到$$<br>  \frac{\partial y}{\partial x} &#x3D; I + \frac{\partial F(x)}{\partial x}<br>  $$<br>  ，由于其中单位矩阵的存在，连续乘以几十次之后，信号依旧能够无损保留。</li>
+<li>如果引入残差连接，对$y = x + F(x)$求导，会得到$\frac{\partial y}{\partial x} = I + \frac{\partial F(x)}{\partial x}$，由于其中单位矩阵的存在，连续乘以几十次之后，信号依旧能够无损保留。</li>
 </ul>
 </li>
 <li><p>注意力的本质是在做整句话中所有词 value 的加权平均</p>
 <ul>
 <li>如果这个过程反复多次（N层），不引入残差连接的情况就会导致所有 value 最终趋同，这种情况被称作注意力塌陷。<ul>
-<li>在引入残差连接后，每一层的输出变成 $$<br>  x_{l+1} &#x3D; x_l + \text{Sublayer}(x_l)$$<br>  ，如果把层级全部展开：$$<br>  x_L &#x3D; \mathbf{x_0} + \text{Sublayer}_1(x_0) + \text{Sublayer}_2(x_1) + \dots + \text{Sublayer}<em>L(x</em>{L-1})<br>  $$<br>  。最后始终能保留一份原始值，保证 value 之间的差异。</li>
+<li>在引入残差连接后，每一层的输出变成 $x_{l+1} = x_l + \text{Sublayer}(x_l)$，如果把层级全部展开：$x_L = \mathbf{x_0} + \text{Sublayer}_1(x_0) + \text{Sublayer}_2(x_1) + \dots + \text{Sublayer}_L(x_{L-1})$。最后始终能保留一份原始值，保证 value 之间的差异。</li>
 </ul>
 </li>
 </ul>
@@ -2524,26 +2543,32 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 </ul>
 <h2 id="Normalization"><a href="#Normalization" class="headerlink" title="Normalization"></a>Normalization</h2><p>每一个部分的输出都需要靠 LayerNorm 来进行归一化，LayerNorm 其实就是算每行的平均值和方差，然后让当前值对于平均值的差距再除以一个标准差。</p>
 <p>然后在此基础上可以加上可学习的缩放 γ 和偏置 β，让模型自己决定“归一化之后每个维度要不要放大或平移”</p>
-<p>$$<br>\text{LayerNorm}(x) &#x3D; \frac{x - \mu}{\sqrt{\sigma^2 + \epsilon}} \odot \gamma + \beta<br>$$</p>
-<p>其中 $$<br>\mu &#x3D; \frac{1}{d}\sum_{i&#x3D;1}^d x_i$$<br>，$$<br>\sigma^2 &#x3D; \frac{1}{d}\sum_{i&#x3D;1}^d (x_i - \mu)^2$$<br>。</p>
+<p>$$
+\text{LayerNorm}(x) = \frac{x - \mu}{\sqrt{\sigma^2 + \epsilon}} \odot \gamma + \beta
+$$</p>
+<p>其中 $\mu = \frac{1}{d}\sum_{i=1}^d x_i$，$\sigma^2 = \frac{1}{d}\sum_{i=1}^d (x_i - \mu)^2$。</p>
 <h2 id="FFN"><a href="#FFN" class="headerlink" title="FFN"></a>FFN</h2><blockquote>
 <p>注意：原版 Transformer 的 FFN 其实是没有门控的</p>
 </blockquote>
 <p>Transformer 中的 FFN 本质上是一个非常简单的<strong>两层全连接网络（MLP）</strong>，中间夹一个 ReLU 激活函数：</p>
-<p>$$<br>\text{FFN}(x) &#x3D; \max(0,; xW_1 + b_1)W_2 + b_2<br>$$</p>
+<p>$$
+\text{FFN}(x) = \max(0,\; xW_1 + b_1)W_2 + b_2
+$$</p>
 <ul>
-<li><p>先升维：把维度从 $$<br>d_{\text{model}}$$<br>（如 <code>512</code>）放大 4 倍到 $$<br>d_{\text{ff}}$$<br>（如 <code>2048</code>）。</p>
+<li><p>先升维：把维度从 $d_{\text{model}}$（如 <code>512</code>）放大 4 倍到 $d_{\text{ff}}$（如 <code>2048</code>）。</p>
 </li>
 <li><p><strong>非线性激活</strong>：通过 ReLU 过滤掉负值（只保留被激活的特征神经元）</p>
 </li>
-<li><p><strong>降维（</strong>$$<br>W_2$$<br><strong>）</strong>：把 <code>2048</code> 维再投影回 <code>512</code> 维。</p>
+<li><p><strong>降维（$W_2$）</strong>：把 <code>2048</code> 维再投影回 <code>512</code> 维。</p>
 </li>
 </ul>
 <p>FFN 给模型提供了 “逐特征非线性折叠” 能力，可以更好的拟合高维特征</p>
-<h2 id="Softmax"><a href="#Softmax" class="headerlink" title="Softmax"></a>Softmax</h2><p><strong>Softmax</strong> 是一种把<strong>任意实数向量</strong>（可正、可负、大小任意）转换成<strong>概率分布</strong>的算法——输出向量里的每个值都在 $$<br>(0, 1)$$<br> 之间，且所有元素加起来严格等于 1。</p>
-<p>$$<br>\text{Softmax}(z_i) &#x3D; \frac{e^{z_i}}{\sum_{j&#x3D;1}^{n} e^{z_j}}<br>$$</p>
+<h2 id="Softmax"><a href="#Softmax" class="headerlink" title="Softmax"></a>Softmax</h2><p><strong>Softmax</strong> 是一种把<strong>任意实数向量</strong>（可正、可负、大小任意）转换成<strong>概率分布</strong>的算法——输出向量里的每个值都在 $(0, 1)$ 之间，且所有元素加起来严格等于 1。</p>
+<p>$$
+\text{Softmax}(z_i) = \frac{e^{z_i}}{\sum_{j=1}^{n} e^{z_j}}
+$$</p>
 <p>在这里主要用于将 token 的 logits 矩阵概率化，最后就能得到每个token对应概率的矩阵，选择概率最高的一个即可。</p>
-<p>另外有一个值得一提的是，LLM 的 Temperature 其实就是作用在  Softmax 算法上的。一般概率这样计算 $$<br>\text{Softmax}(z_i &#x2F; T)$$<br>，这样就引入了一个可以调整的 Temperature 参数，T 越小，不同选项之间的差距被拉大，几乎把全部权重压给最大项。而 T 越大，不同选项之间的差距就会缩小，就会得到随机性和多样性更强的结果。</p>
+<p>另外有一个值得一提的是，LLM 的 Temperature 其实就是作用在  Softmax 算法上的。一般概率这样计算 $\text{Softmax}(z_i / T)$，这样就引入了一个可以调整的 Temperature 参数，T 越小，不同选项之间的差距被拉大，几乎把全部权重压给最大项。而 T 越大，不同选项之间的差距就会缩小，就会得到随机性和多样性更强的结果。</p>
 
   </div>
   
@@ -3083,6 +3108,60 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     },"阅读进度")
     // todo：配置项开关, 哪些页面添加阅读进度
   })
+</script>
+
+
+
+        <script>
+  // https://github.com/theme-next/hexo-theme-next/blob/master/layout/_third-party/math/mathjax.swig
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = "https://unpkg.com/mathjax@3.2.2/es5/tex-mml-chtml.js";
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    // 文章章节标题不能为 “MathJax” ，否则会报错。
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typesetPromise();
+  }
 </script>
 
 

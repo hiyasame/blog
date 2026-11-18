@@ -1999,7 +1999,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     root: '/',
     debug: "env",
     default: {"avatar":"/img/avatar.jpg","link":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/link/8f277b4ee0ecd.svg","cover":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/cover/76b86c0226ffd.svg","image":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/image/2659360.svg"},
-    lastupdate: new Date(1795021409183),
+    lastupdate: new Date(1795027837207),
     cdn: {
       izitoast_css: 'https://unpkg.com/izitoast@1.4.0/dist/css/iziToast.min.css',
       izitoast_js: 'https://unpkg.com/izitoast@1.4.0/dist/js/iziToast.min.js',
@@ -2422,7 +2422,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <p>Gen 集：在分析到一行 statement 时，其使用到的 variable 会被加入到 Gen 集。</p>
 <p>Kill 集：在分析到一行 statement 时，其定义的variable 会被加入到 Kill 集。</p>
 <p>对于 Reaching Definitions Analysis 这个场景，每个节点保存的状态其实就是在这个节点有哪些变量被使用了，并且如果存在重复的变量定义，需要将其从结果中去除，写成 Transfer Function 就是：</p>
-<p>$$<br>OUT[B]&#x3D;gen_BU(IN[B] - kill_B)<br>$$</p>
+<p>$$
+OUT[B]=gen_BU(IN[B] - kill_B)
+$$</p>
 <h4 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h4><p><img src="/images/FmzLbnfZ3onDQUxsdUschKiEnZe.png" class="lazyload" data-srcset="/images/FmzLbnfZ3onDQUxsdUschKiEnZe.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"><br>口述一下算法其实就是，先初始化所有状态为空状态，然后不断遍历更新每个节点的 IN 状态和 OUT 状态，直到后来所有节点的 OUT 状态都不再发生改变。</p>
 <p>由于 Reaching Definitions Analysis 是 May analysis，所以 meet operator 取并集。</p>
 <p>Reaching definitions analysis 关注在 exit 之前 variable 有没有 reach，所以我们使用 forwards analysis。</p>
@@ -2434,7 +2436,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <p>Live variables analysis 适合使用 backwards anlaysis 进行分析，因为它关注的是在 p 点之后变量 v 有没有被使用。</p>
 <p>由于只要后面有任何一种可能的分支用到这个变量，我们就认为这个变量是 live 的，所以它是 may analysis。</p>
 <h4 id="Transfer-Function-1"><a href="#Transfer-Function-1" class="headerlink" title="Transfer Function"></a>Transfer Function</h4><p>自底向上分析，Live Variable 集合的定义其实就是下面 use 过的，并且遇到 definition 就将其去掉</p>
-<p>$$<br>IN[B] &#x3D; use_B U (OUT[B] - def_B)<br>$$</p>
+<p>$$
+IN[B] = use_B U (OUT[B] - def_B)
+$$</p>
 <h4 id="Algorithm-1"><a href="#Algorithm-1" class="headerlink" title="Algorithm"></a>Algorithm</h4><p>其实跟上面 Reaching Definition Analysis 基本上差不多<br><img src="/images/Vva5boKN7ot2zKxqyn3curi5nQf.png" class="lazyload" data-srcset="/images/Vva5boKN7ot2zKxqyn3curi5nQf.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"></p>
 <h4 id="Example-1"><a href="#Example-1" class="headerlink" title="Example"></a>Example</h4><p>不同于上面 Reaching Definition Analysis，bit vector 编码的是变量，并且分析是从末尾 exit 开始的。<br><img src="/images/USgybQYf8ox3nnxrTf6caKXUnTe.png" class="lazyload" data-srcset="/images/USgybQYf8ox3nnxrTf6caKXUnTe.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"></p>
 <h3 id="Available-Expressions-Analysis"><a href="#Available-Expressions-Analysis" class="headerlink" title="Available Expressions Analysis"></a>Available Expressions Analysis</h3><blockquote>
@@ -2554,7 +2558,9 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 <p>给定一个 lattice（P，⊑），对于 P 的任意子集 S，如果 ⊔S 和 ⊓S 存在，那么（P，⊑）被称为 comlete lattice。</p>
 <p>每个 complete lattice 都有一个最大的元素 T&#x3D; ⊔P 称为 top，并且有一个最小的元素 ⊥ &#x3D; ⊓P 称为 bottom。<br><img src="/images/NlSubszRaoneZRxLBwbcAkannZb.png" class="lazyload" data-srcset="/images/NlSubszRaoneZRxLBwbcAkannZb.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"></p>
 <h4 id="Product-Lattice"><a href="#Product-Lattice" class="headerlink" title="Product Lattice"></a>Product Lattice</h4><p>给定 lattice：</p>
-<p>$$<br>L_1 &#x3D; (P_1, ⊑_1), L_2 &#x3D; (P_2, ⊑_2),…,L_n &#x3D; (P_n, ⊑_n)<br>$$</p>
+<p>$$
+L_1 = (P_1, ⊑_1), L_2 = (P_2, ⊑_2),...,L_n = (P_n, ⊑_n)
+$$</p>
 <p>如果对于所有 i，（P_1, ⊑_1）既有 lub 又有 glb，然后我们就可以有一个 product lattice：<br><img src="/images/WOB5bjnUbopdk6xF40YcKynGnrx.png" class="lazyload" data-srcset="/images/WOB5bjnUbopdk6xF40YcKynGnrx.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="image"></p>
 <ul>
 <li><p>A product lattice is a lattice</p>
